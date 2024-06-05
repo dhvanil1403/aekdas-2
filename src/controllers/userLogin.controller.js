@@ -4,7 +4,7 @@ const bcrypt = require("bcryptjs");
 
 const checkLogin = async (req, res) => {
   const { username, password } = req.body;
-  // console.log(username, password);
+  console.log(username, password);
   try {
     const user = await userLogin.findMember(username, password);
 

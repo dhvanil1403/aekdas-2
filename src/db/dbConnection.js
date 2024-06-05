@@ -1,10 +1,8 @@
 const { Pool } = require('pg');
 const dbConfig = require('./configDB'); // Import the configuration
-require('dotenv').config();
+
 const pool = new Pool(dbConfig);
-// const pool = new Pool({
-//   connectionString: process.env.POSTGRES_URL,
-// })
+
 
 pool.on('connect', () => {
   console.log('Connected to the database');
