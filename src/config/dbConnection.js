@@ -4,7 +4,7 @@ const dbConfig = require('./configDB'); // Import the configuration
 const pool = new Pool(dbConfig);
 
 pool.on('connect', () => {
-  console.log('Connected to the database');
+  // console.log('Connected to the database');
 });
 
 pool.on('error', (err) => {
@@ -14,7 +14,6 @@ pool.on('error', (err) => {
 
 const query = async (text, params) => {
   try {
-    console.log('Executing query:', text); // Log the query being executed
     const res = await pool.query(text, params);
     return res;
   } catch (err) {

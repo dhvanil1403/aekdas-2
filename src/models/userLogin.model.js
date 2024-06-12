@@ -1,4 +1,4 @@
-const db = require("../db/dbConnection");
+const db = require("../config/dbConnection");
 
 const getuserByEmailPass = async (username, password) => {
   try {

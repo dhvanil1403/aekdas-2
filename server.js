@@ -18,15 +18,6 @@ app.use(session(sessionConfig));
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
-// app.get('/api/data', async (req, res) => {
-//   try {
-//     const result = await query('SELECT NOW()');
-//     res.status(200).json(result.rows);
-//   } catch (err) {
-//     res.status(500).json({ error: 'Internal Server Error' });
-//   }
-// });
-
 app.use("/login", loginRoutes);
 app.use("/Dashboard", dashboardRoutes);
 
