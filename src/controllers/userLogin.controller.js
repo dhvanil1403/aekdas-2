@@ -14,11 +14,14 @@ const checkLogin = async (req, res) => {
         process.env.JWT_SECRET,
         { expiresIn: process.env.JWT_EXPIRY }
       );
+  // console.log('loginTimeToken',token);
+      
       res.cookie("token", token, {
         httpOnly: true,
-        secure: true,
+        // secure: true,        
         sameSite: "strict",
       });
+      // console.log('cookies',req.cookies);
       res.redirect("/Dashboard");
     } else {
       res.render("Login", { message: "Invalid login credentials" });
@@ -28,10 +31,9 @@ const checkLogin = async (req, res) => {
     res.status(500).send("Failed to fetch users by findmember");
   }
 };
-
 const dashboardAuth = (req, res, next) => {
   const token = req.cookies?.token;
-
+  // console.log('dashboardAuthtoken',token);
   if (!token) {
     return res.redirect("/login");
   }

@@ -11,7 +11,6 @@ const getuserByEmailPass = async (username, password) => {
     console.error("Error fetching getuserByEmailPass:", err);
     throw err;
   }
-
 };
 
 module.exports = {

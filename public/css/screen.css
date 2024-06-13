@@ -79,6 +79,8 @@
   text-align: center;
   color: #ffffff;
   border-radius: 30px;
+  border: 1px solid #0d6efd;
+
 }
 .screenGroups,
 .deletedScreen {

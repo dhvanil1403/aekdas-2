@@ -15,8 +15,3 @@ router.use("/Screens",screenRouter);
 router.use("/Teams", teamRouter);
 router.use("/Library", libraryRouter);
 module.exports = router;
-
-
-
-
-

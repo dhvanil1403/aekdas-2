@@ -100,6 +100,18 @@ function showDeletedScreens() {
       });
 
       // Show edit overlay
+      const showDeletedScreens =document.getElementsByClassName('deletedScreen')[0];
+      showDeletedScreens.style.color="white";
+      showDeletedScreens.style.backgroundColor="#0d6efd";
+
+      const allScreen =document.getElementsByClassName('allScreen')[0];
+      allScreen.style.backgroundColor="transparent";
+      allScreen.style.color="#0d6efd";
+      
+      const screenGroups =document.getElementsByClassName('screenGroups')[0];
+      screenGroups.style.color="#0d6efd";
+      screenGroups.style.backgroundColor="transparent";
+
       document.getElementById("show-Deleted-Screen").style.display = "block";
       document.getElementById("show-Group-Screen").style.display = "none";
 
@@ -133,6 +145,18 @@ function showGroupScreen() {
       `;
         tableBody.appendChild(row);
       });
+
+      const screenGroups =document.getElementsByClassName('screenGroups')[0];
+      screenGroups.style.color="white";
+      screenGroups.style.backgroundColor="#0d6efd";
+
+      const allScreen =document.getElementsByClassName('allScreen')[0];
+      allScreen.style.backgroundColor="transparent";
+      allScreen.style.color="#0d6efd";
+
+      const showDeletedScreens =document.getElementsByClassName('deletedScreen')[0];
+      showDeletedScreens.style.color="#0d6efd";
+      showDeletedScreens.style.backgroundColor="transparent";
 
       document.getElementById("show-Group-Screen").style.display = "block";
 

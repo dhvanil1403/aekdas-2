@@ -30,8 +30,7 @@ const upload = multer({
   storage: storage,
  
   fileFilter: (req, file, cb) => {
-    
-    console.log('upload middleware:',file);
+   
     const allowedTypes = [
       "image/jpg",
       "image/jpeg",

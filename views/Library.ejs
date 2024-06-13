@@ -31,27 +31,20 @@
                 <div class="left">
                     <div class="media-allFiles">
                         <h6>ALL MEDIA FILES</h6>
-                        <p>TOTAL FILES - </p>
+                        <p>TOTAL FILES - <b><%- fileCount %></b> </p>
                     </div>
                 </div>
                 <div class="right">
                     <div class="media-category">
-                        <button class="media-all">All</button>
-                        <button class="media-photos">Photos</button>
-                        <button class="media-videos">Videos</button>
+                        <button class="media-all"><a href="/Dashboard/Library">All</a></button>
+                        <button class="media-photos" ><a href="/Dashboard/Library/Photos">Photos</a></button>
+                        <button class="media-videos"><a href="/Dashboard/Library/Videos">Videos</a></button>
                     </div>
                     <div class="media-search">
                         <input type="search" name="search" id="search" placeholder="Search">
                     </div>
                     <div class="media-btn">
-                        <button class="media-btn-folder"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path d="M12 5V19" stroke="white" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round" />
-                                <path d="M5 12H19" stroke="white" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round" />
-                            </svg>
-                            New Folder</button>
+                        
                         <button class="media-btn-upload" id="uploadButton">Upload Media</button>
                         <form id="uploadForm" action="/Dashboard/Library/UploadMedia" method="POST"
                             enctype="multipart/form-data" style="display: none;">

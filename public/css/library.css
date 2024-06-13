@@ -80,11 +80,11 @@
 }
 .media-allFiles p {
   font-size: 11px;
-  color: #1c1c1c86;
-  font-weight: 400;
+  color: #0a0a0a86;
+  font-weight: 600;
 }
 .right {
-  width: 90%;
+  width: 80%;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -146,10 +146,10 @@
   padding: 5px 10px;
 }
 .media-btn {
-  width: 25%;
+  width: 15%;
   /* border: 1px solid black; */
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   padding-right: 2%;
 }
 .media-btn-folder,
@@ -194,17 +194,19 @@
 .show-media{
   display: flex;
   margin: 1%;
+  width: 100%;
+  flex-wrap: wrap;
+  overflow: auto;
 }
 .media-container {
-  margin: 1%;
+  margin: 0.5%;
   display: inline-block;
 }
 
 .media-item {
   width: 180px; /* 9/16 of 320px height */
-  height: 320px; /* Maintain the 9:16 aspect ratio */
-  box-shadow: 0px 0px 4px 0px #0e0d0d40;
-  
+  height: 300px; /* Maintain the 9:16 aspect ratio */
+  box-shadow: 0px 0px 4px 0px #00000040;
   object-fit: cover; /* Ensures the content is resized to fit the container */
 }
 

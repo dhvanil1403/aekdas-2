@@ -54,6 +54,7 @@ img {
     /* border: 1px solid black; */
 }
 .details {
+    background-color: #cecacab4;
     width: 90%;
     height: 65vh;
     display: flex;

@@ -24,7 +24,40 @@ const viewMedia = async () => {
     throw err;
   }
 };
+
+const getPhotoes=async()=>{
+  try {
+    const result = await db.query("SELECT * FROM mediafiles WHERE type LIKE 'image/%';");
+    return result.rows;
+  } catch (err) {
+    console.error("error occur viewing  photoes images files from database:", err);
+    throw err;
+  }
+};
+
+const getVideos=async()=>{
+  try {
+    const result = await db.query("SELECT * FROM mediafiles WHERE type LIKE 'video/%';");
+    return result.rows;
+  } catch (err) {
+    console.error("error occur viewing videos from database:", err);
+    throw err;
+  }
+}
+
+const getmediafileCount = async () => {
+  try {
+    const result = await db.query("SELECT COUNT(*) AS count FROM mediafiles");
+    return result.rows[0].count;
+  } catch (error) {
+    console.error("Error fetching screen count:", error);
+    throw error;
+  }
+};
 module.exports = {
   uploadMediaInDB,
-  viewMedia
+  viewMedia,
+  getPhotoes,
+  getVideos,
+  getmediafileCount
 };
