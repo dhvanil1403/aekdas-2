@@ -1,14 +1,14 @@
 const library = require("../models/library.model");
 
 const handleUploadInDB = async (req, res) => {
-  console.log(req.file);
+ 
   const fileUrl = req.file.path;
   const fileType = req.file.mimetype;
   try {
     await library.uploadMediaInDB(fileUrl, fileType);
     
     const mediafiles = await library.viewMedia();
-    console.log(mediafiles); // Check the media files array in console
+    // console.log(mediafiles); // Check the media files array in console
     res.render("Library", { mediafiles: mediafiles });
   } catch (err) {
     console.error(err);

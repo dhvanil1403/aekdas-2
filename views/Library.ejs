@@ -92,11 +92,11 @@
                         <% mediafiles.forEach(function(file) { %>
                             <div class="media-container">
                                 <!-- Debugging: Print file object -->
-                                <% console.log('File:', file); %>
+                                <%# console.log('File:', file); %>
                                     <% if (file.type && file.type.startsWith('image/')) { %>
                                         <img src="<%= file.url %>" alt="Image" class="media-item image-item">
                                         <% } else if (file.type && file.type.startsWith('video/')) { %>
-                                            <video controls class="media-item video-item">
+                                            <video controls class="media-item video-item" preload="metadata">
                                                 <source src="<%= file.url %>" type="<%= file.type %>">
                                                 Your browser does not support the video tag.
                                             </video>
