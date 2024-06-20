@@ -28,10 +28,16 @@
   gap: 40px;
   margin-top: 2%;
   font-family: Gilroy-Medium;
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 500;
   line-height: 36px;
   color: #202224;
+}
+.screen-overview p {
+  font-size: 30px;
+  font-weight: 400;
+
+
 }
 .total-screen,
 .online-screen,
@@ -50,6 +56,11 @@
 .offline-screen {
   background: #e99d9d;
 }
+.total-screen:hover,
+.online-screen:hover,
+.offline-screen:hover {
+  box-shadow: 0px 4px 7px 0px #00000080;
+}
 .screen-btn {
   width: 100%;
   display: flex;
@@ -62,9 +73,11 @@
   display: flex;
   gap: 10px;
   justify-content: space-between;
+
 }
 .screen-btn-2 {
   margin-right: 3%;
+  
 }
 .screen-btn-2 span {
   margin-right: 5px;
@@ -80,7 +93,6 @@
   color: #ffffff;
   border-radius: 30px;
   border: 1px solid #0d6efd;
-
 }
 .screenGroups,
 .deletedScreen {
@@ -94,6 +106,21 @@
   color: #0d6efd;
   border-radius: 30px;
 }
+.allScreen:hover,
+.screenGroups:hover,
+.deletedScreen:hover{
+  color: #ffffff !important;
+  background: #0d6efd !important;
+}
+.active {
+  color: #ffffff !important;
+  background-color: #0d6efd !important;
+}
+
+.inactive {
+  color: #0d6efd !important;
+  background-color: transparent !important;
+}
 .newScreen-btn,
 .newGroup {
   background: #d9d9d9;
@@ -102,13 +129,13 @@
   font-family: Gilroy-SemiBold;
   font-size: 16px;
   font-weight: 600;
-  line-height: 19.6px;
-  letter-spacing: -0.1428571194410324px;
-  text-align: center;
   color: #202224;
   border-radius: 30px;
 }
-
+.newScreen-btn:hover,
+.newGroup:hover{
+  box-shadow: 0px 2px 7px 0px #00000080;
+}
 .overlay {
   display: none;
   position: fixed;
@@ -258,8 +285,17 @@ tr:nth-child(even) {
   width: 100%;
   border: 1px solid blue;
 }
-#show-Group-Screen{
+#show-Group-Screen {
   display: none;
   justify-content: center;
   align-items: center;
+}
+.delete:hover circle {
+  fill: #BB303D; /* Change stroke color on hover */
+}
+.edit:hover circle {
+  fill: #CF9D08; /* Change stroke color on hover */
+}
+.restore:hover circle {
+  fill: #1A9A74; /* Change stroke color on hover */
 }

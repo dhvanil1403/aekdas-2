@@ -11,6 +11,7 @@
 <body>
   <div class="group">
     <div class="header">
+
       <div class="group-screen">
         <p>Home > <b>Group Screen</b></p>
       </div>
@@ -23,26 +24,24 @@
     <div class="create-group">
       <div class="form-class">
         <label>Group Name</label>
-        <input type="text" name="groupName" value="<%= group ? group.group_name : '' %>" required />
+        <input type="text" name="groupName" value="<%= group.group_name || '' %>" required />
       </div>
       <div class="form-class">
         <label>Group Description</label>
-        <input type="text" name="description" value="<%= group ? group.group_description : '' %>" required />
+        <input type="text" name="description" value="<%= group.group_description || '' %>" required />
       </div>
     </div>
-
     <div class="heading">
       <h3>Select Screens to Create Group</h3>
-      <h3>Selected Screens</h3>
+      <h3>Selected Screen</h3>
     </div>
-
     <div class="selection-screens">
       <div class="select-screen">
         <table>
           <thead>
             <tr>
               <th></th>
-              <th style="display: none;">PAIRING CODE</th>
+              <!-- <th>PAIRING CODE</th> -->
               <th>SCREEN NAME</th>
               <th>SCREEN TAG</th>
               <th>SCREEN LOCATION</th>
@@ -50,16 +49,12 @@
             </tr>
           </thead>
           <tbody>
-            <%# console.log("group : ",group); %>
             <% if (screens && screens.length) { %>
-              <% screens.forEach(screen => { %>
+              <% screens.forEach(screen=> { %>
                 <tr>
-                  <td>
-                   
-                    <input type="checkbox" name="checkbox" onclick="selectScreen(this)"
-                      <% if (group && group.selectedscreens && group.selectedscreens.some(selected => selected.pairingcode === screen.pairingcode)) { %> checked <% } %>
-                    >
-                  </td>
+                  <td><input type="checkbox" name="checkbox" id="checkbox" onclick="selectScreen(this)" <%=
+                    group.selectedscreens.some(selected => selected.screenname === screen.screenname) ? 'checked' : ''
+                  %>></td>
                   <td style="display: none;">
                     <%= screen.pairingcode %>
                   </td>
@@ -76,16 +71,17 @@
                     <%= screen.deleted ? 'Offline' : 'Online' %>
                   </td>
                 </tr>
-              <% }) %>
-            <% } else { %>
-              <tr>
-                <td colspan="6">No screens found</td>
-              </tr>
-            <% } %>
+                <% }) %>
+                  <% } else { %>
+                    <tr>
+                      <td colspan="5">No screens found</td>
+                    </tr>
+                    <% } %>
           </tbody>
         </table>
       </div>
       <div class="selected-screen">
+
         <table id="selectedScreensTable">
           <thead>
             <tr>
@@ -96,29 +92,25 @@
             </tr>
           </thead>
           <tbody>
-            
-            <% if (group && group.selectedscreens && group.selectedscreens.length) { %>
-              <% group.selectedscreens.forEach((screen, index) => { %>
-                <tr>
-                  <td>
-                    <%= index + 1 %>
-                  </td>
-                  <td>
-                    <%= screen.screenname %>
-                  </td>
-                  <td>
-                    <%= screen.tags %>
-                  </td>
-                  <td>
-                    <%= screen.location %>
-                  </td>
-                </tr>
-              <% }) %>
-            <% } else { %>
-              <tr>
-                <td colspan="4">No screens selected</td>
-              </tr>
-            <% } %>
+            <% if (group.selectedscreens) { %>
+                <% group.selectedscreens.forEach((group,index)=> { %>
+                  <tr>
+                    <td>
+                      <%= index+1 %>
+                    </td>
+                    <td>
+                      <%= group.screenname %>
+                    </td>
+                    <td>
+                      <%= group.tags %>
+                    </td>
+                    <td>
+                      <%= group.location %>
+                    </td>
+                   
+                  </tr>
+                  <% }) %>
+                    <% } %>
           </tbody>
         </table>
       </div>
@@ -126,14 +118,8 @@
 
   </div>
 
-  <script>
-    const group = `<%- JSON.stringify(group || {}) %>`;
-  
 
-  </script>
-
-  <script src="/javaScripts/groupScreen.js"></script>
-
+  <script src="/javaScripts/groupScreenEdit.js"></script>
 </body>
 
 </html>

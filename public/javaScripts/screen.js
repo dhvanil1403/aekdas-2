@@ -5,18 +5,16 @@ function hideNewScreen() {
   document.getElementById("overlay").style.display = "none";
 }
 
-function markAsDeleted() {
-  document.querySelectorAll(".delete").forEach((button) => {
-    button.addEventListener("click", async function () {
-      const pairingCode = this.closest("tr").dataset.pairingcode;
+ function markAsDeleted(pairingCode) {
+  
       const confirmDelete = confirm(
         "Are you sure you want to delete this screen?"
       );
       if (confirmDelete) {
-        await handleScreenDeletion(pairingCode);
+         handleScreenDeletion(pairingCode);
       }
-    });
-  });
+    
+  
 }
 
 const handleScreenDeletion = async (pairingCode) => {
@@ -26,24 +24,21 @@ const handleScreenDeletion = async (pairingCode) => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ PairingCode: pairingCode }), // Sending PairingCode in the request body
+      body: JSON.stringify({ pairingCode }), // Correctly sending pairingCode in the request body
     });
 
     if (!response.ok) {
       throw new Error("Network response was not ok.");
     }
 
-    // Remove the row from the DOM
-    const trToDelete = document.querySelector(
-      `tr[data-pairingcode="${pairingCode}"]`
-    );
-    if (trToDelete) {
-      trToDelete.remove();
-    } else {
-      console.error(`Could not find row with Pairing Code ${pairingCode}`);
-    }
+    // const row = document.querySelector(`tr[data-pairingcode="${pairingCode}"]`);
+    // if (row) {
+    //   row.remove();
+    // }
+    window.location.reload();
   } catch (error) {
     console.error("Error deleting screen:", error);
+    alert('Failed to delete screen');
   }
 };
 
@@ -71,97 +66,106 @@ function editScreen(pairingCode) {
 function hideEditScreen() {
   document.getElementById("editOverlay").style.display = "none";
 }
+function showAllScreen() {
+  document.querySelector(".allScreen").classList.add("active");
+  document.querySelector(".allScreen").classList.remove("inactive");
 
+  document.querySelector(".screenGroups").classList.add("inactive");
+  document.querySelector(".screenGroups").classList.remove("active");
+
+  document.querySelector(".deletedScreen").classList.add("inactive");
+  document.querySelector(".deletedScreen").classList.remove("active");
+
+  document.getElementById("show-Screen").style.display = "block";
+  document.getElementById("show-Group-Screen").style.display = "none";
+  document.getElementById("show-Deleted-Screen").style.display = "none";
+}
 function showDeletedScreens() {
-  fetch("/Dashboard/Screens/Deleted-Screen")
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      return response.json();
-    })
-    .then((screens) => {
-      const tableBody = document.querySelector("#show-Deleted-Screen tbody");
-      tableBody.innerHTML = "";
+  document.querySelector(".allScreen").classList.add("inactive");
+  document.querySelector(".allScreen").classList.remove("active");
 
-      screens.forEach((screen) => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-            <td>${screen.pairingcode}</td>
-            <td>${screen.screenname}</td>
-            <td>${screen.tags}</td>
-            <td>${screen.location}</td>
-            <td>${screen.city}</td>
-            <td>${screen.state}</td>
-            <td>${screen.country}</td>
-            <td>${screen.area}</td>
-          `;
-        tableBody.appendChild(row);
-      });
+  document.querySelector(".screenGroups").classList.add("inactive");
+  document.querySelector(".screenGroups").classList.remove("active");
 
-      // Show edit overlay
-      const showDeletedScreens =document.getElementsByClassName('deletedScreen')[0];
-      showDeletedScreens.style.color="white";
-      showDeletedScreens.style.backgroundColor="#0d6efd";
+  document.querySelector(".deletedScreen").classList.add("active");
+  document.querySelector(".deletedScreen").classList.remove("inactive");
 
-      const allScreen =document.getElementsByClassName('allScreen')[0];
-      allScreen.style.backgroundColor="transparent";
-      allScreen.style.color="#0d6efd";
-      
-      const screenGroups =document.getElementsByClassName('screenGroups')[0];
-      screenGroups.style.color="#0d6efd";
-      screenGroups.style.backgroundColor="transparent";
-
-      document.getElementById("show-Deleted-Screen").style.display = "block";
-      document.getElementById("show-Group-Screen").style.display = "none";
-
-      document.getElementById("show-Screen").style.display = "none";
-    })
-    .catch((error) => console.error("Error fetching Deleted screen:", error));
+  document.getElementById("show-Screen").style.display = "none";
+  document.getElementById("show-Group-Screen").style.display = "none";
+  document.getElementById("show-Deleted-Screen").style.display = "block";
 }
 
 function addNewGroup() {
   window.location.href = "/Dashboard/Screens/Groups";
 }
 function showGroupScreen() {
-  console.log("showGroupScreen Clicked");
-  fetch("/Dashboard/Screens/GroupScreen")
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      return response.json();
-    })
-    .then((screens) => {
-      const tableBody = document.querySelector("#show-Group-Screen tbody");
-      tableBody.innerHTML = "";
+  document.querySelector(".allScreen").classList.add("inactive");
+  document.querySelector(".allScreen").classList.remove("active");
 
-      screens.forEach((screen) => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-        <td>${screen.group_name}</td>
-        <td>${screen.group_description}</td>
-        <td>${screen.total_screen}</td>
-      `;
-        tableBody.appendChild(row);
+  document.querySelector(".screenGroups").classList.add("active");
+  document.querySelector(".screenGroups").classList.remove("inactive");
+
+  document.querySelector(".deletedScreen").classList.add("inactive");
+  document.querySelector(".deletedScreen").classList.remove("active");
+
+  document.getElementById("show-Group-Screen").style.display = "block";
+  document.getElementById("show-Screen").style.display = "none";
+  document.getElementById("show-Deleted-Screen").style.display = "none";
+}
+async function restoreScreen(pairingCode) {
+  try {
+    const response = await fetch("/Dashboard/Screens/restore", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ PairingCode: pairingCode }), // Sending PairingCode in the request body
+    });
+
+    const data = await response.json();
+    if (data.success) {
+      // Successfully restored the screen
+      // Remove the row from the DOM
+      const trToDelete = document.querySelector(
+        `tr[data-pairingcode="${pairingCode}"]`
+      );
+      if (trToDelete) {
+        trToDelete.remove();
+        alert('Screen restored successfully');
+      } else {
+        console.error(`Could not find row with Pairing Code ${pairingCode}`);
+      }
+      // Redirect to dashboard/screen
+      window.location.href = '/Dashboard/Screens';
+    } else {
+      // Handle the error
+      alert('Error restoring screen');
+    }
+  } catch (error) {
+    console.error("Error restoring screen:", error);
+  }
+}
+async function deleteGroup(groupName){
+  const confirmDelete = confirm(
+    "Are you sure you want to delete this Group?"
+  );
+  if (confirmDelete) {
+    try {
+      const response = await fetch(`/Dashboard/Screens/Groups/${groupName}`, {
+        method: 'DELETE'
       });
 
-      const screenGroups =document.getElementsByClassName('screenGroups')[0];
-      screenGroups.style.color="white";
-      screenGroups.style.backgroundColor="#0d6efd";
-
-      const allScreen =document.getElementsByClassName('allScreen')[0];
-      allScreen.style.backgroundColor="transparent";
-      allScreen.style.color="#0d6efd";
-
-      const showDeletedScreens =document.getElementsByClassName('deletedScreen')[0];
-      showDeletedScreens.style.color="#0d6efd";
-      showDeletedScreens.style.backgroundColor="transparent";
-
-      document.getElementById("show-Group-Screen").style.display = "block";
-
-      document.getElementById("show-Deleted-Screen").style.display = "none";
-      document.getElementById("show-Screen").style.display = "none";
-    })
-    .catch((error) => console.error("Error fetching group screen:", error));
+      if (response.ok) {
+        location.reload(); // Reload the page to see the updated group list
+      } else {
+        alert('Failed to delete group');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Error deleting group');
+    }
+  }
+}
+function editGroup(groupName){
+ window.location.href = `/Dashboard/Screens/Groups/${groupName}`;
 }

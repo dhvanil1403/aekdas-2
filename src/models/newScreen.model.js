@@ -64,10 +64,23 @@ const updateDeleteScreen = async (pairingCode) => {
       "UPDATE screens SET deleted = true WHERE pairingcode = $1",
       [pairingCode]
     );
-    return result.rows;
+ 
   } catch (err) {
     console.error("Error updating screen:", err);
     res.status(500).send("Error updating screen");
+  }
+};
+
+const restoreScreenInDB = async (pairingCode) => {
+  try {
+    const result = await db.query(
+      "UPDATE screens SET deleted = false WHERE pairingcode = $1",
+      [pairingCode]
+    );
+    return result.rows;
+  } catch (err) {
+    console.error("Error restoring  screen:", err);
+    res.status(500).send("Error restoring  screen");
   }
 };
 
@@ -134,7 +147,7 @@ const getDeletedScreen = async () => {
     );
     return result.rows;
   } catch (err) {
-    console.error("Error occurred at fetching deleted screens:", err);
+    console.error("Error fetching deleted screens:", err);
     throw err;
   }
 };
@@ -142,7 +155,7 @@ const getDeletedScreen = async () => {
 const getGroupScreen=async () => {
 try {
   const result = await db.query(
-    "SELECT * FROM  groupscreen"
+    "SELECT * FROM  groupscreen WHERE deleted=false"
   );
   return result.rows;
 } catch (err) {
@@ -150,6 +163,7 @@ try {
   throw err;
 }}
 module.exports = {
+  restoreScreenInDB,
   newScreen,
   screenByPairingCode,
   getAllScreens,
