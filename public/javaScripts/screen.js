@@ -55,7 +55,7 @@ function editScreen(pairingCode) {
       document.getElementById("editCity").value = screen.city;
       document.getElementById("editState").value = screen.state;
       document.getElementById("editCountry").value = screen.country;
-      document.getElementById("editArea").value = screen.area;
+      document.getElementById("editPincode").value = screen.pincode;
 
       // Show edit overlay
       document.getElementById("editOverlay").style.display = "flex";
@@ -119,7 +119,7 @@ async function restoreScreen(pairingCode) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ PairingCode: pairingCode }), // Sending PairingCode in the request body
+      body: JSON.stringify({ pairingCode: pairingCode }), // Sending PairingCode in the request body
     });
 
     const data = await response.json();
@@ -169,3 +169,39 @@ async function deleteGroup(groupName){
 function editGroup(groupName){
  window.location.href = `/Dashboard/Screens/Groups/${groupName}`;
 }
+
+function filterScreens() {
+  // Get input element and filter value
+  var input = document.getElementById('searchInput');
+  var filter = input.value.toUpperCase();
+
+  // Get table rows
+  var rows = document.querySelectorAll("#show-Screen table tbody tr");
+
+  // Loop through all table rows, and hide those that don't match the search query
+  rows.forEach(function(row) {
+    var pairingCode = row.querySelector('td[id^="screen.pairingcode"]').textContent.toUpperCase();
+    var screenName = row.querySelector('td[id^="screen.screenname"]').textContent.toUpperCase();
+    var status = row.querySelector('td[id^="screen.status"]').textContent.toUpperCase();
+    var tags = row.querySelector('td[id^="screen.tags"]').textContent.toUpperCase();
+    var location = row.querySelector('td[id^="screen.location"]').textContent.toUpperCase();
+    var city = row.querySelector('td[id^="screen.city"]').textContent.toUpperCase();
+    var pincode = row.querySelector('td[id^="screen.pincode"]').textContent.toUpperCase();
+
+    if (pairingCode.indexOf(filter) > -1 ||
+        screenName.indexOf(filter) > -1 ||
+        status.indexOf(filter) > -1 ||
+        tags.indexOf(filter) > -1 ||
+        location.indexOf(filter) > -1 ||
+        city.indexOf(filter) > -1 ||
+        pincode.indexOf(filter) > -1) {
+      row.style.display = "";
+    } else {
+      row.style.display = "none";
+
+    }
+  });
+}
+
+// Bind the filterScreens function to the input event
+document.getElementById('searchInput').addEventListener('input', filterScreens);

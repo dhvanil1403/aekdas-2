@@ -38,13 +38,13 @@
 
     <div class="selection-screens">
       <div class="select-screen">
+        <input type="search" id="searchInput" placeholder="Search">
         <table>
           <thead>
             <tr>
               <th></th>
-              <th style="display: none;">PAIRING CODE</th>
+              <th>PAIRING CODE</th>
               <th>SCREEN NAME</th>
-              <th>SCREEN TAG</th>
               <th>SCREEN LOCATION</th>
               <th>STATUS</th>
             </tr>
@@ -54,26 +54,23 @@
             <% if (screens && screens.length) { %>
               <% screens.forEach(screen => { %>
                 <tr>
-                  <td>
-                   
+                  <td>                  
                     <input type="checkbox" name="checkbox" onclick="selectScreen(this)"
                       <% if (group && group.selectedscreens && group.selectedscreens.some(selected => selected.pairingcode === screen.pairingcode)) { %> checked <% } %>
                     >
                   </td>
-                  <td style="display: none;">
+                  <td id="screen.pairingcode">
                     <%= screen.pairingcode %>
                   </td>
-                  <td>
+                  <td id="screen.screenname">
                     <%= screen.screenname %>
                   </td>
-                  <td>
-                    <%= screen.tags %>
-                  </td>
-                  <td>
+                  
+                  <td id="screen.location">
                     <%= screen.location %>
                   </td>
-                  <td>
-                    <%= screen.deleted ? 'Offline' : 'Online' %>
+                  <td id="screen.status" class="status-cell ">                  
+                      <span class="<%= screen.deleted ? 'offline' : 'online' %>"><%= screen.deleted ? 'Offline' : 'Online' %></span>                  
                   </td>
                 </tr>
               <% }) %>
@@ -128,8 +125,6 @@
 
   <script>
     const group = `<%- JSON.stringify(group || {}) %>`;
-  
-
   </script>
 
   <script src="/javaScripts/groupScreen.js"></script>

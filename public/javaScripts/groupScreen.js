@@ -1,6 +1,8 @@
 // Function to go back to the previous screen
 function goBack() {
-  window.location.href = "/Dashboard/Screens";
+  if (confirm("Are you sure you want to discard changes and go back?")) {
+    window.location.href = "/Dashboard/Screens";
+  }
 }
 
 // Initialize selectedscreens array
@@ -75,6 +77,9 @@ async function saveGroup() {
     return;
   }
 
+  if (!window.confirm("Are you sure you want to save these details?")) {
+    return; // If user cancels, do nothing
+  }
   const data = {
     group_name: groupName,
     group_description: description,
@@ -103,3 +108,35 @@ async function saveGroup() {
     // Optionally, you can show an error message to the user
   }
 }
+function filterScreens() {
+  // Get input element and filter value
+  var input = document.getElementById('searchInput');
+  var filter = input.value.toUpperCase();
+
+  // Get table rows
+  var rows = document.querySelectorAll(".select-screen table tbody tr");
+
+  // Loop through all table rows, and hide those that don't match the search query
+  rows.forEach(function(row) {
+    var pairingCode = row.querySelector('td[id^="screen.pairingcode"]').textContent.toUpperCase();
+    var screenName = row.querySelector('td[id^="screen.screenname"]').textContent.toUpperCase();
+   
+    var location = row.querySelector('td[id^="screen.location"]').textContent.toUpperCase();
+    var status = row.querySelector('td[id^="screen.status"]').textContent.toUpperCase();
+  
+
+    if (pairingCode.indexOf(filter) > -1 ||
+        screenName.indexOf(filter) > -1 ||
+        status.indexOf(filter) > -1 ||
+        location.indexOf(filter) > -1 
+        ) {
+      row.style.display = "";
+    } else {
+      row.style.display = "none";
+
+    }
+  });
+}
+
+// Bind the filterScreens function to the input event
+document.getElementById('searchInput').addEventListener('input', filterScreens);

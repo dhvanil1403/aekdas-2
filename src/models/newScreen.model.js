@@ -1,19 +1,19 @@
 const db = require("../config/dbConnection");
 
 const newScreen = async (
-  PairingCode,
-  ScreenName,
-  Tags,
-  Location,
-  City,
-  State,
-  Country,
-  Area
+  pairingCode,
+  screenName,
+  tags,
+  location,
+  city,
+  state,
+  country,
+  pincode
 ) => {
   try {
     const result = await db.query(
-      "INSERT INTO screens (PairingCode,ScreenName,Tags,Location,City,State,Country,Area) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)",
-      [PairingCode, ScreenName, Tags, Location, City, State, Country, Area]
+      "INSERT INTO screens (PairingCode,ScreenName,Tags,Location,City,State,Country,Pincode) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)",
+      [pairingCode, screenName, tags, location, city, state, country, pincode]
     );
 
     return result.rows;
@@ -23,11 +23,11 @@ const newScreen = async (
   }
 };
 
-const screenByPairingCode = async (PairingCode) => {
+const screenByPairingCode = async (pairingCode) => {
   try {
     const result = await db.query(
       "SELECT * FROM screens WHERE PairingCode=$1",
-      [PairingCode]
+      [pairingCode]
     );
     return result.rows;
   } catch (err) {
@@ -38,7 +38,7 @@ const screenByPairingCode = async (PairingCode) => {
 
 const getAllScreens = async () => {
   try {
-    const result = await db.query("SELECT * FROM screens");
+    const result = await db.query("SELECT * FROM screens ORDER BY id DESC");
     return result.rows;
   } catch (err) {
     console.error("Error occurred at fetching all screens:", err);
@@ -85,19 +85,19 @@ const restoreScreenInDB = async (pairingCode) => {
 };
 
 const editScreen = async (
-  PairingCode,
-  ScreenName,
-  Tags,
-  Location,
-  City,
-  State,
-  Country,
-  Area
+  pairingCode,
+  screenName,
+  tags,
+  location,
+  city,
+  state,
+  country,
+  pincode
 ) => {
   try {
     const result = await db.query(
-      "UPDATE screens SET screenname = $2, tags = $3, location = $4, city = $5, state = $6, country = $7, Area = $8 WHERE pairingcode = $1",
-      [PairingCode, ScreenName, Tags, Location, City, State, Country, Area]
+      "UPDATE screens SET screenname = $2, tags = $3, location = $4, city = $5, state = $6, country = $7, pincode = $8 WHERE pairingcode = $1",
+      [pairingCode, screenName, tags, location, city, state, country, pincode]
     );
     return result.rows;
   } catch (err) {

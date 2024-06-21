@@ -43,6 +43,7 @@
           <button class="deletedScreen" onclick="showDeletedScreens()">Deleted Screens</button>
         </div>
         <div class="screen-btn-2">
+          <input type="search" id="searchInput" placeholder="Search">
           <button class="newScreen-btn" onclick="addNewScreen()">
             <span>+</span>New Screen
           </button>
@@ -140,36 +141,36 @@
               <form action="/Dashboard/Screens" method="post">
                 <div class="form-class">
                   <label>Pairing Code</label>
-                  <input type="text" name="PairingCode" required />
+                  <input type="text" name="pairingCode" required />
                 </div>
                 <div class="form-class">
                   <label>Screen Name</label>
-                  <input type="text" name="ScreenName" required />
+                  <input type="text" name="screenName" required />
                 </div>
                 <div class="form-class">
                   <label>Tags</label>
-                  <input type="text" name="Tags" required />
+                  <input type="text" name="tags" required />
                 </div>
                 <div class="form-class">
                   <label>Enter Location</label>
-                  <input type="text" name="Location" required />
+                  <input type="text" name="location" required />
                 </div>
                 <div class="location">
                   <div class="form-class">
                     <label>City</label>
-                    <input type="text" name="City" required />
+                    <input type="text" name="city" required />
                   </div>
                   <div class="form-class">
                     <label>State</label>
-                    <input type="text" name="State" required />
+                    <input type="text" name="state" required />
                   </div>
                   <div class="form-class">
                     <label>Country</label>
-                    <input type="text" name="Country" required />
+                    <input type="text" name="country" required />
                   </div>
                   <div class="form-class">
-                    <label>Area</label>
-                    <input type="text" name="Area" required />
+                    <label>Pincode</label>
+                    <input type="text" name="pincode" required />
                   </div>
                 </div>
                 <div class="form-class pairScreen-btn">
@@ -194,12 +195,11 @@
                 <tr>
                   <th>Pairing Code</th>
                   <th>Screen Name</th>
+                  <th>Status</th>
                   <th>Tags</th>
                   <th>Location</th>
                   <th>City</th>
-                  <th>State</th>
-                  <th>Country</th>
-                  <th>Area</th>
+                  <th>Pincode</th>
                   <th>Action</th>
                 </tr>
               </thead>
@@ -214,6 +214,11 @@
                       <td id="screen.screenname">
                         <%= screen.screenname %>
                       </td>
+                      <td id="screen.status" class="status-cell ">
+                        <p class="<%= screen.deleted ? 'offline' : 'online' %>">
+                          <%= screen.deleted ? 'Offline' : 'Online' %>
+                        </p>
+                      </td>
                       <td id="screen.tags">
                         <%= screen.tags %>
                       </td>
@@ -223,14 +228,8 @@
                       <td id="screen.city">
                         <%= screen.city %>
                       </td>
-                      <td id="screen.state">
-                        <%= screen.state %>
-                      </td>
-                      <td id="screen.country">
-                        <%= screen.country %>
-                      </td>
-                      <td id="screen.area">
-                        <%= screen.area %>
+                      <td id="screen.pincode">
+                        <%= screen.pincode %>
                       </td>
                       <td>
                         <div class="action">
@@ -295,36 +294,36 @@
                   <form id="editScreenForm" action="/Dashboard/Screens/edit-screen" method="post">
                     <div class="form-class">
                       <label>Pairing Code</label>
-                      <input type="text" id="editPairingCode" name="PairingCode" required readonly />
+                      <input type="text" id="editPairingCode" name="pairingCode" required readonly />
                     </div>
                     <div class="form-class">
                       <label>Screen Name</label>
-                      <input type="text" id="editScreenName" name="ScreenName" required />
+                      <input type="text" id="editScreenName" name="screenName" required />
                     </div>
                     <div class="form-class">
                       <label>Tags</label>
-                      <input type="text" id="editTags" name="Tags" required />
+                      <input type="text" id="editTags" name="tags" required />
                     </div>
                     <div class="form-class">
                       <label>Enter Location</label>
-                      <input type="text" id="editLocation" name="Location" required />
+                      <input type="text" id="editLocation" name="location" required />
                     </div>
                     <div class="location">
                       <div class="form-class">
                         <label>City</label>
-                        <input type="text" id="editCity" name="City" required />
+                        <input type="text" id="editCity" name="city" required />
                       </div>
                       <div class="form-class">
                         <label>State</label>
-                        <input type="text" id="editState" name="State" required />
+                        <input type="text" id="editState" name="state" required />
                       </div>
                       <div class="form-class">
                         <label>Country</label>
-                        <input type="text" id="editCountry" name="Country" required />
+                        <input type="text" id="editCountry" name="country" required />
                       </div>
                       <div class="form-class">
-                        <label>Area</label>
-                        <input type="text" id="editArea" name="Area" required />
+                        <label>Pincode</label>
+                        <input type="text" id="editPincode" name="pincode" required />
                       </div>
                     </div>
                     <div class="form-class pairScreen-btn">
@@ -344,12 +343,11 @@
                 <tr>
                   <th>Pairing Code</th>
                   <th>Screen Name</th>
+                  <th>Status</th>
                   <th>Tags</th>
                   <th>Location</th>
                   <th>City</th>
-                  <th>State</th>
-                  <th>Country</th>
-                  <th>Area</th>
+                  <th>Pincode</th>
                   <th>Action</th>
                 </tr>
               </thead>
@@ -364,6 +362,11 @@
                       <td>
                         <%= deletedScreen.screenname %>
                       </td>
+                      <td class="status-cell">
+                        <p class="<%= deletedScreen.deleted ? 'offline' : 'online' %>">
+                          <%= deletedScreen.deleted ? 'Offline' : 'Online' %>
+                        </p>
+                      </td>
                       <td>
                         <%= deletedScreen.tags %>
                       </td>
@@ -374,13 +377,7 @@
                         <%= deletedScreen.city %>
                       </td>
                       <td>
-                        <%= deletedScreen.state %>
-                      </td>
-                      <td>
-                        <%= deletedScreen.country %>
-                      </td>
-                      <td>
-                        <%= deletedScreen.area %>
+                        <%= deletedScreen.pincode %>
                       </td>
                       <td>
                         <div class="action">

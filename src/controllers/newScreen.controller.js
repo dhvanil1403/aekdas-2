@@ -5,17 +5,17 @@ dotenv.config();
 
 const addScreen = async (req, res) => {
   const {
-    PairingCode,
-    ScreenName,
-    Tags,
-    Location,
-    City,
-    State,
-    Country,
-    Area,
+    pairingCode,
+    screenName,
+    tags,
+    location,
+    city,
+    state,
+    country,
+    pincode,
   } = req.body;
   try {
-    if (PairingCode.length > 6) {
+    if (pairingCode.length > 6) {
       return res.render("Screen", {
         message:
           "Your pairing code is incorrect. It must be 6 characters or less.",
@@ -28,9 +28,9 @@ const addScreen = async (req, res) => {
       });
     }
 
-    const existingScreen = await screen.screenByPairingCode(PairingCode);
+    const existingScreen = await screen.screenByPairingCode(pairingCode);
     if (existingScreen.length > 0) {
-      const allScreens = await screen.getNotdeletedScreen();
+      const allScreens = await screen.getAllScreens();
       const screenCount = await screen.getTotalScreenCount();
       const onlineScreen = await screen.getNotDeletedScreenCount();
       const offlineScreen = await screen.getDeletedScreenCount();
@@ -49,19 +49,19 @@ const addScreen = async (req, res) => {
     }
 
     await screen.newScreen(
-      PairingCode,
-      ScreenName,
-      Tags,
-      Location,
-      City,
-      State,
-      Country,
-      Area
+      pairingCode,
+      screenName,
+      tags,
+      location,
+      city,
+      state,
+      country,
+      pincode
     );
     const screenCount = await screen.getTotalScreenCount();
     const onlineScreen = await screen.getNotDeletedScreenCount();
     const offlineScreen = await screen.getDeletedScreenCount();
-    const allScreens = await screen.getNotdeletedScreen();
+    const allScreens = await screen.getAllScreens();
     const deletedScreens = await screen.getDeletedScreen(); // Fetch deleted screens
     const groupscreen = await screen.getGroupScreen();
 
@@ -74,8 +74,8 @@ const addScreen = async (req, res) => {
       deletedScreens,
       groupscreen,
     });
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     res.status(500).send("Add Screen error");
   }
 };
@@ -83,33 +83,35 @@ const addScreen = async (req, res) => {
 const getAllScreens = async (req, res) => {
   try {
     const allScreens = await screen.getAllScreens(); // Fetch all screens
-    res.render("Screen", { message: null, screens: allScreens });
-  } catch (err) {
-    console.error("Error fetching all screens:", err);
+    const onlineScreen = await screen.getNotDeletedScreenCount();
+    const screenCount = await screen.getTotalScreenCount();
+    const offlineScreen = await screen.getDeletedScreenCount();
+    const deletedScreens = await screen.getDeletedScreen(); // Fetch deleted screens
+    const groupscreen = await screen.getGroupScreen();
+    res.render("Screen", {
+      message: null,
+      screens: allScreens,
+      screenCount,
+      onlineScreen,
+      offlineScreen,deletedScreens,
+      groupscreen,
+    });
+  } catch (error) {
+    console.error("Error fetching all screens:", error);
     res.status(500).send("Error fetching screens");
   }
 };
 
 const getNotdeletedScreen = async (req, res) => {
   try {
-    const screenCount = await screen.getTotalScreenCount();
-    const onlineScreen = await screen.getNotDeletedScreenCount();
-    const offlineScreen = await screen.getDeletedScreenCount();
     const notDeletedScreen = await screen.getNotdeletedScreen(); // Fetch not deleted screens
-    const deletedScreens = await screen.getDeletedScreen(); // Fetch deleted screens
-    const groupscreen = await screen.getGroupScreen();
 
     res.render("Screen", {
       message: null,
       screens: notDeletedScreen,
-      screenCount,
-      onlineScreen,
-      offlineScreen,
-      deletedScreens,
-      groupscreen,
     });
-  } catch (err) {
-    console.error("Error fetching screens:", err);
+  } catch (error) {
+    console.error("Error fetching screens:", error);
     res.status(500).send("Error fetching screens");
   }
 };
@@ -120,34 +122,34 @@ const updateDeleteScreen = async (req, res) => {
   try {
     await screen.updateDeleteScreen(pairingCode);
     res.sendStatus(204); // No Content status code indicates successful deletion
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     res.status(500).send("Error deleting screen");
   }
 };
 
 const editScreen = async (req, res) => {
   const {
-    PairingCode,
-    ScreenName,
-    Tags,
-    Location,
-    City,
-    State,
-    Country,
-    Area,
+    pairingCode,
+    screenName,
+    tags,
+    location,
+    city,
+    state,
+    country,
+    pincode,
   } = req.body;
 
   try {
     await screen.editScreen(
-      PairingCode,
-      ScreenName,
-      Tags,
-      Location,
-      City,
-      State,
-      Country,
-      Area
+      pairingCode,
+      screenName,
+      tags,
+      location,
+      city,
+      state,
+      country,
+      pincode
     );
     const offlineScreen = await screen.getDeletedScreenCount();
     const deletedScreens = await screen.getDeletedScreen(); // Fetch deleted screens
@@ -155,10 +157,10 @@ const editScreen = async (req, res) => {
 
     const screenCount = await screen.getTotalScreenCount();
     const onlineScreen = await screen.getNotDeletedScreenCount();
-    const notDeletedScreens = await screen.getNotdeletedScreen(); // Fetch updated not deleted screens
+    const allScreens = await screen.getAllScreens(); // Fetch updated not deleted screens
     res.render("Screen", {
       message: "Screen edited successfully",
-      screens: notDeletedScreens,
+      screens: allScreens,
       offlineScreen,
       screenCount,
       onlineScreen,
@@ -179,39 +181,18 @@ const screenByPairingCode = async (req, res) => {
       return res.status(404).json({ message: "Screen not found" });
     }
     res.json(screenData[0]);
-  } catch (err) {
-    console.error("Error fetching screen:", err);
+  } catch (error) {
+    console.error("Error fetching screen:", error);
     res.status(500).send("Error fetching screen");
   }
 };
 
-// const getDeletedScreens = async (req, res) => {
-//   try {
-//     const deletedScreens = await screen.getDeletedScreen();
-//     res.json(deletedScreens);
-//   } catch (err) {
-//     console.error('Error fetching deleted screens:', err);
-//     res.status(500).json({ error: 'Error fetching deleted screens' });
-//   }
-// };
-// const showGroupScreen = async (req, res) => {
-//   try {
-//     const screenCount = await screen.getTotalScreenCount();
-//     const onlineScreen = await screen.getNotDeletedScreenCount();
-//     const offlineScreen = await screen.getDeletedScreenCount();
-//     const allScreens = await screen.getGroupScreen();
-//     // res.render("Screen", { message: null, screens: allScreens,screenCount,onlineScreen,offlineScreen });
-//     res.json(allScreens);
-//   } catch (err) {
-//     console.error("Error fetching all group screens:", err);
-//     res.status(500).send("Error fetching  group screens");
-//   }
-// };
+
 
 const restoreScreen = async (req, res) => {
-  const { PairingCode } = req.body;
+  const { pairingCode } = req.body;
   try {
-    const restoredScreen = await screen.restoreScreenInDB(PairingCode);
+    const restoredScreen = await screen.restoreScreenInDB(pairingCode);
     res.json({ success: true, screen: restoredScreen });
   } catch (error) {
     console.log(error);

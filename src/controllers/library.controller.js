@@ -1,6 +1,9 @@
 const library = require("../models/library.model");
 
 const handleUploadInDB = async (req, res) => {
+  if(!req.file){
+    return res.status(400).send("No file upladed");
+  }
   const fileUrl = req.file.path;
   const fileType = req.file.mimetype;
   try {

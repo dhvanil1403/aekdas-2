@@ -4,7 +4,7 @@ const screen = require("../controllers/newScreen.controller");
 const groupRouter = require("./groupsRoutes");
 
 // GET all not deleted screens
-router.route("/").get(screen.getNotdeletedScreen).post(screen.addScreen);
+router.route("/").get(screen.getAllScreens).post(screen.addScreen);
 
 // Group screen route
 // router.get("/GroupScreen", screen.showGroupScreen);
@@ -20,7 +20,7 @@ router
 router
   .route("/restore")
   .post(screen.restoreScreen)
-  .get(screen.getNotdeletedScreen);
+  .get(screen.getAllScreens)
 
 // GET all deleted screens
 // router.get('/Deleted-Screen', screen.getDeletedScreens);
@@ -32,6 +32,6 @@ router.get("/:pairingCode", screen.screenByPairingCode);
 router
   .route("/edit-screen")
   .post(screen.editScreen)
-  .get(screen.getNotdeletedScreen);
+  
 
 module.exports = router;
