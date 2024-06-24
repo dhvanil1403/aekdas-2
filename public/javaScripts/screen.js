@@ -178,6 +178,8 @@ function filterScreens() {
   // Get table rows
   var rows = document.querySelectorAll("#show-Screen table tbody tr");
 
+  // Variable to keep track of the number of visible rows
+  var visibleRowCount = 0;
   // Loop through all table rows, and hide those that don't match the search query
   rows.forEach(function(row) {
     var pairingCode = row.querySelector('td[id^="screen.pairingcode"]').textContent.toUpperCase();
@@ -196,11 +198,17 @@ function filterScreens() {
         city.indexOf(filter) > -1 ||
         pincode.indexOf(filter) > -1) {
       row.style.display = "";
+      visibleRowCount++;
     } else {
       row.style.display = "none";
-
     }
   });
+  var noResultsMessage = document.getElementById('noResultsMessage');
+  if (visibleRowCount === 0) {
+    noResultsMessage.style.display = "block";
+  } else {
+    noResultsMessage.style.display = "none";
+  }
 }
 
 // Bind the filterScreens function to the input event
