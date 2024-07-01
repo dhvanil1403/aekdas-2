@@ -1,23 +1,27 @@
 const db = require("../config/dbConnection");
 
-const uploadMediaInDB = async (fileUrl, fileType) => {
-  try {
-    const result = await db.query(
-      "INSERT INTO mediafiles (url,type) VALUES ($1,$2)",
-      [fileUrl, fileType]
-    );
+const uploadMediaInDB = async (fileUrl, fileType,fileName,duration,fileSizeMB) => {
 
+  console.log("fileSizeMB",fileSizeMB);
+  const query = fileType.startsWith("video/") ?
+  'INSERT INTO mediafiles (url, type, filename, duration, size) VALUES ($1, $2, $3, $4, $5)' :
+  'INSERT INTO mediafiles (url, type, filename, size) VALUES ($1, $2, $3, $4)';
+
+const values = fileType.startsWith("video/") ?
+  [fileUrl, fileType, fileName, duration, fileSizeMB] :
+  [fileUrl, fileType, fileName, fileSizeMB];
+
+try {
+const result=  await db.query(query, values);
     return result.rows;
   } catch (err) {
     console.error("Error occur uploading files in database:", err);
     throw err;
   }
 };
-
-
 const viewMedia = async () => {
   try {
-    const result = await db.query("SELECT * FROM mediafiles");
+    const result = await db.query("SELECT * FROM mediafiles ORDER BY id DESC");
     return result.rows;
   } catch (err) {
     console.error("error occur viewing files from database:", err);
@@ -25,25 +29,32 @@ const viewMedia = async () => {
   }
 };
 
-const getPhotoes=async()=>{
+const getPhotoes = async () => {
   try {
-    const result = await db.query("SELECT * FROM mediafiles WHERE type LIKE 'image/%';");
+    const result = await db.query(
+      "SELECT * FROM mediafiles WHERE type LIKE 'image/%' ORDER BY id DESC;"
+    );
     return result.rows;
   } catch (err) {
-    console.error("error occur viewing  photoes images files from database:", err);
+    console.error(
+      "error occur viewing  photoes images files from database:",
+      err
+    );
     throw err;
   }
 };
 
-const getVideos=async()=>{
+const getVideos = async () => {
   try {
-    const result = await db.query("SELECT * FROM mediafiles WHERE type LIKE 'video/%';");
+    const result = await db.query(
+      "SELECT * FROM mediafiles WHERE type LIKE 'video/%' ORDER BY id DESC;"
+    );
     return result.rows;
   } catch (err) {
     console.error("error occur viewing videos from database:", err);
     throw err;
   }
-}
+};
 
 const getmediafileCount = async () => {
   try {
@@ -59,5 +70,5 @@ module.exports = {
   viewMedia,
   getPhotoes,
   getVideos,
-  getmediafileCount
+  getmediafileCount,
 };

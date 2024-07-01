@@ -4,6 +4,7 @@ const {dashboardAuth}= require('../controllers/userLogin.controller')
 const teamRouter=require('./TeamsRoutes');
 const screenRouter=require('./screensRoutes');
 const libraryRouter=require('./libraryRoutes');
+const playlistRouter=require('./playlistRoutes');
 
 
 router.use(dashboardAuth)
@@ -14,4 +15,6 @@ router.get("/",  (req, res) => {
 router.use("/Screens",screenRouter);
 router.use("/Teams", teamRouter);
 router.use("/Library", libraryRouter);
+router.use("/Playlist", playlistRouter );
+
 module.exports = router;

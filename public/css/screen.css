@@ -14,7 +14,7 @@
   background: #ffffff;
   border-radius: 15px;
   padding: 5px 20px;
-  font-family: Gilroy-Regular;
+  /* font-family: Gilroy-Regular; */
   font-size: 14px;
   font-weight: 500;
   line-height: 16.8px;
@@ -27,8 +27,8 @@
   justify-content: space-between;
   gap: 40px;
   margin-top: 2%;
-  font-family: Gilroy-Medium;
-  font-size: 20px;
+  /* font-family: Gilroy; */
+  font-size: 18px;
   font-weight: 500;
   line-height: 36px;
   color: #202224;
@@ -83,7 +83,7 @@
 .allScreen {
   padding: 10px 20px;
   background: #0d6efd;
-  font-family: Gilroy-SemiBold;
+  /* font-family: Gilroy-SemiBold; */
   font-size: 16px;
   font-weight: 400;
   line-height: 19.6px;
@@ -96,7 +96,7 @@
 .deletedScreen {
   border: 1px solid #0d6efd;
   padding: 10px 20px;
-  font-family: Gilroy-SemiBold;
+  /* font-family: Gilroy-SemiBold; */
   font-size: 16px;
   font-weight: 400;
   line-height: 19.6px;
@@ -124,10 +124,10 @@
   background: #d9d9d9;
   box-shadow: 0px 2px 3px 0px #00000040;
   padding: 10px 20px;
-  font-family: Gilroy-SemiBold;
+  /* font-family: Gilroy-SemiBold; */
   font-size: 16px;
   font-weight: 600;
-  color: #202224;
+  color: #252627;
   border-radius: 30px;
 }
 .newScreen-btn:hover,

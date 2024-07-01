@@ -6,21 +6,19 @@ const multer = require("multer");
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: async (req, file) => {
+    console.log("file",file);
     let folder = "others";
     if (file.mimetype.startsWith("image/")) {
-     
       folder = "images";
     }
     if (file.mimetype.startsWith("video/")) {
-    
       folder = "videos";
     }
-    
     return {
       folder: folder,
-      resource_type: file.mimetype.startsWith('video/') ? 'video' : 'auto',
+      resource_type: file.mimetype.startsWith("video/") ? "video" : "auto",
       format: file.mimetype.split("/")[1], // Use the file extension from MIME type
-      public_id: file.originalname.split(".")[0], // Use original file name without extension
+       public_id: file.originalname.split(".")[0], // Use original file name without extension
     };
   },
 });
@@ -28,9 +26,8 @@ const storage = new CloudinaryStorage({
 // Configure Multer upload middleware
 const upload = multer({
   storage: storage,
- 
+
   fileFilter: (req, file, cb) => {
-   
     const allowedTypes = [
       "image/jpg",
       "image/jpeg",

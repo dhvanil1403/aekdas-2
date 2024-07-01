@@ -7,7 +7,6 @@ document.getElementById("fileInput").addEventListener("change", function () {
 });
 
 const buttons = document.querySelectorAll(".media-category button");
-
     buttons.forEach(button => {
       const link = button.querySelector("a");
       button.addEventListener("click", function(event) {
