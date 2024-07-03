@@ -1,26 +1,49 @@
 document.addEventListener("DOMContentLoaded", function () {
-  const buttons = document.querySelectorAll(".media-category button");
-  //  console.log(buttons); // Check if buttons are correctly selected
+  const screenID = sessionStorage.getItem("screenID");
+  const playlistName = sessionStorage.getItem("playlistName");
+  const playlistDescription = sessionStorage.getItem("playlistDescription");
+  window.screenID = screenID;
+  window.playlistName = playlistName;
+  window.playlistDescription = playlistDescription;
 
-  function sendSelectedItemsToBackend() {
-    fetch('/Dashboard/Playlist/createVideos', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ items: selectedItems }),
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log('Videos created:', data);
-      // Handle response from backend if necessary
-    })
-    .catch(error => {
-      console.error('Error creating videos:', error);
+  // Optionally, you can display these values on the page if needed
+  // console.log("screenID:", screenID);
+  // console.log("Playlist Name:", playlistName);
+  // console.log("Playlist Description:", playlistDescription);
+
+  async function sendSelectedItemsToBackend() {
+    //const selectedItems = []; // Ensure this array contains the selected items
+    // console.log("Playlist selectedIems:", selectedItems);
+    try {
+      const response = await fetch("/Dashboard/Playlist/createPlaylist", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          screenID: window.screenID,
+          urls: selectedItems,
+          playlistName: window.playlistName,
+          playlistDescription: window.playlistDescription,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to create playlist");
+      }
+      // If response is okay, show success message
+      const responseData = await response.json();
+      console.log("Playlist created:", responseData.playlist);
+      alert("Playlist created successfully!");
+    } catch (error) {
+      console.error("Error creating videos:", error);
       // Handle errors if any
-    });
+      alert("Failed to create playlist. Please try again.");
+    }
   }
+
   window.sendSelectedItemsToBackend = sendSelectedItemsToBackend;
+
+  const buttons = document.querySelectorAll(".media-category button");
   buttons.forEach((button) => {
     const link = button.querySelector("a");
     // console.log(link); // Check the links
@@ -85,6 +108,12 @@ document.addEventListener("DOMContentLoaded", function () {
           const img = document.createElement("img");
           img.src = item.src;
           img.classList.add("slider-item");
+          img.setAttribute(
+            "data-layout-name",
+            item.getAttribute("data-layout-name")
+          );
+          img.setAttribute("data-duration", item.getAttribute("data-duration"));
+          img.setAttribute("data-size", item.getAttribute("data-size"));
           imgSlider.appendChild(img);
           selectedItems.push(item.src);
           itemsCount++;
@@ -95,6 +124,19 @@ document.addEventListener("DOMContentLoaded", function () {
           const source = document.createElement("source");
           source.src = item.querySelector("source").src;
           source.type = item.querySelector("source").type;
+          source.setAttribute(
+            "data-layout-name",
+            item.querySelector("source").getAttribute("data-layout-name")
+          );
+          source.setAttribute(
+            "data-duration",
+            item.querySelector("source").getAttribute("data-duration")
+          );
+          source.setAttribute(
+            "data-size",
+            item.querySelector("source").getAttribute("data-size")
+          );
+
           video.appendChild(source);
           imgSlider.appendChild(video);
           selectedItems.push(source.src);
@@ -106,27 +148,138 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
+  const layoutNameInput = document.getElementById("layout-name");
+  const durationInput = document.getElementById("duration");
+  const sizeInput = document.getElementById("size");
+  let selectedElement = null;
   imgSlider.addEventListener("click", function (event) {
     const target = event.target;
-    imgPreview.innerHTML = ""; // Clear previous content
-
-    if (target.tagName.toLowerCase() === "img") {
-      const img = document.createElement("img");
-      img.src = target.src;
-      img.classList.add("preview-item");
-      imgPreview.appendChild(img);
-    } else if (target.tagName.toLowerCase() === "video") {
-      const video = document.createElement("video");
-      video.controls = true;
-      video.classList.add("preview-item");
-      const source = document.createElement("source");
-      source.src = target.querySelector("source").src;
-      source.type = target.querySelector("source").type;
-      video.appendChild(source);
-      imgPreview.appendChild(video);
+    if (target.classList.contains("slider-item")) {
+      imgPreview.innerHTML = ""; // Clear previous content
+      if (selectedElement) {
+        selectedElement.style.border = ""; // Reset to original
+      }
+      target.style.borderColor = "#0D6EFD";
+      selectedElement = target; //
+      let layoutName, duration, size;
+      if (target.tagName.toLowerCase() === "img") {
+        const img = document.createElement("img");
+        img.src = target.src;
+        img.classList.add("preview-item");
+        layoutName = target.getAttribute("data-layout-name");
+        duration = target.getAttribute("data-duration");
+        size = target.getAttribute("data-size");
+        imgPreview.appendChild(img);
+      } else if (target.tagName.toLowerCase() === "video") {
+        const video = document.createElement("video");
+        video.controls = true;
+        video.classList.add("preview-item");
+        const source = document.createElement("source");
+        source.src = target.querySelector("source").src;
+        source.type = target.querySelector("source").type;
+        video.appendChild(source);
+        imgPreview.appendChild(video);
+        const sourceElement = target.querySelector("source");
+        layoutName = sourceElement.getAttribute("data-layout-name");
+        duration = sourceElement.getAttribute("data-duration");
+        size = sourceElement.getAttribute("data-size");
+      }
+      layoutNameInput.value = layoutName;
+      durationInput.value = duration;
+      sizeInput.value = size;
     }
   });
 
-
-
+  let currentVideoIndex = 0; // Track current video index
+  let isPlaying = false; // Track if a video is currently playing
+  
+  // Function to create video elements with autoplay
+  function createVideoElement(url) {
+      const video = document.createElement('video');
+      video.src = url;
+      video.controls = false;
+      video.autoplay = false; // Autoplay set to false initially
+      video.style.display = 'none'; // Hide video initially
+      return video;
+  }
+  
+  // Function to play the next video in sequence
+  function playNextVideo() {
+      if (currentVideoIndex < selectedItems.length) {
+          const videoElement = createVideoElement(selectedItems[currentVideoIndex]);
+          const videoContainer = document.getElementById('videoContainer');
+  
+          // Append new video element without clearing the previous video
+          videoContainer.appendChild(videoElement);
+  
+          // Listen for when the video can play through
+          videoElement.addEventListener('canplaythrough', () => {
+              // Show and play the video once it is ready
+              videoElement.style.display = 'block';
+              videoElement.play().then(() => {
+                  // Hide the previous video, if any
+                  const previousVideos = videoContainer.querySelectorAll('video:not([style*="display: none"])');
+                  previousVideos.forEach((prevVideo) => {
+                      if (prevVideo !== videoElement) {
+                          prevVideo.style.display = 'none';
+                          prevVideo.pause();
+                          prevVideo.remove();
+                      }
+                  });
+  
+                  // Add event listener to handle end of video playback
+                  videoElement.addEventListener('ended', () => {
+                      currentVideoIndex++;
+                      if (currentVideoIndex < selectedItems.length) {
+                          playNextVideo(); // Play the next video after this one ends
+                      } else {
+                          isPlaying = false; // All videos played, reset isPlaying flag
+                      }
+                  });
+              }).catch((error) => {
+                  console.error('Error playing video:', error);
+                  isPlaying = false; // Reset isPlaying flag on error
+              });
+          });
+      }
+  }
+  
+  // Function to display videos in the modal overlay
+  function displayVideos() {
+      // Show the modal overlay
+      if(selectedItems.length==0){
+        alert('select layout first');
+        return;
+      }
+      const videoOverlay = document.getElementById('videoOverlay');
+      videoOverlay.style.display = 'flex';
+  
+      // Start playing videos if not already playing
+      if (!isPlaying) {
+          isPlaying = true;
+          playNextVideo();
+      }
+  }
+  
+  // Event listener for preview button click
+  document.getElementById('previewButton').addEventListener('click', displayVideos);
+  
+  // Event listener for closing modal overlay
+  document.getElementById('closeButton').addEventListener('click', function() {
+      const videoOverlay = document.getElementById('videoOverlay');
+      const videoContainer = document.getElementById('videoContainer');
+  
+      // Pause current video (if any)
+      const currentVideo = videoContainer.querySelector('video');
+      if (currentVideo) {
+          currentVideo.pause();
+      }
+  
+      // Hide the modal overlay
+      videoOverlay.style.display = 'none';
+  
+      // Reset current video index and isPlaying flag
+      currentVideoIndex = 0;
+      isPlaying = false;
+  });
 });

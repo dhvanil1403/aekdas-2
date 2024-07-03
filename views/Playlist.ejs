@@ -29,14 +29,19 @@
               </div>
               <hr />
                 <div class="addNewScreen-form">
-                  
+                  <div class="form-class">
+                    <label>Screen ID</label>
+                    <input type="text" name="screenID" id="screenID" required />
+                  </div>
+
                     <div class="form-class">
                       <label>Playlist Name</label>
-                      <input type="text" name="playlistName" required />
+                      <input type="text" name="playlistName" id="playlistName" required />
                     </div>
+
                     <div class="form-class">
                       <label>Playlist Description</label>
-                      <textarea name="playlistDescription"  required></textarea>
+                      <textarea name="playlistDescription" id="playlistDescription" required></textarea>
                     </div>         
                     <div class="form-class btn">
                       <button id="createPlaylistButton">Create Playlist</button>

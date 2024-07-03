@@ -1,6 +1,6 @@
+const multer = require("multer");
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const cloudinary = require("../config/cloudinaryConfig");
-const multer = require("multer");
 
 // Configure CloudinaryStorage
 const storage = new CloudinaryStorage({
@@ -14,6 +14,7 @@ const storage = new CloudinaryStorage({
     if (file.mimetype.startsWith("video/")) {
       folder = "videos";
     }
+
     return {
       folder: folder,
       resource_type: file.mimetype.startsWith("video/") ? "video" : "auto",
@@ -43,4 +44,5 @@ const upload = multer({
     cb(null, true);
   },
 });
+
 module.exports = upload;

@@ -13,6 +13,13 @@
         <div class="header">
             <!-- Header content, unchanged -->
              <button onclick="sendSelectedItemsToBackend()">Publish</button>
+             <button id="previewButton">Preview</button>
+             <div id="videoOverlay">
+                <div id="videoContainer">
+                    <!-- Videos will be displayed here -->
+                </div>
+                <button id="closeButton">Close</button>
+            </div>
         </div>
         <div class="main">
             <div class="media-sidebar">
@@ -51,10 +58,12 @@
                     <% mediafiles.forEach(function(file) { %>
                         <div class="media-container">
                             <% if (file.type && file.type.startsWith('image/')) { %>
-                                <img src="<%= file.url %>" alt="Image" class="media-item image-item">
+                                <img src="<%= file.url %>" alt="Image" class="media-item image-item" data-layout-name="<%= file.filename %>" data-duration="<%= file.durationString  %>" data-size="<%= file.size %>MB">
                                 <% } else if (file.type && file.type.startsWith('video/')) { %>
                                     <video controls class="media-item video-item" preload="metadata">
-                                        <source src="<%= file.url %>" type="<%= file.type %>">
+                                        <source src="<%= file.url %>" type="<%= file.type %>" data-layout-name="<%= file.filename %>" 
+                                        data-duration="<%= file.durationString %>" 
+                                        data-size="<%= file.size %> MB">>
                                         Your browser does not support the video tag.
                                     </video>
                                     <% } else { %>
@@ -72,6 +81,21 @@
                 <div class="img-slider" id="imgSlider">
                     
                 </div>
+            </div>
+            <div class="layout-info">
+               <div class="info-class">
+                <p>Layout Name</p>
+                <input type="text" id="layout-name" readonly>
+               </div>
+               <div class="info-class">
+                <p>Duration</p>
+                <input type="text" id="duration" readonly>
+               </div>
+               <div class="info-class">
+                <p>size</p>
+                <input type="text" id="size" readonly>
+               </div>
+               
             </div>
         </div>
 
