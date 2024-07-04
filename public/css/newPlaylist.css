@@ -144,6 +144,18 @@ font-size: 14px;
   box-sizing: border-box;
 }
 
+.show-media .media-photoes-show {
+  display: none;
+  width: 48%;
+  margin: 1%;
+  box-sizing: border-box;
+}
+.show-media .media-video-show {
+  display: none;
+  width: 48%;
+  margin: 1%;
+  box-sizing: border-box;
+}
 .show-media .media-item {
   width: 90%;
   height: 180px;

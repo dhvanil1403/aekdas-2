@@ -25,7 +25,15 @@ const createPlaylist = async (playlistData) => {
     } catch (error) {
       throw new Error('Error creating playlist');
     }
+};
+const viewPlaylist=async()=>{
+  try {
+    const result=await db.query('SELECT * FROM playlists')
+    return result.rows;
+  } catch (error) {
+    throw new Error('Error show playlist');
+  }
 }
 module.exports={
-    createPlaylist
+    createPlaylist,viewPlaylist
 }

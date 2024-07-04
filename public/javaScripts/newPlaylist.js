@@ -6,14 +6,13 @@ document.addEventListener("DOMContentLoaded", function () {
   window.playlistName = playlistName;
   window.playlistDescription = playlistDescription;
 
-  // Optionally, you can display these values on the page if needed
-  // console.log("screenID:", screenID);
-  // console.log("Playlist Name:", playlistName);
-  // console.log("Playlist Description:", playlistDescription);
-
   async function sendSelectedItemsToBackend() {
     //const selectedItems = []; // Ensure this array contains the selected items
     // console.log("Playlist selectedIems:", selectedItems);
+    if(window.screenID===''||window.playlistName===''||window.playlistDescription===''||selectedItems.length===0){
+      alert("all fields are required any select one layout")
+      return
+    }
     try {
       const response = await fetch("/Dashboard/Playlist/createPlaylist", {
         method: "POST",
@@ -282,4 +281,7 @@ document.addEventListener("DOMContentLoaded", function () {
       currentVideoIndex = 0;
       isPlaying = false;
   });
+
+  
+
 });

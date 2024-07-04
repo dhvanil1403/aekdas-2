@@ -1,57 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Playlist</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Playlist</title>
   <link rel="stylesheet" href="/css/playlist.css" />
-
 </head>
+
 <body>
-    <%- include('Dashboard') %>
+  <%- include('Dashboard') %>
     <div class="playlist">
-        <header>
+      <header>
         <div class="home-playlist">
-            <p>Home><b>Playlist</b></p>
+          <p>Home><b>Playlist</b></p>
+        </div>
+        <div class="search-newplaylist">
+          <input type="search" placeholder="Search" id="searchInput">
+          <button class="newPlaylist" onclick="addPlaylistBox()">
+            <span>+</span>New Playlist
+          </button>
+        </div>
+      </header>
+      <div class="create-playlist" id="overlay">
+        <div class="newScreen">
+          <div class="newScreen-header">
+            <h2>NEW PLAYLIST</h2>
+            <button class="close-btn" onclick="hideNewScreen()">×</button>
           </div>
-          <div class="search-newplaylist">
-            <input type="search" placeholder="Search" id="searchInput">
-            <button class="newPlaylist" onclick="addPlaylistBox()">
-                <span>+</span>New Playlist
-              </button>
-          </div>
-        </header>
-        <div class="create-playlist" id="overlay">
-            <div class="newScreen">
-              <div class="newScreen-header">
-                <h2>NEW PLAYLIST</h2>
-                <button class="close-btn" onclick="hideNewScreen()">×</button>
-              </div>
-              <hr />
-                <div class="addNewScreen-form">
-                  <div class="form-class">
-                    <label>Screen ID</label>
-                    <input type="text" name="screenID" id="screenID" required />
-                  </div>
-
-                    <div class="form-class">
-                      <label>Playlist Name</label>
-                      <input type="text" name="playlistName" id="playlistName" required />
-                    </div>
-
-                    <div class="form-class">
-                      <label>Playlist Description</label>
-                      <textarea name="playlistDescription" id="playlistDescription" required></textarea>
-                    </div>         
-                    <div class="form-class btn">
-                      <button id="createPlaylistButton">Create Playlist</button>
-                    </div>
-                  
-                </div>
-              
+          <hr />
+          <div class="addNewScreen-form">
+            <div class="form-class">
+              <label>Screen ID</label>
+              <input type="text" name="screenID" id="screenID" required />
             </div>
+
+            <div class="form-class">
+              <label>Playlist Name</label>
+              <input type="text" name="playlistName" id="playlistName" required />
+            </div>
+
+            <div class="form-class">
+              <label>Playlist Description</label>
+              <textarea name="playlistDescription" id="playlistDescription" required></textarea>
+            </div>
+            <div class="form-class btn">
+              <button id="createPlaylistButton">Create Playlist</button>
+            </div>
+
           </div>
+
+        </div>
+      </div>
+      <main>
+        <div class="showPlaylists">
+          <% if (playlists && playlists.length> 0) { %>
+            <% playlists.forEach(playlist=> { %>
+            <div class="playlist-items">
+              <div class="playlist-img"></div>
+              <div class="playlist-info">
+                <p><%= playlist.playlistname %></p>
+              </div>
+            </div>
+            <% }); %>
+            <% } else { %>
+              <p>No playlists available.</p>
+              <% } %>
+        </div>
+      </main>
     </div>
     <script src="/javaScripts/playlist.js"></script>
 </body>
+
 </html>
