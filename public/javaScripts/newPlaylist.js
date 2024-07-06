@@ -1,15 +1,25 @@
 document.addEventListener("DOMContentLoaded", function () {
-  const screenID = sessionStorage.getItem("screenID");
+
   const playlistName = sessionStorage.getItem("playlistName");
   const playlistDescription = sessionStorage.getItem("playlistDescription");
-  window.screenID = screenID;
+  let selectedItems = []; // Array to store selected item URLs
+ 
   window.playlistName = playlistName;
   window.playlistDescription = playlistDescription;
+  
+  function selectScreen(){
+    if(selectedItems.length===0){
+      alert("select one layout")
+      return
+    }
 
+    window.location.href = "/Dashboard/Playlist/newPlaylist/selectScreens";
+  }
+  window.selectScreen=selectScreen;
   async function sendSelectedItemsToBackend() {
     //const selectedItems = []; // Ensure this array contains the selected items
     // console.log("Playlist selectedIems:", selectedItems);
-    if(window.screenID===''||window.playlistName===''||window.playlistDescription===''||selectedItems.length===0){
+    if(window.playlistName===''||window.playlistDescription===''||selectedItems.length===0){
       alert("all fields are required any select one layout")
       return
     }
@@ -98,7 +108,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const imgSlider = document.getElementById("imgSlider");
   const imgPreview = document.querySelector(".img-preview");
   let itemsCount = 0; // Counter to track the number of items
-  let selectedItems = []; // Array to store selected item URLs
+  
   mediaItems.forEach((item) => {
     item.addEventListener("click", function () {
       if (itemsCount < 10) {
@@ -144,6 +154,8 @@ document.addEventListener("DOMContentLoaded", function () {
       } else {
         alert("You can only select up to 10 items.");
       }
+      const selectedurls=JSON.stringify(selectedItems);
+      sessionStorage.setItem("selectedItems", selectedurls);
     });
   });
 

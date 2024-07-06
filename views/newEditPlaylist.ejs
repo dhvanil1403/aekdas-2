@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Playlist</title>
+    <link rel="stylesheet" href="/css/newPlaylist.css">
+</head>
+
+<body>
+    <div class="newPlaylist">
+        <div class="header">
+            <!-- Header content, unchanged -->
+            <!-- <button onclick="sendSelectedItemsToBackend()">Publish</button> -->
+            <button id="selectScreenButton">Select Screen</button>
+            <button id="previewButton">Preview</button>
+            <div id="videoOverlay">
+                <div id="videoContainer">
+                    <!-- Videos will be displayed here -->
+                </div>
+                <button id="closeButton">Close</button>
+            </div>
+        </div>
+        <div class="main">
+            <div class="media-sidebar">
+                <div class="media-widgets">
+                    <p class="media">Media</p>
+                    <p class="widgets">Widgets</p>
+                </div>
+                <div class="search-upload" style="display: none;">
+                    <input type="search" name="search" placeholder="Search">
+
+                    <button class="media-btn-upload" id="uploadButton"><svg width="30" height="30" viewBox="0 0 30 30"
+                            fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="15" cy="15" r="15" fill="#0D6EFD" />
+                            <path
+                                d="M21.75 17.25V20.25C21.75 20.6478 21.592 21.0294 21.3107 21.3107C21.0294 21.592 20.6478 21.75 20.25 21.75H9.75C9.35218 21.75 8.97064 21.592 8.68934 21.3107C8.40804 21.0294 8.25 20.6478 8.25 20.25V17.25"
+                                stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M18.75 12L15 8.25L11.25 12" stroke="white" stroke-width="1.5"
+                                stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M15 8.25V17.25" stroke="white" stroke-width="1.5" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                    </button>
+                    <form id="uploadForm" action="/Dashboard/Playlist/UploadFile" method="POST"
+                        enctype="multipart/form-data" style="display: none;">
+                        <input type="file" name="file" id="fileInput">
+                        <button type="submit" id="submitBtn">Upload</button>
+                    </form>
+                </div>
+                <div class="media-category">
+                    <button class="media-all"><a href="/Dashboard/Playlist/newPlaylist">All</a></button>
+                    <button class="media-photos" style="display: none;"><a
+                            href="/Dashboard/Playlist/Photoes">Photos</a></button>
+                    <button class="media-videos" style="display: none;"><a
+                            href="/Dashboard/Playlist/Videos">Videos</a></button>
+                </div>
+                <div class="show-media">
+                    <!-- Media files loop -->
+                    <% mediafiles.forEach(function(file,index) { %>
+                        <div class="media-container" data-index="<%= index %>">
+                            <% if (file.type && file.type.startsWith('image/')) { %>
+                                <img src="<%= file.url %>" alt="Image" class="media-item image-item"
+                                    data-layout-name="<%= file.filename %>" data-duration="<%= file.durationString  %>"
+                                    data-size="<%= file.size %>MB">
+                                <% } else if (file.type && file.type.startsWith('video/')) { %>
+                                    <video controls class="media-item video-item" preload="metadata">
+                                        <source src="<%= file.url %>" type="<%= file.type %>"
+                                            data-layout-name="<%= file.filename %>"
+                                            data-duration="<%= file.durationString %>" data-size="<%= file.size %> MB">>
+                                        Your browser does not support the video tag.
+                                    </video>
+                                    <% } else { %>
+                                        <p>Unsupported file type: <%= file.type %>
+                                        </p>
+                                        <% } %>
+                        </div>
+                        <% }); %>
+                </div>
+            </div>
+            <div class="middle">
+                <div class="img-preview">
+
+                </div>
+                <div class="img-slider" id="imgSlider">
+                    <% for (let i=1; i <=10; i++) { %>
+                        <% const url=playlist && playlist[`slot${i}`] ? playlist[`slot${i}`] : '' ; %>
+                            <div class="mediaforSlider">
+                               <div style="display: flex; justify-content: space-between;"> <button onclick="deleteMedia(event)">Delete</button>
+                                <button class="add-media-button" data-index="<%= i %>">Add</button>
+                                </div>
+                                <div class="media-content">
+                                    <% if (url && url.trim() !=='' ) { %>
+                                        <% if (url.endsWith('.mp4')) { %>
+                                            <video controls class="video-photo">
+                                                <source src="<%= url %>" type="video/mp4">
+                                                Your browser does not support the video tag.
+                                            </video>
+                                            <% } else { %>
+                                                <img src="<%= url %>" alt="Slot <%= i %>" class="video-photo">
+                                                <% } %>
+                                                    <% } %>
+                                </div>
+                            </div>
+                            <% } %>
+                </div>
+            </div>
+            <div class="layout-info">
+                <div class="info-class">
+                    <p>Layout Name</p>
+                    <input type="text" id="layout-name" readonly>
+                </div>
+                <div class="info-class">
+                    <p>Duration</p>
+                    <input type="text" id="duration" readonly>
+                </div>
+                <div class="info-class">
+                    <p>size</p>
+                    <input type="text" id="size" readonly>
+                </div>
+                <div class="info-class" >
+                    <p>SCREEN IDS</p>
+                    <input type="text" id="screenIDS" value="<%=playlist.screen_id%>" readonly>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+    <script>
+function getIdFromUrl() {
+    const pathSegments = window.location.pathname.split('/');
+    console.log(pathSegments);
+    return pathSegments[pathSegments.length - 1]; // Assuming the ID is the last segment
+}
+
+    function deleteMedia(event) {
+        const mediaContainer = event.target.closest('.mediaforSlider');
+        if (mediaContainer) {
+            const mediaContent = mediaContainer.querySelector('.media-content');
+            if (mediaContent) {
+                mediaContent.innerHTML = ''; // Clear the inner HTML of the media-content div
+            } else {
+                console.error('Error: .media-content not found');
+            }
+        } else {
+            console.error('Error: .mediaforSlider container not found');
+        }
+    }
+
+    let selectedSlotIndex = null; // Variable to store the selected slot index
+
+// Function to handle adding media to the selected slot
+function addMediaToSlot(mediaItem) {
+    if (selectedSlotIndex !== null) {
+        const clonedMedia = mediaItem.cloneNode(true);
+        clonedMedia.classList.add('video-photo'); // Add "video-photo" class
+        const slotContainer = document.querySelector(`.mediaforSlider:nth-child(${selectedSlotIndex}) .media-content`);
+        if (slotContainer) {
+            slotContainer.innerHTML = '';
+            slotContainer.appendChild(clonedMedia);
+        }
+
+        selectedSlotIndex = null; // Reset selected slot index after adding media
+    }
+}
+
+// Function to handle Add button click
+function handleAddButtonClick(slotIndex) {
+    selectedSlotIndex = slotIndex;
+}
+
+// Attach event listeners to Add buttons
+document.addEventListener('DOMContentLoaded', function() {
+    const addButtons = document.querySelectorAll('.add-media-button');
+    addButtons.forEach(button => {
+        button.addEventListener('click', function(event) {
+            const slotIndex = event.target.getAttribute('data-index');
+            handleAddButtonClick(slotIndex);
+        });
+    });
+
+    // Attach click event listeners to media items in show-media
+    const mediaItems = document.querySelectorAll('.show-media .media-item');
+    mediaItems.forEach(mediaItem => {
+        mediaItem.addEventListener('click', function() {
+            if (selectedSlotIndex !== null) {
+                addMediaToSlot(mediaItem);
+            }
+        });
+    });
+
+    const selectScreenButton = document.getElementById('selectScreenButton');
+
+    selectScreenButton.addEventListener('click', function() {
+        const mediaSlots = document.querySelectorAll('.img-slider .media-content');
+        const urls = [];
+        const id = getIdFromUrl();
+        mediaSlots.forEach(slot => {
+            const mediaItem = slot.querySelector('.video-photo');
+            if (mediaItem) {
+                const url = mediaItem.tagName === 'IMG' ? mediaItem.src : mediaItem.querySelector('source').src;
+                urls.push(url);
+            }
+        });
+        if (urls.length === 0) {
+        alert('Please select at least one layout.');
+        return;
+    }
+    const screenIDS=document.querySelector('#screenIDS').value;
+        sessionStorage.setItem('playlistId', id);
+        sessionStorage.setItem('playlistUrls', JSON.stringify(urls));
+        sessionStorage.setItem('screenIDS', screenIDS);
+        console.log("ScreenIDS",screenIDS)
+        // console.log('ID:', id);
+        // console.log(urls); // Do something with the collected URLs
+        // You can send these URLs to the server or display them as needed
+    window.location.href = "/Dashboard/Playlist/PlaylistEdit/plylistEditScreen";
+
+    });
+});
+
+
+    
+
+    </script>
+    <!-- <script src="/javaScripts/newPlaylist.js"></script> -->
+</body>
+
+</html>

@@ -16,7 +16,7 @@ const createGroup = async (groupName, description, screenCount,selectedScreen) =
 const showAvailableScreen = async () => {
   try {
     const result = await db.query(
-      "SELECT pairingcode,screenname, tags, location, deleted FROM screens"
+      "SELECT id, pairingcode,screenname, tags, playlistname,location, deleted FROM screens"
     );
     return result.rows;
   } catch (error) {

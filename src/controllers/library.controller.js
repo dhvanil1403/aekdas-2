@@ -205,4 +205,5 @@ module.exports = {
   getPhotoesForPlaylist,
   getVideosForPlaylist,
   handleUploadInDBForNewPlaylist,
+  intervalToString
 };

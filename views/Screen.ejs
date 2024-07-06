@@ -193,6 +193,7 @@
             <table>
               <thead>
                 <tr>
+                  <th>Screen Id</th>
                   <th>Pairing Code</th>
                   <th>Screen Name</th>
                   <th>Status</th>
@@ -208,6 +209,9 @@
                   <% screens.forEach(screen=>
                     { %>
                     <tr data-pairingcode="<%= screen.pairingcode %>">
+                      <td id="screen.screenid">
+                        <%= screen.id %>
+                      </td>
                       <td id="screen.pairingcode">
                         <%= screen.pairingcode %>
                       </td>

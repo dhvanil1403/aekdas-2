@@ -30,10 +30,10 @@
           </div>
           <hr />
           <div class="addNewScreen-form">
-            <div class="form-class">
+            <!-- <div class="form-class">
               <label>Screen ID</label>
               <input type="text" name="screenID" id="screenID" required />
-            </div>
+            </div> -->
 
             <div class="form-class">
               <label>Playlist Name</label>
@@ -56,16 +56,20 @@
         <div class="showPlaylists">
           <% if (playlists && playlists.length> 0) { %>
             <% playlists.forEach(playlist=> { %>
-            <div class="playlist-items">
-              <div class="playlist-img"></div>
-              <div class="playlist-info">
-                <p><%= playlist.playlistname %></p>
+              <div class="playlist-items">
+                <div class="playlist-img">
+                </div>
+                <div class="playlist-info">
+                  <p>
+                    <%= playlist.playlistname %>
+                  </p>
+                  <button onclick="location.href='/Dashboard/Playlist/PlaylistEdit/<%= playlist.id %>'">Edit</button>
+                </div>
               </div>
-            </div>
-            <% }); %>
-            <% } else { %>
-              <p>No playlists available.</p>
-              <% } %>
+              <% }); %>
+                <% } else { %>
+                  <p>No playlists available.</p>
+                  <% } %>
         </div>
       </main>
     </div>
