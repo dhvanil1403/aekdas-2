@@ -57,11 +57,11 @@
                   <% if (screen.playlistname === 'No Playlist') { %>
                     <tr>
                       <td>                  
-                        <input type="checkbox" name="checkbox" value="<%= screen.id %>"
+                        <input type="checkbox" name="checkbox" value="<%= screen.screenid %>"
                           <% if (group && group.selectedscreens && group.selectedscreens.some(selected => selected.pairingcode === screen.pairingcode)) { %> checked <% } %>
                         >
                       </td>
-                      <td><%= screen.id %></td>
+                      <td><%= screen.screenid %></td>
                       <td><%= screen.pairingcode %></td>
                       <td><%= screen.playlistname %></td>
                       <td><%= screen.screenname %></td>
