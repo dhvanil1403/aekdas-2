@@ -1,5 +1,5 @@
 const db = require("../config/dbConnection");
-const bcrypt = require("bcryptjs");
+// const bcrypt = require("bcryptjs");
 
 const createTeamMember = async (
   memberName,
@@ -8,10 +8,10 @@ const createTeamMember = async (
   memberPassword
 ) => {
   try {
-    const hashedPassword = await bcrypt.hash(memberPassword, 12);
+    // const hashedPassword = await bcrypt.hash(memberPassword, 12);
     const result = await db.query(
       "INSERT INTO teamMember (memberName, memberEmail,role,memberPassword) VALUES ($1,$2,$3,$4)",
-      [memberName, memberEmail, role, hashedPassword]
+      [memberName, memberEmail, role, memberPassword]
     );
     
     return result.rows;
@@ -32,8 +32,8 @@ const findMember = async (memberEmail, memberPassword) => {
     const user = result.rows[0];
     
     if (user) {
-      const passwordMatch = await bcrypt.compare(memberPassword, user.memberpassword);
-      if (passwordMatch) {
+      // const passwordMatch = await bcrypt.compare(memberPassword, user.memberpassword);
+      if (memberPassword) {
         return user;
       } else {
         return null; // Password does not match
