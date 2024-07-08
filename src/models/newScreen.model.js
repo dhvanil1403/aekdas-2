@@ -38,7 +38,7 @@ const screenByPairingCode = async (pairingCode) => {
 
 const getAllScreens = async () => {
   try {
-    const result = await db.query("SELECT * FROM screens ORDER BY id DESC");
+    const result = await db.query("SELECT * FROM screens ORDER BY screenid DESC");
     return result.rows;
   } catch (err) {
     console.error("Error occurred at fetching all screens:", err);
