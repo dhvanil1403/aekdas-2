@@ -7,7 +7,7 @@ const libraryRouter=require('./libraryRoutes');
 const playlistRouter=require('./playlistRoutes');
 
 
-router.use(dashboardAuth)
+// router.use(dashboardAuth)
 router.get("/",  (req, res) => {
     res.render("Dashboard", { message: null });
   });
