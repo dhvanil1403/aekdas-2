@@ -152,7 +152,7 @@
                   <input type="text" name="tags" required />
                 </div>
                 <div class="form-class">
-                  <label>Enter Location</label>
+                  <label>Enter Address</label>
                   <input type="text" name="location" required />
                 </div>
                 <div class="location">
@@ -196,9 +196,10 @@
                   <th>Screen Id</th>
                   <th>Pairing Code</th>
                   <th>Screen Name</th>
+                  <th>Plalist Name</th>
                   <th>Status</th>
                   <th>Tags</th>
-                  <th>Location</th>
+                  <th>Address</th>
                   <th>City</th>
                   <th>Pincode</th>
                   <th>Action</th>
@@ -210,13 +211,16 @@
                     { %>
                     <tr data-pairingcode="<%= screen.pairingcode %>">
                       <td id="screen.screenid">
-                        <%= screen.id %>
+                        <%= screen.screenid %>
                       </td>
                       <td id="screen.pairingcode">
                         <%= screen.pairingcode %>
                       </td>
                       <td id="screen.screenname">
                         <%= screen.screenname %>
+                      </td>
+                      <td id="screen.playlistname">
+                        <%= screen.playlistname %>
                       </td>
                       <td id="screen.status" class="status-cell ">
                         <p class="<%= screen.deleted ? 'offline' : 'online' %>">
