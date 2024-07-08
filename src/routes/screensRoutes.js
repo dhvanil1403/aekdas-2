@@ -3,6 +3,7 @@ const router = express.Router();
 const screen = require("../controllers/newScreen.controller");
 const groupRouter = require("./groupsRoutes");
 
+router.route("/alldata").get(screen.getAllScreensAllData);
 // GET all not deleted screens
 router.route("/").get(screen.getAllScreens).post(screen.addScreen);
 
@@ -15,10 +16,10 @@ router.use("/Groups", groupRouter);
 // POST request to mark a screen as deleted
 router
   .route("/mark-as-deleted")
-  .post(screen.updateDeleteScreen)
+  .post(screen.updateDeleteScreen)  
  
 router
-  .route("/restore")
+  .route("/restore")  
   .post(screen.restoreScreen)
   .get(screen.getAllScreens)
 
