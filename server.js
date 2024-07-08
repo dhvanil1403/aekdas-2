@@ -9,6 +9,8 @@ const dashboardRoutes = require("./src/routes/dashboardRoutes");
 const loginRoutes = require("./src/routes/loginRoutes");
 const app = express();
 const port = process.env.PORT || 3000;
+ const api=require('./src/controllers/api.controller')
+
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -25,6 +27,7 @@ app.get("/", (req, res) => {
   res.render("Login", { message: null });
 });
 
+app.get('/alldata',api.getAllScreensAllData);
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
