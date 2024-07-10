@@ -162,6 +162,40 @@ try {
   console.error("Error occurred at fetching group screens:", err);
   throw err;
 }}
+
+const deletePlaylist = async (screenid) => {
+
+  try {
+    // Construct the SQL query to update fields to NULL
+    const query = `
+      UPDATE screens
+      SET playlistname = NULL,
+          playlistdescription = NULL,
+          slot1 = NULL,
+          slot2 = NULL,
+          slot3 = NULL,
+          slot4 = NULL,
+          slot5 = NULL,
+          slot6 = NULL,
+          slot7 = NULL,
+          slot8 = NULL,
+          slot9 = NULL,
+          slot10 = NULL
+      WHERE screenid = $1
+      RETURNING *
+    `;
+    
+    // Execute the query with the screenId parameter
+    const rows  = await db.query(query, [screenid]);
+
+    return rows[0];
+
+    
+  } catch (error) {
+    console.error("Error deleting playlist:", error);
+    res.status(500).json({ error: "Failed to delete playlist" });
+  }
+};
 module.exports = {
   restoreScreenInDB,
   newScreen,
@@ -174,5 +208,6 @@ module.exports = {
   getNotDeletedScreenCount,
   getDeletedScreenCount,
   getDeletedScreen,
-  getGroupScreen
+  getGroupScreen,
+  deletePlaylist
 };
