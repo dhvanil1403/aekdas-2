@@ -7,7 +7,7 @@ function hideNewScreen() {
 document
   .getElementById("createPlaylistButton")
   .addEventListener("click", function () {
-       const screenID = document.getElementById("screenID").value;
+      // const screenID = document.getElementById("screenID").value;
     const playlistName = document.getElementById("playlistName").value;
     const playlistDescription = document.getElementById(
       "playlistDescription"
