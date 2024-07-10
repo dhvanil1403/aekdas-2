@@ -2,107 +2,131 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New Playlist</title>
-    <link rel="stylesheet" href="/css/newPlaylist.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document</title>
+  <link rel="stylesheet" href="/css/groupScreen.css" />
 </head>
 
 <body>
-    <div class="newPlaylist">
-        <div class="header">
-            <!-- Header content, unchanged -->
-             <!-- <button onclick="sendSelectedItemsToBackend()">Publish</button> -->
-             <button onclick="selectScreen()">Select Screen</button>
-             <button id="previewButton">Preview</button>
-             <div id="videoOverlay">
-                <div id="videoContainer">
-                    <!-- Videos will be displayed here -->
-                </div>
-                <button id="closeButton">Close</button>
-            </div>
-        </div>
-        <div class="main">
-            <div class="media-sidebar">
-                <div class="media-widgets">
-                    <p class="media">Media</p>
-                    <p class="widgets">Widgets</p>
-                </div>
-                <div class="search-upload" style="display: none;">
-                    <input type="search"  name="search" placeholder="Search">
-
-                    <button class="media-btn-upload" id="uploadButton"><svg width="30" height="30" viewBox="0 0 30 30"
-                            fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="15" cy="15" r="15" fill="#0D6EFD" />
-                            <path
-                                d="M21.75 17.25V20.25C21.75 20.6478 21.592 21.0294 21.3107 21.3107C21.0294 21.592 20.6478 21.75 20.25 21.75H9.75C9.35218 21.75 8.97064 21.592 8.68934 21.3107C8.40804 21.0294 8.25 20.6478 8.25 20.25V17.25"
-                                stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                            <path d="M18.75 12L15 8.25L11.25 12" stroke="white" stroke-width="1.5"
-                                stroke-linecap="round" stroke-linejoin="round" />
-                            <path d="M15 8.25V17.25" stroke="white" stroke-width="1.5" stroke-linecap="round"
-                                stroke-linejoin="round" />
-                        </svg>
-                    </button>
-                    <form id="uploadForm" action="/Dashboard/Playlist/UploadFile" method="POST"
-                        enctype="multipart/form-data" style="display: none;">
-                        <input type="file" name="file" id="fileInput">
-                        <button type="submit" id="submitBtn">Upload</button>
-                    </form>
-                </div>
-                <div class="media-category">
-                    <button class="media-all"><a href="/Dashboard/Playlist/newPlaylist">All</a></button>
-                    <button class="media-photos" style="display: none;"><a href="/Dashboard/Playlist/Photoes">Photos</a></button>
-                    <button class="media-videos" style="display: none;"><a href="/Dashboard/Playlist/Videos">Videos</a></button>
-                </div>
-                <div class="show-media">
-                    <!-- Media files loop -->
-                    <% mediafiles.forEach(function(file) { %>
-                        <div class="media-container">
-                            <% if (file.type && file.type.startsWith('image/')) { %>
-                                <img src="<%= file.url %>" alt="Image" class="media-item image-item" data-layout-name="<%= file.filename %>" data-duration="<%= file.durationString  %>" data-size="<%= file.size %>MB">
-                                <% } else if (file.type && file.type.startsWith('video/')) { %>
-                                    <video controls class="media-item video-item" preload="metadata">
-                                        <source src="<%= file.url %>" type="<%= file.type %>" data-layout-name="<%= file.filename %>" 
-                                        data-duration="<%= file.durationString %>" 
-                                        data-size="<%= file.size %> MB">>
-                                        Your browser does not support the video tag.
-                                    </video>
-                                    <% } else { %>
-                                        <p>Unsupported file type: <%= file.type %>
-                                        </p>
-                                        <% } %>
-                        </div>
-                        <% }); %>
-                </div>
-            </div>
-            <div class="middle">
-                <div class="img-preview">
-
-                </div>
-                <div class="img-slider" id="imgSlider">
-                    
-                </div>
-            </div>
-            <div class="layout-info">
-               <div class="info-class">
-                <p>Layout Name</p>
-                <input type="text" id="layout-name" readonly>
-               </div>
-               <div class="info-class">
-                <p>Duration</p>
-                <input type="text" id="duration" readonly>
-               </div>
-               <div class="info-class">
-                <p>size</p>
-                <input type="text" id="size" readonly>
-               </div>
-               
-            </div>
-        </div>
-
+  <div class="group">
+    <div class="header">
+      <!-- <div class="group-screen">
+        <p>Home > <b>Group Screen</b></p>
+      </div> -->
+      <div class="group-screen-btn">
+        <!-- <button onclick="goBack()">Go Back</button> -->
+        <button onclick="publishPlaylist()">Publish</button>
+      </div>
     </div>
-    
-    <script src="/javaScripts/newPlaylist.js"></script>
+
+    <!-- <div class="create-group">
+      <div class="form-class">
+        <label>Group Name</label>
+        <input type="text" name="groupName" value="<%#= group ? group.group_name : '' %>" required />
+      </div>
+      <div class="form-class">
+        <label>Group Description</label>
+        <input type="text" name="description" value="<%#= group ? group.group_description : '' %>" required />
+      </div>
+    </div> -->
+
+    <div class="heading">
+      <h3>Select Screens to Publish Playlist</h3>
+      <!-- <h3>Selected Screens</h3> -->
+    </div>
+
+    <div class="selection-screens">
+      <div class="select-screen">
+        <!-- <input type="search" id="searchInput" placeholder="Search"> -->
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th>Screen ID</th>
+              <th>PAIRING CODE</th>
+              <th>Playlist Name</th>
+              <th>SCREEN NAME</th>
+              <th>STATUS</th>
+            </tr>
+          </thead>
+          <tbody>
+            <%# console.log("group : ",group); %>
+            <% if (screens && screens.length) { %>
+              <% screens.forEach(screen => { %>
+                
+                <% if (screen.playlistname === null) { %>
+                  <tr>
+                    <td>                  
+                      <input type="checkbox" name="checkbox" value="<%= screen.screenid %>"/>
+                    </td>
+                    <td><%= screen.screenid %></td>
+                    <td><%= screen.pairingcode %></td>
+                    <td><%= screen.playlistname %></td>
+                    <td><%= screen.screenname %></td>
+                    <td class="status-cell">
+                      <span class="<%= screen.deleted ? 'offline' : 'online' %>">
+                        <%= screen.deleted ? 'Offline' : 'Online' %>
+                      </span>                  
+                    </td>
+                  </tr>
+                <% } %>
+              <% }) %>
+            <% } else { %>
+              <tr>
+                <td colspan="6">No screens found</td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+      <div class="selected-screen" style="display: none;">
+        <table id="selectedScreensTable">
+          <thead>
+            <tr>
+              <th>SR.NO</th>
+              <th>SCREEN NAME</th>
+              <th>SCREEN TAG</th>
+              <th>SCREEN LOCATION</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+            <% if (group && group.selectedscreens && group.selectedscreens.length) { %>
+              <% group.selectedscreens.forEach((screen, index) => { %>
+                <tr>
+                  <td>
+                    <%= index + 1 %>
+                  </td>
+                  <td>
+                    <%= screen.screenname %>
+                  </td>
+                  <td>
+                    <%= screen.tags %>
+                  </td>
+                  <td>
+                    <%= screen.location %>
+                  </td>
+                </tr>
+              <% }) %>
+            <% } else { %>
+              <tr>
+                <td colspan="4">No screens selected</td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const group = `<%- JSON.stringify(group || {}) %>`;
+  </script>
+
+  <script src="/javaScripts/selectionNewPlaylist.js"></script>
+
 </body>
 
 </html>
