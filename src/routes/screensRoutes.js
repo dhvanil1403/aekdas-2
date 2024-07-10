@@ -13,6 +13,10 @@ router.route("/").get(screen.getAllScreens).post(screen.addScreen);
 // Use groupRouter for '/Groups' path
 router.use("/Groups", groupRouter);
 
+
+// PUT request to mark a screen's playlist as deleted (set playlistname to null)
+router.put("/:screenid/deletePlaylist", screen.deletePlaylist);
+
 // POST request to mark a screen as deleted
 router
   .route("/mark-as-deleted")
