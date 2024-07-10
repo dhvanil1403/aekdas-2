@@ -1,3 +1,136 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document</title>
+  <link rel="stylesheet" href="/css/groupScreen.css" />
+</head>
+
+<body>
+  <div class="group">
+    <div class="header">
+       <div class="group-screen">
+        <p>Home > <b>Group Screen</b></p>
+      </div> 
+      <div class="group-screen-btn">
+        <!-- <button onclick="goBack()">Go Back</button>
+        <button onclick="publishPlaylist()">Publish</button>
+      </div>
+    </div>
+
+    <!-- <div class="create-group">
+      <div class="form-class">
+        <label>Group Name</label>
+        <input type="text" name="groupName" value="<%#= group ? group.group_name : '' %>" required />
+      </div>
+      <div class="form-class">
+        <label>Group Description</label>
+        <input type="text" name="description" value="<%#= group ? group.group_description : '' %>" required />
+      </div>
+    </div> 
+
+    <div class="heading">
+      <h3>Select Screens to Publish Playlist</h3>
+      <!-- <h3>Selected Screens</h3> 
+    </div>
+
+    <div class="selection-screens">
+      <div class="select-screen">
+        <!-- <input type="search" id="searchInput" placeholder="Search"> 
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th>Screen ID</th>
+              <th>PAIRING CODE</th>
+              <th>Playlist Name</th>
+              <th>SCREEN NAME</th>
+              <th>STATUS</th>
+            </tr>
+          </thead>
+          <tbody>
+            <%# console.log("group : ",group); %>
+            <% if (screens && screens.length) { %>
+              <% screens.forEach(screen => { %>
+                
+                <% if (screen.playlistname === null) { %>
+                  <tr>
+                    <td>                  
+                      <input type="checkbox" name="checkbox" value="<%= screen.screenid %>"/>
+                    </td>
+                    <td><%= screen.screenid %></td>
+                    <td><%= screen.pairingcode %></td>
+                    <td><%= screen.playlistname %></td>
+                    <td><%= screen.screenname %></td>
+                    <td class="status-cell">
+                      <span class="<%= screen.deleted ? 'offline' : 'online' %>">
+                        <%= screen.deleted ? 'Offline' : 'Online' %>
+                      </span>                  
+                    </td>
+                  </tr>
+                <% } %>
+              <% }) %>
+            <% } else { %>
+              <tr>
+                <td colspan="6">No screens found</td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+      <div class="selected-screen" style="display: none;">
+        <table id="selectedScreensTable">
+          <thead>
+            <tr>
+              <th>SR.NO</th>
+              <th>SCREEN NAME</th>
+              <th>SCREEN TAG</th>
+              <th>SCREEN LOCATION</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+            <% if (group && group.selectedscreens && group.selectedscreens.length) { %>
+              <% group.selectedscreens.forEach((screen, index) => { %>
+                <tr>
+                  <td>
+                    <%= index + 1 %>
+                  </td>
+                  <td>
+                    <%= screen.screenname %>
+                  </td>
+                  <td>
+                    <%= screen.tags %>
+                  </td>
+                  <td>
+                    <%= screen.location %>
+                  </td>
+                </tr>
+              <% }) %>
+            <% } else { %>
+              <tr>
+                <td colspan="4">No screens selected</td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const group = `<%- JSON.stringify(group || {}) %>`;
+  </script>
+
+  <script src="/javaScripts/selectionNewPlaylist.js"></script>
+
+</body>
+
+</html> -->
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -321,7 +454,7 @@ searchInput.value=playlistName;
       }
       const responseData = await response.json();
       console.log("Playlist edit:", responseData.playlist);
-      alert("Playlist edit successfully!");
+      alert("Screen edit successfully!");
       window.location.href = '/Dashboard/Playlist';
     } catch (error) {
       console.error("Error edit playlist:", error);
@@ -330,8 +463,25 @@ searchInput.value=playlistName;
   }
   window.publishPlaylist = publishPlaylist;
 
- 
+  let searchInput = document.getElementById('searchInput');
+  searchInput.value = playlistName;
 
+  function filterScreens() {
+    const filter = searchInput.value.toLowerCase();
+    const rows = document.querySelectorAll('.screen-row');
+    rows.forEach(row => {
+      const screenName = row.querySelector('.screen-playlistname').textContent.toLowerCase();
+      if (screenName.includes(filter)) {
+        row.style.display = '';
+      } else {
+        row.style.display = 'none';
+      }
+    });
+  }
+
+  searchInput.addEventListener('input', filterScreens);
+
+  window.addEventListener('load', filterScreens);
 </script>
 
 <script src="/javaScripts/screen.js"></script>
