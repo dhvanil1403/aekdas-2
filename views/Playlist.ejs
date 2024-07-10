@@ -16,7 +16,7 @@
           <p>Home><b>Playlist</b></p>
         </div>
         <div class="search-newplaylist">
-          <input type="search" placeholder="Search" id="searchInput">
+        <input type="search" placeholder="Search" id="searchInput">
           <button class="newPlaylist" onclick="addPlaylistBox()">
             <span>+</span>New Playlist
           </button>
@@ -63,7 +63,8 @@
                   <p>
                     <%= playlist.playlistname %>
                   </p>
-                  <button onclick="location.href='/Dashboard/Playlist/PlaylistEdit/<%= playlist.id %>'">Edit</button>
+                  <button onclick="location.href='/Dashboard/Playlist/PlaylistEdit/<%= playlist.id %>'">Edit</button> 
+                  <!-- <button2 onclick="">Delete</button2> -->
                 </div>
               </div>
               <% }); %>
@@ -74,6 +75,26 @@
       </main>
     </div>
     <script src="/javaScripts/playlist.js"></script>
+    <script>
+      let searchInput = document.getElementById('searchInput');
+
+      function filterPlaylists() {
+        const filter = searchInput.value.toLowerCase();
+        const playlists = document.querySelectorAll('.playlist-items');
+        playlists.forEach(playlist => {
+          const playlistName = playlist.querySelector('.playlist-info p').textContent.toLowerCase();
+          if (playlistName.includes(filter)) {
+            playlist.style.display = '';
+          } else {
+            playlist.style.display = 'none';
+          }
+        });
+      }
+
+      searchInput.addEventListener('input', filterPlaylists);
+
+      window.addEventListener('load', filterPlaylists);
+    </script>
 </body>
 
 </html>
