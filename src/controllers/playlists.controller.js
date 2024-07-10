@@ -12,7 +12,7 @@ const createPlaylist = async (req, res) => {
     // console.log("playlistDescription", playlistDescription);
     // Create playlist object
     const playlistData = {
-      screenIDs,
+      // screenIDs,
       playlistName,
       playlistDescription,
       urls,
@@ -59,7 +59,7 @@ const showAvailableScreen = async (req, res) => {
 const showAvailableScreenForEditPlaylist = async (req, res) => {
   
   const playlistsAll = await playlists.viewPlaylist();
-  
+  console.log("playlist all",playlistsAll);
 
   const screens = await groupScreen.showAvailableScreen();
   res.render("EditselectionPlaylist", { screens,playlistsAll});
