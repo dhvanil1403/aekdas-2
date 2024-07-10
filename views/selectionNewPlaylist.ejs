@@ -330,25 +330,8 @@ searchInput.value=playlistName;
   }
   window.publishPlaylist = publishPlaylist;
 
-  let searchInput = document.getElementById('searchInput');
-  searchInput.value = playlistName;
+ 
 
-  function filterScreens() {
-    const filter = searchInput.value.toLowerCase();
-    const rows = document.querySelectorAll('.screen-row');
-    rows.forEach(row => {
-      const screenName = row.querySelector('.screen-playlistname').textContent.toLowerCase();
-      if (screenName.includes(filter)) {
-        row.style.display = '';
-      } else {
-        row.style.display = 'none';
-      }
-    });
-  }
-
-  searchInput.addEventListener('input', filterScreens);
-
-  window.addEventListener('load', filterScreens);
 </script>
 
 <script src="/javaScripts/screen.js"></script>
