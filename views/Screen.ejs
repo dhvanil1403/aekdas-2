@@ -197,6 +197,7 @@
                   <th>Pairing Code</th>
                   <th>Screen Name</th>
                   <th>Plalist Name</th>
+                 
                   <th>Status</th>
                   <th>Tags</th>
                   <th>Address</th>
@@ -219,12 +220,27 @@
                       <td id="screen.screenname">
                         <%= screen.screenname %>
                       </td>
-                      <td id="screen.playlistname">
-                        <%= screen.playlistname %>
+                      <td id="screen.playlistname" style="display: flex; justify-content: center; align-items: center;"  >
+                      <p> <%= screen.playlistname %>  </p> 
+                        <button class="delete" onclick="deletePlaylist('<%= screen.screenid %>')">
+                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <g clip-path="url(#clip0_1_4435)">
+                            <path d="M19 3H5C3.89543 3 3 3.89543 3 5V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V5C21 3.89543 20.1046 3 19 3Z" stroke="#FF0000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M8 12H16" stroke="#FF0000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </g>
+                            <defs>
+                            <clipPath id="clip0_1_4435">
+                            <rect width="24" height="24" fill="white"/>
+                            </clipPath>
+                            </defs>
+                            </svg>
+                        </button>
+                    
                       </td>
+                      
                       <td id="screen.status" class="status-cell ">
-                        <p class="<%= screen.deleted ? 'offline' : 'online' %>">
-                          <%= screen.deleted ? 'Offline' : 'Online' %>
+                        <p class="<%= screen.status ? 'offline' : 'online' %>">
+                          <%= screen.status ? 'Offline' : 'Online' %>
                         </p>
                       </td>
                       <td id="screen.tags">
