@@ -16,41 +16,41 @@ document.addEventListener("DOMContentLoaded", function () {
     window.location.href = "/Dashboard/Playlist/newPlaylist/selectScreens";
   }
   window.selectScreen=selectScreen;
-  async function sendSelectedItemsToBackend() {
-    //const selectedItems = []; // Ensure this array contains the selected items
-    // console.log("Playlist selectedIems:", selectedItems);
-    if(window.playlistName===''||window.playlistDescription===''||selectedItems.length===0){
-      alert("all fields are required any select one layout")
-      return
-    }
-    try {
-      const response = await fetch("/Dashboard/Playlist/createPlaylist", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          screenID: window.screenID,
-          urls: selectedItems,
-          playlistName: window.playlistName,
-          playlistDescription: window.playlistDescription,
-        }),
-      });
-      if (!response.ok) {
-        throw new Error("Failed to create playlist");
-      }
-      // If response is okay, show success message
-      const responseData = await response.json();
-      console.log("Playlist created:", responseData.playlist);
-      alert("Playlist created successfully!");
-    } catch (error) {
-      console.error("Error creating videos:", error);
-      // Handle errors if any
-      alert("Failed to create playlist. Please try again.");
-    }
-  }
+  // async function sendSelectedItemsToBackend() {
+  //   //const selectedItems = []; // Ensure this array contains the selected items
+  //   // console.log("Playlist selectedIems:", selectedItems);
+  //   if(window.playlistName===''||window.playlistDescription===''||selectedItems.length===0){
+  //     alert("all fields are required any select one layout")
+  //     return
+  //   }
+  //   try {
+  //     const response = await fetch("/Dashboard/Playlist/createPlaylist", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({
+  //         screenID: window.screenID,
+  //         urls: selectedItems,
+  //         playlistName: window.playlistName,
+  //         playlistDescription: window.playlistDescription,
+  //       }),
+  //     });
+  //     if (!response.ok) {
+  //       throw new Error("Failed to create playlist");
+  //     }
+  //     // If response is okay, show success message
+  //     const responseData = await response.json();
+  //     console.log("Playlist created:", responseData.playlist);
+  //     alert("Playlist created successfully!");
+  //   } catch (error) {
+  //     console.error("Error creating videos:", error);
+  //     // Handle errors if any
+  //     alert("Failed to create playlist. Please try again.");
+  //   }
+  // }
 
-  window.sendSelectedItemsToBackend = sendSelectedItemsToBackend;
+  // window.sendSelectedItemsToBackend = sendSelectedItemsToBackend;
 
   const buttons = document.querySelectorAll(".media-category button");
   buttons.forEach((button) => {
