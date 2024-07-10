@@ -1,20 +1,19 @@
 const db = require("../config/dbConnection");
 
 const createPlaylist = async (playlistData) => {
-  const { screenIDs, playlistName, playlistDescription, urls } = playlistData;
-  console.log("urls", urls);
-    console.log("screenID", screenIDs);
-    console.log("playlistName", playlistName);
-    console.log("playlistDescription", playlistDescription);
+  const {  playlistName, playlistDescription, urls } = playlistData;
+  // console.log("urls", urls);
+  //   // console.log("screenID", screenIDs);
+  //   console.log("playlistName", playlistName);
+  //   console.log("playlistDescription", playlistDescription);
   try {
     // Insert into playlists table
     const query = `
-      INSERT INTO playlists (screen_id, playlistname, playlistdescription, slot1, slot2, slot3, slot4, slot5, slot6, slot7, slot8, slot9, slot10)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+      INSERT INTO playlists ( playlistname, playlistdescription, slot1, slot2, slot3, slot4, slot5, slot6, slot7, slot8, slot9, slot10)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
       RETURNING *;
     `;
     const values = [
-      screenIDs,
       playlistName,
       playlistDescription,
       urls[0] || null,
@@ -39,7 +38,7 @@ const createPlaylist = async (playlistData) => {
 
 const viewPlaylist=async()=>{
   try {
-    const result=await db.query('SELECT * FROM playlists')
+   const result = await db.query('SELECT * FROM playlists ORDER BY id DESC');
     return result.rows;
   } catch (error) {
     throw new Error('Error show playlist');
