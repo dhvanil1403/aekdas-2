@@ -213,3 +213,36 @@ function filterScreens() {
 
 // Bind the filterScreens function to the input event
 document.getElementById('searchInput').addEventListener('input', filterScreens);
+
+function deletePlaylist(screenid) {
+  console.log(" delete playlist click");
+  console.log(screenid);
+  // Assuming AJAX call to backend to update playlistname to null
+  fetch(`/Dashboard/Screens/${screenid}/deletePlaylist`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      playlistname: null // Set playlistname to null
+    })
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Failed to delete playlist');
+    }
+    alert('delete successfully')
+    window.location.reload();
+    // return response.json();
+  })
+  .then(data => {
+    // Handle success, if needed
+    console.log('Playlist deleted successfully:', data);
+    // Optionally update UI or refresh data
+    window.location.reload(); // Refresh the page or update UI
+  })
+  .catch(error => {
+    console.error('Error deleting playlist:', error);
+    // Handle error
+  });
+}
