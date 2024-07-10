@@ -214,6 +214,19 @@ const restoreScreen = async (req, res) => {
     res.status(500).json({ success: false, message: "Error restoring screen" });
   }
 };
+
+const deletePlaylist = async (req, res) => {
+  const { screenid } = req.params;
+console.log("screenid",screenid);
+  try {
+  const response= await screen.deletePlaylist(screenid);
+
+    res.json(response);
+  } catch (error) {
+    console.error("Error deleting playlist:", error);
+    res.status(500).json({ error: "Failed to delete playlist" });
+  }
+};
 module.exports = {
   addScreen,
   getAllScreens,
@@ -224,5 +237,6 @@ module.exports = {
   // getDeletedScreens,
   // showGroupScreen,
   restoreScreen,
-  getAllScreensAllData
+  getAllScreensAllData,
+  deletePlaylist
 };
