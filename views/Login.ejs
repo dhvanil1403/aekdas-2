@@ -23,9 +23,7 @@
         
         <form action="/login" method="post">
            <div class="details">
-            <% if (message) { %>
-                <p class="error"><%= message %></p>
-              <% } %>
+           
             <div class="para1">
                 
                 <p>Login to Account</p>
@@ -34,18 +32,20 @@
                 <p>Please enter your email and password to continue</p>
             </div>
             <div class="emailField">
-                <label>Username:</label>
-                <input type="email" placeholder="Enter Email" name="username" required />
+                <label for="email">Email:</label>
+                <!-- <input type="email" placeholder="Enter Email" name="username" required /> -->
+                <input type="email" id="email" placeholder="Enter Email" name="email" required>
             </div>
             <div class="passwordField">
                 <!-- <p class="forgetPass">Forget Password?</p> -->
-                <label>Password:</label>
-                <input type="password" placeholder="Enter Password" name="password" required/>
+                <label for="password">Password:</label>
+                <input type="password" id="password" placeholder="Enter Password" name="password" required>
                 <!-- <input type="checkbox" />
                 <label id="checkboxLable">Remember Password</label> -->
             </div>
             <div class="btn">
-                <input type="submit" value="Sign In" />
+                <!-- <input type="submit" value="Sign In" /> -->
+                <button type="submit">Login</button>
             </div>
            </div>
         </form>
@@ -54,3 +54,27 @@
 
 </body>
 </html>
+
+
+<!-- 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+<body>
+    <h1>Login</h1>
+    <form action="/login" method="POST">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+        <br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+        <br>
+        <button type="submit">Login</button>
+    </form>
+    <a href="/register">Register</a>
+</body>
+</html> -->
