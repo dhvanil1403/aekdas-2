@@ -2,10 +2,10 @@ const db = require("../config/dbConnection");
 
 const createPlaylist = async (playlistData) => {
   const {  playlistName, playlistDescription, urls } = playlistData;
-  // console.log("urls", urls);
-  //   // console.log("screenID", screenIDs);
-  //   console.log("playlistName", playlistName);
-  //   console.log("playlistDescription", playlistDescription);
+  console.log("urls", urls);
+    // console.log("screenID", screenIDs);
+    console.log("playlistName", playlistName);
+    console.log("playlistDescription", playlistDescription);
   try {
     // Insert into playlists table
     const query = `
