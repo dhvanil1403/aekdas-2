@@ -6,9 +6,15 @@ const screenRouter=require('./screensRoutes');
 const libraryRouter=require('./libraryRoutes');
 const playlistRouter=require('./playlistRoutes');
 
-
-router.use(dashboardAuth)
-router.get("/",  (req, res) => {
+const isAuthenticated = (req, res, next) => {
+  if (req.session.user) {
+      next(); // User is authenticated, proceed to dashboard
+  } else {
+      res.redirect('/login'); // Redirect to login if user is not authenticated
+  }
+};
+//  router.use(dashboardAuth)
+router.get("/", isAuthenticated, (req, res) => {
     res.render("Dashboard", { message: null });
   });
 
