@@ -31,7 +31,7 @@ const addScreen = async (req, res) => {
 
     const existingScreen = await screen.screenByPairingCode(pairingCode);
     if (existingScreen.length > 0) {
-      const allScreens = await screen.getAllScreens();
+      const allScreens = await screen.getNotdeletedScreen();
       const screenCount = await screen.getTotalScreenCount();
       const onlineScreen = await screen.getNotDeletedScreenCount();
       const offlineScreen = await screen.getDeletedScreenCount();
@@ -62,7 +62,9 @@ const addScreen = async (req, res) => {
     const screenCount = await screen.getTotalScreenCount();
     const onlineScreen = await screen.getNotDeletedScreenCount();
     const offlineScreen = await screen.getDeletedScreenCount();
-    const allScreens = await screen.getAllScreens();
+    // const allScreens = await screen.getAllScreens();
+    const allScreens = await screen.getNotdeletedScreen();
+
     const deletedScreens = await screen.getDeletedScreen(); // Fetch deleted screens
     const groupscreen = await screen.getGroupScreen();
 
@@ -83,7 +85,9 @@ const addScreen = async (req, res) => {
 
 const getAllScreens = async (req, res) => {
   try {
-    const allScreens = await screen.getAllScreens(); // Fetch all screens
+    // const allScreens = await screen.getAllScreens(); // Fetch all screens
+    const allScreens = await screen.getNotdeletedScreen();
+
     const onlineScreen = await screen.getNotDeletedScreenCount();
     const screenCount = await screen.getTotalScreenCount();
     const offlineScreen = await screen.getDeletedScreenCount();
@@ -172,7 +176,9 @@ const editScreen = async (req, res) => {
 
     const screenCount = await screen.getTotalScreenCount();
     const onlineScreen = await screen.getNotDeletedScreenCount();
-    const allScreens = await screen.getAllScreens(); // Fetch updated not deleted screens
+    // const allScreens = await screen.getAllScreens(); // Fetch updated not deleted screens
+    const allScreens = await screen.getNotdeletedScreen();
+
     res.render("Screen", {
       message: "Screen edited successfully",
       screens: allScreens,
