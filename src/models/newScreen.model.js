@@ -49,7 +49,7 @@ const getAllScreens = async () => {
 const getNotdeletedScreen = async () => {
   try {
     const result = await db.query(
-      "SELECT * FROM screens WHERE  deleted = false"
+            "SELECT * FROM screens WHERE  deleted = false ORDER BY screenid DESC"
     );
     return result.rows;
   } catch (err) {
