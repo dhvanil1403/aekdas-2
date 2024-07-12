@@ -57,7 +57,7 @@ img {
 .details {
     background-color: #FFFFFF;
     border: 1px solid rgb(219, 45, 45);
-    width: 90%;
+/*     width: 90%; */
     height: 65vh;
     display: flex;
     flex-direction: column;
