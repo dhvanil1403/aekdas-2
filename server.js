@@ -6,6 +6,7 @@ const cookieParser = require("cookie-parser");
 require("dotenv").config();
 const dashboardRoutes = require("./src/routes/dashboardRoutes");
 const loginRoutes = require("./src/routes/loginRoutes");
+const flash = require('connect-flash');
 const app = express();
 // const port = process.env.PORT || 3000;
  const api=require('./src/controllers/api.controller')
@@ -32,11 +33,16 @@ app.use(session({
   saveUninitialized: true,
 }));
 
-
+app.use(flash());
 // Database setup
 const sequelize = new Sequelize('dbzvtfeophlfnr', 'u3m7grklvtlo6', 'AekAds@24', {     
   host: '35.209.89.182',
   dialect: 'postgres'
+});
+app.use((req, res, next) => {
+  res.locals.success_msg = req.flash('success_msg');
+  res.locals.error_msg = req.flash('error_msg');
+  next();
 });
 
 // app.use("/login", loginRoutes);
@@ -139,8 +145,9 @@ app.post('/login', async (req, res) => {
 
       res.redirect('/verify-otp');  
   } else {
-      res.redirect('/Login');
-  }
+    req.flash('error_msg', 'Invalid email or password. Please check and try again.');
+    res.redirect('/login');
+}
 });
 
 app.get('/verify-otp', (req, res) => {
