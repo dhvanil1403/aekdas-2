@@ -139,7 +139,7 @@ app.post('/login', async (req, res) => {
 
       res.redirect('/verify-otp');  
   } else {
-      res.redirect('/login');
+      res.redirect('/Login');
   }
 });
 
