@@ -29,7 +29,7 @@
           </p>
         </div>
         <div class="offline-screen">
-          <h3>Offline Screen</h3>
+          <h3>Deleted Screen</h3>
           <p>
             <%= offlineScreen %>
           </p>
@@ -141,7 +141,7 @@
               <form action="/Dashboard/Screens" method="post">
                 <div class="form-class">
                   <label>Pairing Code</label>
-                  <input type="text" name="pairingCode" required />
+                  <input type="number" name="pairingCode" required pattern="\d{6}" min="000000" max="999999" />
                 </div>
                 <div class="form-class">
                   <label>Screen Name</label>
@@ -238,9 +238,9 @@
                     
                       </td>
                       
-                      <td id="screen.status" class="status-cell ">
-                        <p class="<%= screen.status ? 'offline' : 'online' %>">
-                          <%= screen.status ? 'Offline' : 'Online' %>
+                      <td id="screen.deleted" class="status-cell ">
+                        <p class="<%= screen.deleted ? 'offline' : 'online' %>">
+                          <%= screen.deleted ? 'Offline' : 'Online' %>
                         </p>
                       </td>
                       <td id="screen.tags">
