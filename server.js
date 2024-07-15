@@ -162,6 +162,7 @@ app.post('/verify-otp', async (req, res) => {
       await OTP.destroy({ where: { id: savedOtp.id } });
       res.redirect('/Dashboard');
   } else {
+     req.flash('error_msg', 'Invalid OTP. Please check and try again.');
       res.redirect('/verify-otp');
   }
 });
