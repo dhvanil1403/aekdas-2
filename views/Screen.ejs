@@ -216,10 +216,10 @@
             <%= screen.pairingcode %>
           </td>
           <td id="screen.screenname">
-            <%= screen.screenname.length > 20 ? screen.screenname.substring(0, 20) + '***' : screen.screenname %>
+            <%= screen.screenname.length > 20 ? screen.screenname.substring(0, 20) + '...' : screen.screenname %>
           </td>
           <td id="screen.playlistname" style="display: flex; justify-content: center; align-items: center;">
-            <p><%= screen.playlistname.length > 20 ? screen.playlistname.substring(0, 20) + '***' : screen.playlistname %></p>
+            <p><%= screen.playlistname.length > 20 ? screen.playlistname.substring(0, 20) + '...' : screen.playlistname %></p>
             <button class="delete" onclick="deletePlaylist('<%= screen.screenid %>')">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <g clip-path="url(#clip0_1_4435)">
@@ -240,13 +240,13 @@
             </p>
           </td>
           <td id="screen.tags">
-            <%= screen.tags.length > 20 ? screen.tags.substring(0, 20) + '***' : screen.tags %>
+            <%= screen.tags.length > 20 ? screen.tags.substring(0, 20) + '...' : screen.tags %>
           </td>
           <td id="screen.location">
-            <%= screen.location.length > 20 ? screen.location.substring(0, 20) + '***' : screen.location %>
+            <%= screen.location.length > 20 ? screen.location.substring(0, 20) + '...' : screen.location %>
           </td>
           <td id="screen.city">
-            <%= screen.city.length > 20 ? screen.city.substring(0, 20) + '***' : screen.city %>
+            <%= screen.city.length > 20 ? screen.city.substring(0, 20) + '...' : screen.city %>
           </td>
           <td id="screen.pincode">
             <%= screen.pincode %>
