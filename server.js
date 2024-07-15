@@ -146,7 +146,7 @@ app.post('/login', async (req, res) => {
       res.redirect('/verify-otp');  
   } else {
     req.flash('error_msg', 'Invalid email or password. Please check and try again.');
-    res.redirect('/login');
+    // res.redirect('/login');
 }
 });
 
