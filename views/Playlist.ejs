@@ -54,25 +54,26 @@
         </div>
       </div>
       <main>
-        <div class="showPlaylists">
-          <% if (playlists && playlists.length> 0) { %>
-            <% playlists.forEach(playlist=> { %>
-              <div class="playlist-items">
-                <div class="playlist-img">
-                </div>
-                <div class="playlist-info">
-                  <p>
-                    <%= playlist.playlistname %>
-                  </p>
-                  <button onclick="location.href='/Dashboard/Playlist/PlaylistEdit/<%= playlist.id %>'">Edit</button> 
-                  <!-- <button2 onclick="">Delete</button2> -->
-                </div>
-              </div>
-              <% }); %>
-                <% } else { %>
-                  <p>No playlists available.</p>
-                  <% } %>
-        </div>
+                   <div class="showPlaylists">
+              <% if (playlists && playlists.length > 0) { %>
+                <% playlists.forEach(playlist => { %>
+                  <div class="playlist-items">
+                    <div class="playlist-img">
+                    </div>
+                    <div class="playlist-info">
+                      <p>
+                        <%= playlist.playlistname.length > 35 ? playlist.playlistname.substring(0, 35) + '...' : playlist.playlistname %>
+                      </p>
+                      <button onclick="location.href='/Dashboard/Playlist/PlaylistEdit/<%= playlist.id %>'">Edit</button>
+                      <!-- <button2 onclick="">Delete</button2> -->
+                    </div>
+                  </div>
+                <% }); %>
+              <% } else { %>
+                <p>No playlists available.</p>
+              <% } %>
+            </div>
+
       </main>
     </div>
     <script src="/javaScripts/playlist.js"></script>
