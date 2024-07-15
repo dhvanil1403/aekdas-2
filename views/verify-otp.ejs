@@ -39,6 +39,9 @@
                 <!-- <input type="submit" value="Sign In" /> -->
                 <button type="submit">Verify</button>
             </div>
+            <% if (error_msg) { %>
+                <p style="color: red;"><%= error_msg %></p>
+            <% } %> 
            </div>
         </form>
       </div>
