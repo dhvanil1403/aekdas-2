@@ -2,107 +2,163 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New Playlist</title>
-    <link rel="stylesheet" href="/css/newPlaylist.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Playlist</title>
+  <link rel="stylesheet" href="/css/playlist.css" />
 </head>
-
+  
 <body>
-    <div class="newPlaylist">
-        <div class="header">
-            <!-- Header content, unchanged -->
-             <!-- <button onclick="sendSelectedItemsToBackend()">Publish</button> -->
-             <button onclick="selectScreen()">Select Screen</button>
-             <button id="previewButton">Preview</button>
-             <div id="videoOverlay">
-                <div id="videoContainer">
-                    <!-- Videos will be displayed here -->
-                </div>
-                <button id="closeButton">Close</button>
-            </div>
+  <%- include('Dashboard') %>
+    <div class="playlist">
+      <header>
+        <div class="home-playlist">
+          <p>Home><b>Playlist</b></p>
         </div>
-        <div class="main">
-            <div class="media-sidebar">
-                <div class="media-widgets">
-                    <p class="media">Media</p>
-                    <p class="widgets">Widgets</p>
-                </div>
-                <div class="search-upload" style="display: none;">
-                    <input type="search"  name="search" placeholder="Search">
-
-                    <button class="media-btn-upload" id="uploadButton"><svg width="30" height="30" viewBox="0 0 30 30"
-                            fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="15" cy="15" r="15" fill="#0D6EFD" />
-                            <path
-                                d="M21.75 17.25V20.25C21.75 20.6478 21.592 21.0294 21.3107 21.3107C21.0294 21.592 20.6478 21.75 20.25 21.75H9.75C9.35218 21.75 8.97064 21.592 8.68934 21.3107C8.40804 21.0294 8.25 20.6478 8.25 20.25V17.25"
-                                stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                            <path d="M18.75 12L15 8.25L11.25 12" stroke="white" stroke-width="1.5"
-                                stroke-linecap="round" stroke-linejoin="round" />
-                            <path d="M15 8.25V17.25" stroke="white" stroke-width="1.5" stroke-linecap="round"
-                                stroke-linejoin="round" />
-                        </svg>
-                    </button>
-                    <form id="uploadForm" action="/Dashboard/Playlist/UploadFile" method="POST"
-                        enctype="multipart/form-data" style="display: none;">
-                        <input type="file" name="file" id="fileInput">
-                        <button type="submit" id="submitBtn">Upload</button>
-                    </form>
-                </div>
-                <div class="media-category">
-                    <button class="media-all"><a href="/Dashboard/Playlist/newPlaylist">All</a></button>
-                    <button class="media-photos" style="display: none;"><a href="/Dashboard/Playlist/Photoes">Photos</a></button>
-                    <button class="media-videos" style="display: none;"><a href="/Dashboard/Playlist/Videos">Videos</a></button>
-                </div>
-                <div class="show-media">
-                    <!-- Media files loop -->
-                    <% mediafiles.forEach(function(file) { %>
-                        <div class="media-container">
-                            <% if (file.type && file.type.startsWith('image/')) { %>
-                                <img src="<%= file.url %>" alt="Image" class="media-item image-item" data-layout-name="<%= file.filename %>" data-duration="<%= file.durationString  %>" data-size="<%= file.size %>MB">
-                                <% } else if (file.type && file.type.startsWith('video/')) { %>
-                                    <video controls class="media-item video-item" preload="metadata">
-                                        <source src="<%= file.url %>" type="<%= file.type %>" data-layout-name="<%= file.filename %>" 
-                                        data-duration="<%= file.durationString %>" 
-                                        data-size="<%= file.size %> MB">>
-                                        Your browser does not support the video tag.
-                                    </video>
-                                    <% } else { %>
-                                        <p>Unsupported file type: <%= file.type %>
-                                        </p>
-                                        <% } %>
-                        </div>
-                        <% }); %>
-                </div>
-            </div>
-            <div class="middle">
-                <div class="img-preview">
-
-                </div>
-                <div class="img-slider" id="imgSlider">
-                    
-                </div>
-            </div>
-            <div class="layout-info">
-               <div class="info-class">
-                <p>Layout Name</p>
-                <input type="text" id="layout-name" readonly>
-               </div>
-               <div class="info-class">
-                <p>Duration</p>
-                <input type="text" id="duration" readonly>
-               </div>
-               <div class="info-class">
-                <p>size</p>
-                <input type="text" id="size" readonly>
-               </div>
-               
-            </div>
+        <div class="search-newplaylist">
+        <input type="search" placeholder="Search" id="searchInput">
+          <button class="newPlaylist" onclick="addPlaylistBox()">
+            <span>+</span>New Playlist
+          </button>
         </div>
+      </header>
+      <div class="create-playlist" id="overlay">
+        <div class="newScreen">
+          <div class="newScreen-header">
+            <h2>NEW PLAYLIST</h2>
+            <button class="close-btn" onclick="hideNewScreen()">×</button>
+          </div>
+          <hr />
+          <div class="addNewScreen-form">
+          
 
+            <div class="form-class">
+              <label>Playlist Name</label>
+              <input type="text" name="playlistName" id="playlistName" required />
+            </div>
+
+            <div class="form-class">
+              <label>Playlist Description</label>
+              <textarea name="playlistDescription" id="playlistDescription" required></textarea>
+            </div>
+
+         
+            <div class="form-class btn">
+              <button id="createPlaylistButton">Create Playlist</button>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+      <main>
+        <div class="showPlaylists">
+          <% if (playlists && playlists.length> 0) { %>
+            <% playlists.forEach(playlist=> { %>
+              <div class="playlist-items">
+                <div class="playlist-img">
+                </div>
+                <div class="playlist-info">
+                  <p>
+                    <%= playlist.playlistname %>
+                  </p>
+                  <button onclick="location.href='/Dashboard/Playlist/PlaylistEdit/<%= playlist.id %>'">Edit</button> 
+                  <button2 onclick="location.href='/Dashboard/Playlist/PlaylistDelete/<%= playlist.id %>' ">Delete</button2> 
+                  <!-- <button2 onclick="deletePlaylist">Delete</button2> -->
+                </div>
+              </div>
+              <% }); %>
+                <% } else { %>
+                  <p>No playlists available.</p>
+                  <% } %>
+        </div>
+      </main>
     </div>
-    
-    <script src="/javaScripts/newPlaylist.js"></script>
+    <script src="/javaScripts/playlist.js"></script>
+    <script>
+      let searchInput = document.getElementById('searchInput');
+
+      function filterPlaylists() {
+        const filter = searchInput.value.toLowerCase();
+        const playlists = document.querySelectorAll('.playlist-items');
+        playlists.forEach(playlist => {
+          const playlistName = playlist.querySelector('.playlist-info p').textContent.toLowerCase();
+          if (playlistName.includes(filter)) {
+            playlist.style.display = '';
+          } else {
+            playlist.style.display = 'none';
+          }
+        });
+      }
+
+      searchInput.addEventListener('input', filterPlaylists);
+
+      window.addEventListener('load', filterPlaylists);
+
+
+
+
+
+
+
+
+      async function deletePlaylist() {
+    const selectedScreens = [];
+    const checkboxes = document.querySelectorAll('input[name="checkbox"]:checked');
+    checkboxes.forEach((checkbox) => {
+      selectedScreens.push(checkbox.value);
+    });
+
+    if (selectedScreens.length === 0) {
+      alert("Please select at least one screen");
+      return;
+    }
+
+    console.log("playlistName", playlistName);
+    console.log("playlistDescription", playlistDescription);
+    console.log("selectedUrls", urls);
+    console.log("selectedScreens", selectedScreens);
+
+    try {
+      const response = await fetch("/Dashboard/Playlist/deletePlaylist", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          screenIDs: selectedScreens,
+          urls: null,
+          playlistName: null,
+          playlistDescription: null,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to edit playlist");
+      }
+      const responseData = await response.json();
+      console.log("Playlist edit:", responseData.playlist);
+      alert("Screen edit successfully!");
+      window.location.href = '/Dashboard/Playlist';
+    } catch (error) {
+      console.error("Error edit playlist:", error);
+      alert("Failed to edit playlist. Please try again.");
+    }
+  }
+  window.deletePlaylist = deletePlaylist;
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </script>
 </body>
 
 </html>
