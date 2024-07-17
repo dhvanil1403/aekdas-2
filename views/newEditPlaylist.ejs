@@ -108,11 +108,11 @@
                 </div>
                 <div class="info-class">
                     <p>SCREEN IDS</p>
-                    <input type="text" id="screenIDS" value="<%= playlist.screen_id %>">
+                    <input type="text" id="screenIDS" value="<%= playlist.screen_id %>" readonly>
                 </div>
                 <div class="info-class">
                     <p>Playlist Name</p>
-                    <input type="text" id="playlistname" value="<%= playlist.playlistname %>">
+                    <input type="text" id="playlistname" value="<%= playlist.playlistname %>" >
                 </div>
                 <div class="info-class">
                     <p>Playlist Description</p>
@@ -203,8 +203,8 @@
                 const playlistName = document.querySelector('#playlistname').value;
                 const playlistDescription = document.querySelector('#playlistdescription').value;
 
-                const id = getIdFromUrl();
-                sessionStorage.setItem('playlistId', id);
+                const playlistId = getIdFromUrl();
+                sessionStorage.setItem('playlistId', playlistId);
                 sessionStorage.setItem('playlistUrls', JSON.stringify(urls));
                 sessionStorage.setItem('screenIDS', screenIDS);
                 sessionStorage.setItem('playlistName', playlistName);
