@@ -49,7 +49,7 @@
             <% if (screens && screens.length) { %>
               <% screens.forEach(screen => { %>
                
-                <!-- <% if (screen.playlistname === null) { %> -->
+               
                   <tr>
                     <td>                  
                       <input type="checkbox" name="checkbox" value="<%= screen.screenid %>"/>
@@ -60,7 +60,7 @@
                     <td><%= screen.screenname %></td>
                    
                   </tr>
-                <!-- <% } %> -->
+                
               <% }) %>
             <% } else { %>
               <tr>
@@ -72,7 +72,7 @@
         </table>
       </div>
 
-      <div class="selected-screen">
+      <!-- <div class="selected-screen">
         <input type="text" id="searchInput" value="">
         <table>
           <thead>
@@ -117,7 +117,7 @@
             <% } %>
           </tbody>
         </table>
-      </div>
+      </div> -->
 
 
     </div>
@@ -173,6 +173,19 @@
     }
   }
   window.publishPlaylist = publishPlaylist;
+  
+
+
+
+
+
+  
+
+
+
+
+
+
 
   let searchInput = document.getElementById('searchInput');
   searchInput.value = playlistName;
