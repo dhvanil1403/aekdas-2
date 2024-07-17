@@ -196,6 +196,24 @@ const getVideosForPlaylist = async (req, res) => {
   }
 };
 
+const deleteMedia = async (req, res) => {
+  const { id } = req.params;
+  try {
+    // Delete file record from the database
+    await library.deleteMediaById(id);
+
+    // Optionally, you can also delete the file from Cloudinary or your file storage
+    // await cloudinary.uploader.destroy(publicId, { resource_type: "video" }); // Example for Cloudinary
+
+    // Redirect to the library page
+    res.redirect('/Dashboard/Library');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error deleting media file");
+  }
+};
+
+
 module.exports = {
   handleUploadInDB,
   viewMedia,
@@ -205,5 +223,6 @@ module.exports = {
   getPhotoesForPlaylist,
   getVideosForPlaylist,
   handleUploadInDBForNewPlaylist,
+  deleteMedia,
   intervalToString
 };
