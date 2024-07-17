@@ -30,11 +30,8 @@
           </div>
           <hr />
           <div class="addNewScreen-form">
-            <!-- <div class="form-class">
-              <label>Screen ID</label>
-              <input type="text" name="screenID" id="screenID" required />
-            </div> -->
-<form>
+          
+
             <div class="form-class">
               <label>Playlist Name</label>
               <input type="text" name="playlistName" id="playlistName" required />
@@ -44,7 +41,8 @@
               <label>Playlist Description</label>
               <textarea name="playlistDescription" id="playlistDescription" required></textarea>
             </div>
-</form>
+
+         
             <div class="form-class btn">
               <button id="createPlaylistButton">Create Playlist</button>
             </div>
@@ -54,26 +52,26 @@
         </div>
       </div>
       <main>
-                   <div class="showPlaylists">
-          <% if (playlists && playlists.length > 0) { %>
-            <% playlists.forEach(playlist => { %>
+        <div class="showPlaylists">
+          <% if (playlists && playlists.length> 0) { %>
+            <% playlists.forEach(playlist=> { %>
               <div class="playlist-items">
                 <div class="playlist-img">
                 </div>
                 <div class="playlist-info">
                   <p>
-                    <%= playlist.playlistname.length > 25 ? playlist.playlistname.substring(0, 25) + '...' : playlist.playlistname %>
+                    <%= playlist.playlistname %>
                   </p>
-                  <button onclick="location.href='/Dashboard/Playlist/PlaylistEdit/<%= playlist.id %>'">Edit</button>
-                  <!-- <button2 onclick="">Delete</button2> -->
+                  <button onclick="location.href='/Dashboard/Playlist/PlaylistEdit/<%= playlist.id %>'">Edit</button> 
+                  <button2 onclick="location.href='/Dashboard/Playlist/PlaylistDelete/<%= playlist.id %>' ">Delete</button2> 
+                  <!-- <button2 onclick="deletePlaylist">Delete</button2> -->
                 </div>
               </div>
-            <% }); %>
-          <% } else { %>
-            <p>No playlists available.</p>
-          <% } %>
+              <% }); %>
+                <% } else { %>
+                  <p>No playlists available.</p>
+                  <% } %>
         </div>
-
       </main>
     </div>
     <script src="/javaScripts/playlist.js"></script>
@@ -96,6 +94,70 @@
       searchInput.addEventListener('input', filterPlaylists);
 
       window.addEventListener('load', filterPlaylists);
+
+
+
+
+
+
+
+
+      async function deletePlaylist() {
+    const selectedScreens = [];
+    const checkboxes = document.querySelectorAll('input[name="checkbox"]:checked');
+    checkboxes.forEach((checkbox) => {
+      selectedScreens.push(checkbox.value);
+    });
+
+    if (selectedScreens.length === 0) {
+      alert("Please select at least one screen");
+      return;
+    }
+
+    console.log("playlistName", playlistName);
+    console.log("playlistDescription", playlistDescription);
+    console.log("selectedUrls", urls);
+    console.log("selectedScreens", selectedScreens);
+
+    try {
+      const response = await fetch("/Dashboard/Playlist/deletePlaylist", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          screenIDs: selectedScreens,
+          urls: null,
+          playlistName: null,
+          playlistDescription: null,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to edit playlist");
+      }
+      const responseData = await response.json();
+      console.log("Playlist edit:", responseData.playlist);
+      alert("Screen edit successfully!");
+      window.location.href = '/Dashboard/Playlist';
+    } catch (error) {
+      console.error("Error edit playlist:", error);
+      alert("Failed to edit playlist. Please try again.");
+    }
+  }
+  window.deletePlaylist = deletePlaylist;
+
+
+
+
+
+
+
+
+
+
+
+
+
     </script>
 </body>
 
