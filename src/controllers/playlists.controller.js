@@ -12,7 +12,7 @@ const createPlaylist = async (req, res) => {
     // console.log("playlistDescription", playlistDescription);
     // Create playlist object
     const playlistData = {
-      // screenIDs,
+      screenIDs,
       playlistName,
       playlistDescription,
       urls,
@@ -34,6 +34,7 @@ const createPlaylist = async (req, res) => {
     res.status(500).json({ error: "Failed to create playlist" });
   }
 };
+
 
 const showPlaylist=async(req,res)=>{
   try {
@@ -90,4 +91,256 @@ function intervalToString(interval) {
   return `${hours}${minutes}${seconds}`.trim();
 }
 
-module.exports = { createPlaylist ,showPlaylist,showAvailableScreen,getPlaylistById,showAvailableScreenForEditPlaylist};
+const editPlaylist = async (req, res) => {
+  try {
+    const { playlistId,urls, screenIDs, playlistName, playlistDescription } = req.body;
+
+    // Create playlist object
+    const playlistData = {
+      playlistId,
+      screenIDs,
+      playlistName,
+      playlistDescription,
+      urls,
+    };
+
+    // Call model function to update playlist
+    const updatedPlaylist = await playlists.editPlaylist(playlistData);
+
+    // Update screens with the new playlist
+    await playlists.updateScreensWithPlaylist(screenIDs, playlistName, playlistDescription, urls);
+
+    console.log("Playlist updated");
+
+    // Respond with the updated playlist
+    res.status(200).json({
+      message: "Playlist updated successfully",
+      playlist: updatedPlaylist,
+    });
+  } catch (err) {
+    console.error("Error updating playlist:", err);
+    res.status(500).json({ error: "Failed to update playlist" });
+  }
+};
+
+// const deletePlaylist = async (req, res) => {
+//   try {
+//     const { playlistId,urls, screenIDs, playlistName, playlistDescription } = req.body;
+
+//     // Create playlist object
+//     const playlistData = {
+//       playlistId,
+//       screenIDs:null,
+//       playlistName:null,
+//       playlistDescription:null,
+//       urls:null,
+//     };
+
+//     // Call model function to update playlist
+//     const updatedPlaylist = await playlists.deletePlaylist(playlistData);
+
+//     // Update screens with the new playlist
+//     await playlists.deleteScreensWithPlaylist(playlistData);
+
+//     console.log("Playlist updated");
+
+//     // Respond with the updated playlist
+//     res.status(200).json({
+//       message: "Playlist deleted successfully",
+//       playlist: updatedPlaylist,
+//     });
+//   } catch (err) {
+//     console.error("Error deleted playlist:", err);
+//     res.status(500).json({ error: "Failed to deleted playlist" });
+//   }
+// };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// const deletePlaylist = async (req, res) => {
+//   try {
+//     const { playlistId } = req.params;
+//     const screenIDs = await playlists.getScreenIDsByPlaylistId(playlistId);
+
+//     // Update screens to remove playlist associations
+//     await playlists.deleteScreensWithPlaylist(screenIDs);
+
+//     // Remove playlist from database
+//     const deletedPlaylist = await playlists.deletePlaylistById(playlistId);
+
+//     // Respond with the deleted playlist
+//     res.status(200).json({
+//       message: "Playlist deleted successfully",
+//       playlist: deletedPlaylist,
+//     });
+//   } catch (err) {
+//     console.error("Error deleting playlist:", err);
+//     res.status(500).json({ error: "Failed to delete playlist" });
+//   }
+// };
+
+// module.exports = {
+//   deletePlaylist,
+// };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const deletePlaylist = async (req, res) => {
+  try {
+    const { playlistId } = req.params;
+
+    // Log the playlistId to ensure it's received correctly
+    console.log("Playlist ID:", playlistId);
+
+    // Fetch the screen IDs associated with the playlist
+    const screenIDs = await playlists.getScreenIDsByPlaylistId(playlistId);
+
+    // Log the screen IDs to debug the returned result
+    console.log("Screen IDs:", screenIDs);
+
+    // Update screens to remove playlist associations
+    await playlists.deleteScreensWithPlaylist(screenIDs);
+    console.log("Screens updated successfully");
+
+    // Remove playlist from the database
+    const deletedPlaylist = await playlists.deletePlaylistById(playlistId);
+
+    // Log the deleted playlist to ensure it's deleted correctly
+    console.log("Deleted Playlist:", deletedPlaylist);
+
+    // Respond with the deleted playlist
+    res.redirect('/Dashboard/Playlist');
+  } catch (err) {
+    console.error("Error deleting playlist:", err);
+    res.status(500).json({ error: "Failed to delete playlist" });
+  }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+module.exports = { createPlaylist ,showPlaylist,showAvailableScreen,getPlaylistById,showAvailableScreenForEditPlaylist,editPlaylist,deletePlaylist};
