@@ -65,10 +65,21 @@ const getmediafileCount = async () => {
     throw error;
   }
 };
+const deleteMediaById = async (id) => {
+  try {
+    const result = await db.query('DELETE FROM mediafiles WHERE id = $1 RETURNING *', [id]);
+    return result.rows;
+  } catch (err) {
+    console.error("Error deleting media file from database:", err);
+    throw err;
+  }
+};
+
 module.exports = {
   uploadMediaInDB,
   viewMedia,
   getPhotoes,
   getVideos,
   getmediafileCount,
+  deleteMediaById,
 };
