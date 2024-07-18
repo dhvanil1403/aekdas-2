@@ -1,0 +1,141 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document</title>
+  <link rel="stylesheet" href="/css/groupScreen.css" />
+  <!-- <link rel="stylesheet" href="/css/screen.css" /> -->
+
+  <!-- <script>  
+    const screenIDS=sessionStorage.getItem('screenIDS');
+    console.log("screenIDS",screenIDS);
+  </script> -->
+
+</head>
+
+<body>
+  <div class="group">
+    <div class="header">
+      <!-- <div class="group-screen">
+        <p>Home > <b>Group Screen</b></p>
+      </div> -->
+      <div class="group-screen-btn">
+        <!-- <button onclick="goBack()">Go Back</button> -->
+        <button onclick="publishPlaylist()">Publish</button>
+      </div>
+    </div>
+    <div class="heading">
+      <h3>Select Screens to Publish Live Content</h3>
+      <!-- <h3>Selected Screens</h3> -->
+    </div>
+    <div class="selection-screens">
+      <div class="select-screen">
+        <!-- <input type="search" id="searchInput" placeholder="Search"> -->
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th>Screen ID</th>           
+              <th>Pairing Code</th>
+              <th>SCREEN NAME</th>
+             
+            </tr>
+          </thead>
+          <tbody>
+            <!-- <%# console.log("group : ",group); %> -->
+            <% if (screens && screens.length) { %>
+              <% screens.forEach(screen => { %>
+                  <tr>
+                    <td>                  
+                      <input type="checkbox" name="checkbox" value="<%= screen.screenid %>" data-pairingcode="<%= screen.pairingcode %>" />                    </td>
+                    <td><%= screen.screenid %></td>
+                    <td><%= screen.pairingcode %></td>
+                    <td><%= screen.screenname %></td>
+                   
+                  </tr>
+                
+              <% }) %>
+            <% } else { %>
+              <tr>
+                <td colspan="6">No screens found</td>
+              </tr>
+            <% } %>
+            
+          </tbody>
+        </table>
+      </div>
+
+     
+
+    </div>
+
+  </div>
+ 
+  <script>
+    async function publishPlaylist() {
+      const selectedScreens = [];
+      const selectedPairingCodes = [];
+      const checkboxes = document.querySelectorAll('input[name="checkbox"]:checked');
+
+      checkboxes.forEach((checkbox) => {
+        selectedScreens.push(checkbox.value);
+        selectedPairingCodes.push(checkbox.getAttribute('data-pairingcode'));
+      });
+
+      if (selectedScreens.length === 0) {
+        alert("Please select at least one screen");
+        return;
+      }
+
+      const formData = JSON.parse(sessionStorage.getItem('formData'));
+      const liveName = sessionStorage.getItem('liveName');
+      const liveDescription = sessionStorage.getItem('liveDescription');
+
+      console.log("formData", formData);
+      console.log("liveName", liveName);
+      console.log("liveDescription", liveDescription);
+      console.log("selectedScreens", selectedScreens);
+      console.log("selectedPairingCodes", selectedPairingCodes);
+
+      if (!formData || !liveName || !liveDescription) {
+        alert("Missing data. Please ensure all steps are completed.");
+        return;
+      }
+
+      try {
+        const response = await fetch("/Dashboard/LiveContent/createlive", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            liveName: liveName,
+            liveDescription: liveDescription,
+            liveUrls: formData,
+            screenIDs: selectedScreens,
+            pairingCodes: selectedPairingCodes
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to publish live content");
+        }
+
+        const responseData = await response.json();
+        console.log("Publish response:", responseData);
+        alert("Live content published successfully!");
+        window.location.href = '/Dashboard/LiveContent';
+      } catch (error) {
+        console.error("Error publishing live content:", error);
+        alert("Failed to publish live content. Please try again.");
+      }
+    }
+  </script>
+
+
+</body>
+
+</html>
