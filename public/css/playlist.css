@@ -171,13 +171,15 @@ main{
   justify-content: space-between;
 }
 .playlist-info button{
+  cursor: pointer;
   background: #0D6EFD;
   padding: 2px 20px;
   border-radius: 12px;
   color: #FFFFFF;
 }
 .playlist-info button2{
-  background: #ed0505;
+  cursor: pointer;
+  background: #f50a0a;
   padding: 2px 20px;
   border-radius: 12px;
   color: #FFFFFF;
