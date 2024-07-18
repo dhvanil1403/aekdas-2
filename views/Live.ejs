@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live</title>
+    <link rel="stylesheet" href="/css/playlist.css" />
+</head>
+
+<body>
+    <%- include('Dashboard') %>
+        <div class="playlist">
+            <header>
+                <div class="home-playlist">
+                    <p>Home><b>LiveContent</b></p>
+                </div>
+                <div class="search-newplaylist">
+                    <input type="search" placeholder="Search" id="searchInput">
+                    <button class="newPlaylist" onclick="addPlaylistBox()">
+                        <span>+</span>New Live Content
+                    </button>
+                </div>
+            </header>
+            <div class="create-playlist" id="overlay">
+                <div class="newScreen">
+                    <div class="newScreen-header">
+                        <h2>New Live Content</h2>
+                        <button class="close-btn" onclick="hideNewScreen()">×</button>
+                    </div>
+                    <hr />
+                    <div class="addNewScreen-form">
+
+
+                        <div class="form-class">
+                            <label>Live Name</label>
+                            <input type="text" name="liveName" id="liveName" required />
+                        </div>
+
+                        <div class="form-class">
+                            <label>Live Description</label>
+                            <textarea name="liveDescription" id="liveDescription" required></textarea>
+                        </div>
+
+
+                        <div class="form-class btn">
+                            <button id="createPlaylistButton">Share Live Content</button>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+            <main>
+                <div class="showPlaylists">
+                    <% if (liveData && liveData.length> 0) { %>
+                        <% liveData.forEach(liveItem=> { %>
+                            <div class="playlist-items">
+                                <div class="playlist-img">
+                                </div>
+                                <div class="playlist-info">
+                                    <p>
+                                        <%= liveItem.name %>
+                                    </p>
+                                    <button onclick="location.href=''">Edit</button>
+                                    <button2 onclick="deletePlaylist('<%= liveItem.id %>')">Delete</button2>
+                                    <!-- <button2 onclick="deletePlaylist">Delete</button2> -->
+                                </div>
+                            </div>
+                            <% }); %>
+                                <% } else { %>
+                                    <p>No playlists available.</p>
+                                    <% } %>
+                </div>
+            </main>
+        </div>
+        <!-- <script src="/javaScripts/playlist.js"></script> -->
+        <script>
+            function addPlaylistBox() {
+                document.getElementById("overlay").style.display = "flex";
+            }
+            function hideNewScreen() {
+                document.getElementById("overlay").style.display = "none";
+            }
+            document.getElementById("createPlaylistButton").addEventListener("click", function (event) {
+                const liveName = document.getElementById("liveName").value;
+                const liveDescription = document.getElementById("liveDescription").value;
+
+                if (!liveName || !liveDescription) {
+                    alert("Please fill in all required fields.");
+                    event.preventDefault();
+                    return;
+                }
+
+                sessionStorage.setItem("liveName", liveName);
+                sessionStorage.setItem("liveDescription", liveDescription);
+
+                window.location.href = "/Dashboard/LiveContent/liveLink";
+            });
+
+
+
+            async function deletePlaylist(liveId) {
+                if (!confirm("Are you sure you want to delete this LiveData?")) {
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`/Dashboard/LiveContent/deletePlaylist/${liveId}`, {
+                        method: "DELETE",
+                    });
+
+                    if (!response.ok) {
+                        throw new Error("Failed to delete LiveData");
+                    }
+
+                    const responseData = await response.json();
+                    console.log("LiveData deletion response:", responseData);
+                    alert("LiveData deleted successfully!");
+                    window.location.reload(); // Refresh the page after deletion
+                } catch (error) {
+                    console.error("Error deleting LiveData:", error);
+                    alert("Failed to delete LiveData . Please try again.");
+                }
+            }
+        </script>
+
+
+
+
+
+
+
+
+
+</body>
+
+</html>
