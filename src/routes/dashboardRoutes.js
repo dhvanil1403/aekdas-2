@@ -5,6 +5,7 @@ const teamRouter=require('./TeamsRoutes');
 const screenRouter=require('./screensRoutes');
 const libraryRouter=require('./libraryRoutes');
 const playlistRouter=require('./playlistRoutes');
+const liveContentRouter=require('./liveContentRoutes');
 
 const isAuthenticated = (req, res, next) => {
   if (req.session.user) {
@@ -22,5 +23,7 @@ router.use("/Screens",screenRouter);
 router.use("/Teams", teamRouter);
 router.use("/Library", libraryRouter);
 router.use("/Playlist", playlistRouter );
+router.use("/LiveContent", liveContentRouter );
+
 
 module.exports = router;
