@@ -57,7 +57,7 @@ app.get('/alldata',api.getAllScreensAllData);
 //   console.log(Example app listening on port ${port});
 // });
 
-
+app.get('/livedata',api.getAllScreensAllData);
 
 
 
