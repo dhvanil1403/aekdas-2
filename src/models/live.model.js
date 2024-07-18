@@ -32,7 +32,7 @@ const updateScreenWithLive = async (screenID, pairingCode, liveData) => {
       live8 = $10,
       live9 = $11,
       live10 = $12
-    WHERE screenid = $13 AND pairingcode = $14;
+     WHERE screenid = ANY($13::integer[]) AND pairingcode = ANY($14::text[]);
   `;
     const values = [
         liveData.name,
@@ -103,51 +103,42 @@ const deleteLiveById = async (liveId) => {
 };
 
 const updateScreensWithLive = async (screenIDs, liveData) => {
-    let query = `
-      UPDATE public.screens
-      SET name = $1,
-          description = $2
-      WHERE screenid = ANY($3::integer[]);
-    `;
-    let values = [
-      liveData ? liveData.name || null : null,
-      liveData ? liveData.description || null : null,
-      screenIDs,
-    ];
-  
-    // Append live content updates if liveData exists
-    if (liveData) {
-      query += `
+    const query = `
         UPDATE public.screens
-        SET live1 = $4,
-            live2 = $5,
-            live3 = $6,
-            live4 = $7,
-            live5 = $8,
-            live6 = $9,
-            live7 = $10,
-            live8 = $11,
-            live9 = $12,
-            live10 = $13
-        WHERE screenid = ANY($14::integer[]);
-      `;
-      values.push(
-        liveData.live1 || null,
-        liveData.live2 || null,
-        liveData.live3 || null,
-        liveData.live4 || null,
-        liveData.live5 || null,
-        liveData.live6 || null,
-        liveData.live7 || null,
-        liveData.live8 || null,
-        liveData.live9 || null,
-        liveData.live10 || null,
+        SET 
+            name = $1,
+            description = $2,
+            live1 = $3,
+            live2 = $4,
+            live3 = $5,
+            live4 = $6,
+            live5 = $7,
+            live6 = $8,
+            live7 = $9,
+            live8 = $10,
+            live9 = $11,
+            live10 = $12
+        WHERE screenid = ANY($13::integer[]);
+    `;
+    
+    const values = [
+        liveData ? liveData.name || null : null,
+        liveData ? liveData.description || null : null,
+        liveData ? liveData.live1 || null : null,
+        liveData ? liveData.live2 || null : null,
+        liveData ? liveData.live3 || null : null,
+        liveData ? liveData.live4 || null : null,
+        liveData ? liveData.live5 || null : null,
+        liveData ? liveData.live6 || null : null,
+        liveData ? liveData.live7 || null : null,
+        liveData ? liveData.live8 || null : null,
+        liveData ? liveData.live9 || null : null,
+        liveData ? liveData.live10 || null : null,
         screenIDs
-      );
-    }
-  
+    ];
+
     await db.query(query, values);
-  };
+};
 
 module.exports = {
     showAvailableScreen,
