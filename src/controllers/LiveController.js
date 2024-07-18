@@ -43,6 +43,7 @@ const createlive = async (req, res) => {
   
     try {
       await liveModel.createLive(liveData);
+      await liveModel.updateScreenWithLive(screenIDs, pairingCodes, liveData)
       res.status(200).json({ message: "Live content published successfully!" });
     } catch (error) {
       console.error("Error publishing live content:", error);
@@ -62,35 +63,36 @@ const createlive = async (req, res) => {
 
   const deleteLive = async (req, res) => {
     try {
-      const { liveId } = req.params;
-  
-      // Log the liveId to ensure it's received correctly
-      console.log("Live ID:", liveId);
-  
-      // Fetch the screen IDs associated with the live content
-      const screenIDs = await liveModel.getScreenIDsByLiveId(liveId);
-  
-      // Log the screen IDs to debug the returned result
-      console.log("Screen IDs:", screenIDs);
-  
-      // Update screens to remove live content associations
-      await liveModel.updateScreensWithLive(screenIDs, null); // Pass null if liveData doesn't exist
-  
-      console.log("Screens updated successfully");
-  
-      // Remove live content from the database
-      const deletedLive = await liveModel.deleteLiveById(liveId);
-  
-      // Log the deleted live content to ensure it's deleted correctly
-      console.log("Deleted Live Content:", deletedLive);
-  
-      // Respond with a success message
-      res.status(200).json({ message: "Live content deleted successfully!" });
+        const { liveId } = req.params;
+
+        // Log the liveId to ensure it's received correctly
+        console.log("Live ID:", liveId);
+
+        // Fetch the screen IDs associated with the live content
+        const screenIDs = await liveModel.getScreenIDsByLiveId(liveId);
+
+        // Log the screen IDs to debug the returned result
+        console.log("Screen IDs:", screenIDs);
+
+        // Update screens to remove live content associations
+        await liveModel.updateScreensWithLive(screenIDs, null); // Pass null if liveData doesn't exist
+
+        console.log("Screens updated successfully");
+
+        // Remove live content from the database
+        const deletedLive = await liveModel.deleteLiveById(liveId);
+
+        // Log the deleted live content to ensure it's deleted correctly
+        console.log("Deleted Live Content:", deletedLive);
+
+        // Respond with a success message
+        res.status(200).json({ message: "Live content deleted successfully!" });
     } catch (err) {
-      console.error("Error deleting live content:", err);
-      res.status(500).json({ error: "Failed to delete live content" });
+        console.error("Error deleting live content:", err);
+        res.status(500).json({ error: "Failed to delete live content" });
     }
-  };
+};
+
 
 module.exports = {
   showAvailableScreen,
