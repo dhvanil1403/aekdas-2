@@ -1,6 +1,6 @@
-
 const playlists = require("../models/playlists.model");
 const groupScreen = require("../models/groupScreen.model");
+const screenModel=require("../models/newScreen.model")
 const library = require("../models/library.model");
 const { json } = require("express");
 
@@ -49,21 +49,19 @@ const showPlaylist=async(req,res)=>{
 }
 
 const showAvailableScreen = async (req, res) => {
-  const { groupName } = req.params;
-  let group = null;
-  if (groupName) {
-    group = await groupScreen.getGroupByGroupName(groupName);
-  }
+  
 
-  const screens = await groupScreen.showAvailableScreen();
-  res.render("selectionNewPlaylist", { screens,group});
+  const screens = await screenModel.getNotdeletedScreen();
+
+  res.render("selectionNewPlaylist", { screens});
 };
 const showAvailableScreenForEditPlaylist = async (req, res) => {
   
   const playlistsAll = await playlists.viewPlaylist();
   console.log("playlist all",playlistsAll);
 
-  const screens = await groupScreen.showAvailableScreen();
+  const screens = await screenModel.getNotdeletedScreen();
+  // console.log('screens',screens)
   res.render("EditselectionPlaylist", { screens,playlistsAll});
 };
 const getPlaylistById = async(req, res) => {
