@@ -24,5 +24,3 @@ router.get("/newPlaylist/selectScreens",playlist.showAvailableScreen)
 
 
 module.exports = router;
-
-
