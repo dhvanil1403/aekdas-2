@@ -94,8 +94,18 @@ const createlive = async (req, res) => {
 };
 
 
+const getliveDatabyId=async(req,res)=>{
+  const { liveId } = req.params;
+  try {
+    const result=await liveModel.getliveDatabyId(liveId);
+    console.log(result);
+  } catch (error) {
+    
+  }
+}
+
 module.exports = {
   showAvailableScreen,
   createlive,
-  showLivedata,deleteLive
+  showLivedata,deleteLive,getliveDatabyId
 };
