@@ -13,17 +13,30 @@
     const screenIDS=sessionStorage.getItem('screenIDS');
     console.log("screenIDS",screenIDS);
   </script> -->
-
+  <style>
+    .goback{
+      Padding: 12px 20px;
+      border: 1px solid #0D6EFD;
+      font-weight: 700;
+      color: #0D6EFD;
+      background: transparent;
+    }
+    .header{
+      display: flex;
+      justify-content: flex-end;
+      
+    }
+  </style>
 </head>
 
 <body>
   <div class="group">
+  
     <div class="header">
-      <!-- <div class="group-screen">
-        <p>Home > <b>Group Screen</b></p>
-      </div> -->
+      
+      
       <div class="group-screen-btn">
-        <!-- <button onclick="goBack()">Go Back</button> -->
+        <button class="goback" onclick="goback()">Go Back</button>
         <button onclick="publishPlaylist()">Publish</button>
       </div>
     </div>
@@ -75,6 +88,12 @@
   </div>
  
   <script>
+
+function goback() {
+            if (confirm("Are you sure you want to exit and discard changes?")) {
+                window.history.back();
+            }
+        }
     async function publishPlaylist() {
       const selectedScreens = [];
       const selectedPairingCodes = [];
