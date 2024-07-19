@@ -6,9 +6,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Document</title>
   <link rel="stylesheet" href="/css/screen.css" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 </head>
 
 <body>
+  <% if (message) { %>
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        Swal.fire({
+          icon: '<%= message.type === "error" ? "error" : "success" %>',
+          title: '<%= message.type === "error" ? "Error" : "Success" %>',
+          text: '<%= message.text %>',
+          customClass: {
+            title: '<%= message.type === "error" ? "error-title" : "success-title" %>',
+            content: '<%= message.type === "error" ? "error-content" : "success-content" %>'
+          }
+        });
+      });
+    </script>
+  <% } %>
+  
+  
+  
+  
+  
   <%- include('Dashboard') %>
     <div class="screens">
       <div class="home-screen">
@@ -43,6 +64,7 @@
           <button class="deletedScreen" onclick="showDeletedScreens()">Deleted Screens</button>
         </div>
         <div class="screen-btn-2">
+          
           <input type="search" id="searchInput" placeholder="Search">
           <button class="newScreen-btn" onclick="addNewScreen()">
             <span>+</span>New Screen
@@ -220,7 +242,7 @@
                                     </td>
                                     <td id="screen.playlistname" style="display: flex; justify-content: center; align-items: center;">
                                       <p><%= screen.playlistname && screen.playlistname.length > 20 ? screen.playlistname.substring(0, 20) + '...' : screen.playlistname %></p>
-                                      <button class="delete" onclick="deletePlaylist('<%= screen.screenid %>')">
+                                      <!-- <button class="delete" onclick="deletePlaylist('<%= screen.screenid %>')">
                                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                           <g clip-path="url(#clip0_1_4435)">
                                             <path d="M19 3H5C3.89543 3 3 3.89543 3 5V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V5C21 3.89543 20.1046 3 19 3Z" stroke="#FF0000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -232,13 +254,13 @@
                                             </clipPath>
                                           </defs>
                                         </svg>
-                                      </button>
+                                      </button> -->
                                     </td>
-                                    <td id="screen.deleted" class="status-cell">
-                                      <p class="<%= screen.deleted ? 'offline' : 'online' %>">
-                                        <%= screen.deleted ? 'Offline' : 'Online' %>
+                                    <!-- <td id="screen.status" class="status-cell">
+                                      <p class="<%= screen.status ? 'offline' : 'online' %>">
+                                        <%= screen.status ? 'Offline' : 'Online' %>
                                       </p>
-                                    </td>
+                                    </td> -->
                                     <td id="screen.tags">
                                       <%= screen.tags.length > 20 ? screen.tags.substring(0, 20) + '...' : screen.tags %>
                                     </td>
