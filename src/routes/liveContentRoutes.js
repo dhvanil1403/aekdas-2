@@ -12,6 +12,6 @@ router.post('/createlive',liveController.createlive)
 
 router.delete("/deletePlaylist/:liveId", liveController.deleteLive);
 
-
+router.get('/liveEditLink/:liveId',liveController.getliveDatabyId)
 
 module.exports = router;
