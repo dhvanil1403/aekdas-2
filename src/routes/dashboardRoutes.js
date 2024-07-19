@@ -7,6 +7,7 @@ const libraryRouter=require('./libraryRoutes');
 const playlistRouter=require('./playlistRoutes');
 const liveContentRouter=require('./liveContentRoutes');
 
+
 const isAuthenticated = (req, res, next) => {
   if (req.session.user) {
       next(); // User is authenticated, proceed to dashboard
@@ -24,6 +25,7 @@ router.use("/Teams", teamRouter);
 router.use("/Library", libraryRouter);
 router.use("/Playlist", playlistRouter );
 router.use("/LiveContent", liveContentRouter );
+
 
 
 module.exports = router;
