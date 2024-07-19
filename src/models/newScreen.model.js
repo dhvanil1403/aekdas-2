@@ -49,7 +49,7 @@ const getAllScreens = async () => {
 const getNotdeletedScreen = async () => {
   try {
     const result = await db.query(
-            "SELECT * FROM screens WHERE  deleted = false ORDER BY screenid DESC"
+      "SELECT * FROM screens WHERE  deleted = false ORDER BY screenid DESC"
     );
     return result.rows;
   } catch (err) {
@@ -193,7 +193,19 @@ const deletePlaylist = async (screenid) => {
     
   } catch (error) {
     console.error("Error deleting playlist:", error);
-    res.status(500).json({ error: "Failed to delete playlist" });
+    // res.status(500).json({ error: "Failed to delete playlist" });
+  }
+};
+
+
+const deleteScreenById = async (screenid) => {
+  const query = 'DELETE FROM screens WHERE screenid = $1';
+  const values = [screenid];
+  try {
+      const result = await db.query(query, values);
+      return result.rowCount > 0; // returns true if a row was deleted
+  } catch (error) {
+      throw error;
   }
 };
 module.exports = {
@@ -209,5 +221,6 @@ module.exports = {
   getDeletedScreenCount,
   getDeletedScreen,
   getGroupScreen,
-  deletePlaylist
+  deletePlaylist,
+  deleteScreenById
 };
