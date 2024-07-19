@@ -3,7 +3,8 @@ const db = require("../config/dbConnection");
 const showAvailableScreen = async () => {
     const query = `
     SELECT screenid, pairingcode, screenname, status, tags, location, city, area, state, pincode, country, deleted, playlistname, playlistdescription, slot1, slot2, slot3, slot4, slot5, slot6, slot7, slot8, slot9, slot10, name, description, live1, live2, live3, live4, live5, live6, live7, live8, live9, live10
-    FROM public.screens;
+    FROM public.screens WHERE deleted = false
+ORDER BY screenid DESC;
   `;
     const { rows } = await db.query(query);
     return rows;
@@ -140,8 +141,19 @@ const updateScreensWithLive = async (screenIDs, liveData) => {
     await db.query(query, values);
 };
 
+
+const getliveDatabyId=async(liveId)=>{
+    const query = `
+    SELECT * FROM public.live
+    WHERE id = $1;
+  `;
+  const values = [liveId];
+
+  const result = await db.query(query, values);
+  return result.rows[0];
+}
 module.exports = {
     showAvailableScreen,
     updateScreenWithLive,
-    createLive, showliveData, getScreenIDsByLiveId, deleteLiveById, updateScreensWithLive
+    createLive, showliveData, getScreenIDsByLiveId, deleteLiveById, updateScreensWithLive,getliveDatabyId
 };
