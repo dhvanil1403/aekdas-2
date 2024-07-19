@@ -39,56 +39,6 @@ const buttons = document.querySelectorAll(".media-category button");
 
 
 
-//
-
-// document.querySelector('.media-btn-upload').addEventListener('click', function () {
-//   document.querySelector('.file-input').click();
-// });
-
-// document.querySelector('.file-input').addEventListener('change', function (event) {
-//   var file = event.target.files[0];
-//   if (file) {
-//       uploadToCloudinary(file);
-//   }
-// });
-
-// function uploadToCloudinary(file) {
-//   var url = `https://api.cloudinary.com/v1_1/dqfnwh89v/upload`;
-//   var timestamp = Math.round((new Date()).getTime() / 1000);
-//   var apiKey = '451893856554714';
-//   var apiSecret = 'zgbspSZH8AucreQM8aL1AKN9S-Y';
-//   var signature = CryptoJS.SHA1(`timestamp=${timestamp}${apiSecret}`).toString();
-
-//   var formData = new FormData();
-//   formData.append('file', file);
-//   formData.append('api_key', apiKey);
-//   formData.append('timestamp', timestamp);
-//   formData.append('signature', signature);
-
-//   var xhr = new XMLHttpRequest();
-//   xhr.open('POST', url, true);
-
-//   xhr.upload.addEventListener('progress', function (event) {
-//       if (event.lengthComputable) {
-//           var percentComplete = (event.loaded / event.total) * 100;
-//           document.querySelector('.progress-bar').style.width = percentComplete + '%';
-//           document.querySelector('.progress-bar').setAttribute('aria-valuenow', percentComplete);
-//       }
-//   });
-
-//   xhr.onreadystatechange = function () {
-//       if (xhr.readyState === 4) {
-//           if (xhr.status === 200) {
-//               alert('Upload complete!');
-//               // You may want to refresh the page or update the media list here
-//           } else {
-//               alert('Upload failed!');
-//           }
-//       }
-//   };
-
-//   xhr.send(formData);
-// }
 
 document.addEventListener("DOMContentLoaded", function() {
   const uploadButton = document.querySelector('.media-btn-upload');
