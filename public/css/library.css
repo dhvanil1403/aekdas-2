@@ -5,7 +5,7 @@
   flex-direction: column;
   justify-content: start;
   align-items: start;
-  padding: 4% 0 0 1%;
+  padding: 2% 0 0 1%;
 }
 .home-library {
   background: #ffffff;
@@ -133,11 +133,13 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  
 }
 .media-search input {
   width: 100%;
   border: 1px solid rgba(128, 128, 128, 0.575);
   border-radius: 10px;
+   outline: none;
   padding: 5px 10px;
 }
 .media-btn {
@@ -196,21 +198,16 @@
 .media-container {
   margin: 0.5%;
   display: inline-block;
+  background-color: #ffffff;
+  border-radius: 10px;
 }
 
 .media-item {
   width: 180px; /* 9/16 of 320px height */
   height: 300px; /* Maintain the 9:16 aspect ratio */
-  box-shadow: 0px 0px 4px 0px #00000040;
+  /* box-shadow: 0px 0px 4px 0px #00000040; */
   object-fit: cover; /* Ensures the content is resized to fit the container */
 }
 
-.image-item {
-  border: 2px solid #ccc; /* Optional: styling specific to images */
-}
-
-.video-item {
-  border: 2px solid #ccc; /* Optional: styling specific to videos */
-}
 
   
