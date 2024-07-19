@@ -1,84 +1,86 @@
-const groupScreen = require("../models/groupScreen.model");
-const dotenv = require("dotenv");
+const db = require("../config/dbConnection");
 
-dotenv.config();
-
-const createGroup = async (req, res) => {
-  const { group_name, group_description, screenCount, selectedscreens } = req.body;
-
+const createGroup = async (groupName, description, screenCount,selectedScreen) => {
   try {
-    const groupfound = await groupScreen.getGroupByGroupName(group_name);
-    if (!groupfound) {
-      // Handle case where group is not found
-      // throw new Error("Group not found");
-      await groupScreen.createGroup(
-        group_name,
-        group_description,
-        screenCount,
-        selectedscreens
-      );
-      res.redirect("/Dashboard/Screens");
-    }else{
-      await groupScreen.updateGroup(
-        group_name,
-        group_description,
-        screenCount,
-        selectedscreens
-      );
-      res.redirect("/Dashboard/Screens");
-    }
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("create group ERROR");
-  }
-};
-
-
-const showAvailableScreen = async (req, res) => {
-  const { groupName } = req.params;
-  let group = null;
-  if (groupName) {
-    group = await groupScreen.getGroupByGroupName(groupName);
-  }
-
-  const screens = await groupScreen.showAvailableScreen();
-  res.render("groupScreen", { screens,group});
-};
-
-const deleteGroup = async (req, res) => {
-  const { groupName } = req.params;
-  try {
-    await groupScreen.deleteGroup(groupName);
-    res.sendStatus(204);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Delete group ERROR");
-  }
-};
-const editGroup = async (req, res) => {
-  const { groupName } = req.params;
-
-  try {
-    const group = await groupScreen.getGroupByGroupName(groupName);
-    const screens = await groupScreen.showAvailableScreen();
-
-    // Ensure selectedscreens field is an array of objects
-    if (!Array.isArray(group.selectedscreens)) {
-      group.selectedscreens = [];
-    }
-
-    res.render("groupScreen", { group, screens });
+    const result = await db.query(
+      "INSERT INTO groupscreen (group_name,group_description,total_screen,selectedscreens) VALUES ($1,$2,$3,$4)",
+      [groupName, description, screenCount,selectedScreen]
+    );
+    return result.rows[0];
   } catch (error) {
-    console.error("Error editing group:", error);
-    res.status(500).send("Edit group ERROR");
+    console.error("error occur at creating new group  in Screen:", error);
+    throw error;
   }
 };
 
+const showAvailableScreen = async () => {
+  try {
+    const result = await db.query(
+       "SELECT * FROM screens WHERE  deleted = false ORDER BY screenid DESC"
+    );
+    return result.rows;
+  } catch (error) {
+    console.error("Error occurred at fetching all screens:", error);
+    throw error;
+  }
+};
+
+const deleteGroup = async (groupName) => {
+  try {
+    const result = await db.query(
+      " UPDATE groupscreen SET deleted = TRUE WHERE group_name = $1",
+      [groupName]
+    );
+  } catch (error) {
+    console.error("Error occurred at update group of deleted", error);
+    throw error;
+  }
+};
+
+const getGroupByGroupName = async (groupName) => {
+  try {
+    const result = await db.query(
+      "SELECT * FROM groupscreen WHERE group_name = $1",
+      [groupName]
+    );
+    const group = result.rows[0];
+
+    if (group) {
+      // Ensure selectedscreens is an array
+      group.selectedscreens = group.selectedscreens || [];
+    } else {
+      return null; // Return null or throw an error if group is not found
+    }
+
+    return group;
+  } catch (error) {
+    console.error("Error occurred while getting group by group name:", error);
+    throw error;
+  }
+};
+
+
+
+const updateGroup = async (groupName, description, screenCount, selectedScreens) => {
+  try {
+    // Convert selectedScreens to JSONB array
+    const jsonbArray = selectedScreens.map(screen => JSON.stringify(screen));
+
+    await db.query(
+      "UPDATE groupscreen SET group_description = $2, total_screen = $3, selectedscreens = $4 WHERE group_name = $1",
+      [groupName, description, screenCount, jsonbArray]
+    );
+  } catch (error) {
+    console.error("Error occurred while updating group details:", error);
+    throw error;
+  }
+};
 
 
 module.exports = {
   createGroup,
   showAvailableScreen,
   deleteGroup,
-  editGroup,
+  getGroupByGroupName,
+  updateGroup
 };
