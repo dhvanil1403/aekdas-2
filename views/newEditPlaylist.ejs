@@ -11,8 +11,9 @@
 <body>
     <div class="newPlaylist">
         <div class="header">
-            <button id="selectScreenButton">Select Screen</button>
+            <button2 onclick="exitfunction()">Exit</button2>
             <button id="previewButton">Preview</button>
+            <button id="selectScreenButton" style="margin-left: 10px;">Next</button>
             <div id="videoOverlay">
                 <div id="videoContainer">
                     <!-- Videos will be displayed here -->
@@ -123,6 +124,16 @@
     </div>
 
     <script>
+
+
+function exitfunction() {
+            if (confirm("Are you sure you want to exit and discard changes?")) {
+                window.history.back();
+            }
+        }
+
+
+
         function deleteMedia(event) {
             const mediaContainer = event.target.closest('.mediaforSlider');
             if (mediaContainer) {
