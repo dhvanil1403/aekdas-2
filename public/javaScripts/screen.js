@@ -170,49 +170,53 @@ function editGroup(groupName){
  window.location.href = `/Dashboard/Screens/Groups/${groupName}`;
 }
 
-function filterScreens() {
-  // Get input element and filter value
-  var input = document.getElementById('searchInput');
-  var filter = input.value.toUpperCase();
+document.addEventListener("DOMContentLoaded", function() {
+  function filterScreens() {
+    const input = document.getElementById('searchInput');
+    console.log(input);
+    const filter = input.value.toUpperCase();
+    const rows = document.querySelectorAll("#show-Screen table tbody tr");
+    let visibleRowCount = 0;
 
-  // Get table rows
-  var rows = document.querySelectorAll("#show-Screen table tbody tr");
+    rows.forEach(row => {
+      const screenid = row.querySelector('td[id^="screen.screenid"]').textContent.toUpperCase();
+      const pairingCode = row.querySelector('td[id^="screen.pairingcode"]').textContent.toUpperCase();
+      const screenName = row.querySelector('td[id^="screen.screenname"]').textContent.toUpperCase();
+      const playlistname = row.querySelector('td[id^="screen.playlistname"]').textContent.toUpperCase();
+      const status = row.querySelector('td[id^="screen.status"]').textContent.toUpperCase();
+      const tags = row.querySelector('td[id^="screen.tags"]').textContent.toUpperCase();
+      const location = row.querySelector('td[id^="screen.location"]').textContent.toUpperCase();
+      const city = row.querySelector('td[id^="screen.city"]').textContent.toUpperCase();
+      const pincode = row.querySelector('td[id^="screen.pincode"]').textContent.toUpperCase();
 
-  // Variable to keep track of the number of visible rows
-  var visibleRowCount = 0;
-  // Loop through all table rows, and hide those that don't match the search query
-  rows.forEach(function(row) {
-    var pairingCode = row.querySelector('td[id^="screen.pairingcode"]').textContent.toUpperCase();
-    var screenName = row.querySelector('td[id^="screen.screenname"]').textContent.toUpperCase();
-    var status = row.querySelector('td[id^="screen.status"]').textContent.toUpperCase();
-    var tags = row.querySelector('td[id^="screen.tags"]').textContent.toUpperCase();
-    var location = row.querySelector('td[id^="screen.location"]').textContent.toUpperCase();
-    var city = row.querySelector('td[id^="screen.city"]').textContent.toUpperCase();
-    var pincode = row.querySelector('td[id^="screen.pincode"]').textContent.toUpperCase();
+      if (
+        screenid.includes(filter) ||
+        pairingCode.includes(filter) ||
+        screenName.includes(filter) ||
+        playlistname.includes(filter) ||
+        status.includes(filter) ||
+        tags.includes(filter) ||
+        location.includes(filter) ||
+        city.includes(filter) ||
+        pincode.includes(filter)
+      ) {
+        row.style.display = "";
+        visibleRowCount++;
+      } else {
+        row.style.display = "none";
+      }
+    });
 
-    if (pairingCode.indexOf(filter) > -1 ||
-        screenName.indexOf(filter) > -1 ||
-        status.indexOf(filter) > -1 ||
-        tags.indexOf(filter) > -1 ||
-        location.indexOf(filter) > -1 ||
-        city.indexOf(filter) > -1 ||
-        pincode.indexOf(filter) > -1) {
-      row.style.display = "";
-      visibleRowCount++;
+    const noResultsMessage = document.getElementById('noResultsMessage');
+    if (visibleRowCount === 0) {
+      noResultsMessage.style.display = "block";
     } else {
-      row.style.display = "none";
+      noResultsMessage.style.display = "none";
     }
-  });
-  var noResultsMessage = document.getElementById('noResultsMessage');
-  if (visibleRowCount === 0) {
-    noResultsMessage.style.display = "block";
-  } else {
-    noResultsMessage.style.display = "none";
   }
-}
 
-// Bind the filterScreens function to the input event
-document.getElementById('searchInput').addEventListener('input', filterScreens);
+  document.getElementById('searchInput').addEventListener('input', filterScreens);
+});
 
 function deletePlaylist(screenid) {
   console.log(" delete playlist click");
@@ -245,4 +249,26 @@ function deletePlaylist(screenid) {
     console.error('Error deleting playlist:', error);
     // Handle error
   });
+}
+
+function permanentDeleteScreen(screenid) {
+  if (confirm("Are you sure you want to permanently delete this screen?")) {
+      fetch(`/Dashboard/Screens/delete-screen/${screenid}`, {
+          method: 'DELETE'
+      })
+      .then(response => response.json())
+      .then(data => {
+          if (data.success) {
+              alert('Screen deleted successfully');
+              // Reload the page to reflect the changes
+              window.location.reload();
+          } else {
+              alert('Failed to delete the screen: ' + data.message);
+          }
+      })
+      .catch(error => {
+          console.error('Error:', error);
+          alert('An error occurred while deleting the screen');
+      });
+  }
 }
