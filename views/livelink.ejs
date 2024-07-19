@@ -29,14 +29,9 @@
 <body>
     <div class="newPlaylist">
         <div class="header">
+            <button2 onclick="exitfunction()">Exit</button2>
             <button id="selectScreenButton">Select Screen</button>
-            <!-- <button id="previewButton">Preview</button>
-            <div id="videoOverlay">
-                <div id="videoContainer">
-                     Videos will be displayed here 
-                </div>
-                <button id="closeButton">Close</button>
-            </div> -->
+           
         </div>
         <div class="main">
             <label for="live1">Live 1 URL:</label>
@@ -71,6 +66,17 @@
         </div>
     </div>
     <script>
+
+
+
+       function exitfunction() {
+            if (confirm("Are you sure you want to exit and discard changes?")) {
+                window.history.back();
+            }
+        }
+
+
+
         document.getElementById('selectScreenButton').addEventListener('click', function() {
             const formData = {
                 live1: document.getElementById('live1').value,
