@@ -36,7 +36,7 @@
             </div>
             <div class="right">
                 <div class="media-category">
-                    <button class="media-all"><a href="/Dashboard/Library">All</a></button>
+                    <button class="media-all"><a href="/Dashboard/Library/">All</a></button>
                     <button class="media-photos"><a href="/Dashboard/Library/Photos">Photos</a></button>
                     <button class="media-videos"><a href="/Dashboard/Library/Videos">Videos</a></button>
                 </div>
@@ -45,18 +45,14 @@
                 </div>
                 <div class="media-btn">
                     <button class="media-btn-upload" id="uploadButton">Upload Media</button>
-                    <form  id="uploadForm" action="/Dashboard/Library/UploadMedia" method="POST" enctype="multipart/form-data" style="display: none;">
+                    <form id="uploadForm" action="/Dashboard/Library/UploadMedia" method="POST" enctype="multipart/form-data" style="display: none;">
                         <input type="file" name="file" id="fileInput">
                         <button type="submit" id="submitBtn">Upload</button>
                     </form>
-                    
-                 
-                    
-                   
                 </div>
             </div>
-           
         </div>
+
         <% if (mediafiles && mediafiles.length === 0) { %>
             <!-- No files uploaded message -->
             <div class="mediaShow-nofile">
@@ -81,24 +77,24 @@
                     </svg>
                     <span>Browse Files(.jpg, .jpeg, .png, .mp4)</span>
                 </div>
-                
+
             </div>
-            <% } else { %>
-                <!-- Show media files -->
-                <div class="show-media">
-                    <% mediafiles.forEach(function(file) { %>
-                        <div class="media-container">
-                            <% if (file.type && file.type.startsWith('image/')) { %>
-                                <img src="<%= file.url %>" alt="Image" class="media-item image-item">
-                            <% } else if (file.type && file.type.startsWith('video/')) { %>
-                                <video controls class="media-item video-item" preload="metadata">
-                                    <source src="<%= file.url %>" type="<%= file.type %>">
-                                    Your browser does not support the video tag.
-                                </video>
-                            <p>
-                                <%= file.filename.length> 15 ? file.filename.substring(0, 15) + '...' :
-                                file.filename %>
-                                <form style="justify-content:flex-end ;margin: 0px 74px;" action="/Dashboard/Library/DeleteMedia/<%= file.id %>" method="POST" class="delete-form">
+        <% } else { %>
+            <!-- Show media files -->
+            <div class="show-media">
+                <% mediafiles.forEach(function(file) { %>
+                    <div class="media-container" data-filename="<%= file.filename.toLowerCase() %>">
+                        <% if (file.type && file.type.startsWith('image/')) { %>
+                            <img src="<%= file.url %>" alt="Image" class="media-item image-item">
+                        <% } else if (file.type && file.type.startsWith('video/')) { %>
+                            <video controls class="media-item video-item" preload="metadata">
+                                <source src="<%= file.url %>" type="<%= file.type %>">
+                                Your browser does not support the video tag.
+                            </video>
+                            <div style="display: flex; justify-content: center;"> <p style="margin-top: 3px;">
+                                <%= file.filename.length> 10 ? file.filename.substring(0, 10) + '...' :
+                                file.filename %>  </p>
+                                <form style="justify-content:flex-end ;margin: 0px 10px;margin-top: 2px;" action="/Dashboard/Library/DeleteMedia/<%= file.id %>" method="POST" class="delete-form">
                                     <button type="submit" class="delete-btn" style="justify-content:flex-end ;"><svg style="justify-content:flex-end ;" width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <circle cx="15" cy="15" r="15" fill="#DC3545"/>
                                         <path d="M8.25 10.5H9.75H21.75" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -108,22 +104,46 @@
                                         </svg>
                                         </button>
                                 </form>
-                            </p>
-                                
-                            <% } else { %>
-                                <p>Unsupported file type: <%= file.type %></p>
-                            <% } %>
-                            
-                        </div>
-                    <% }); %>
-                </div>
-            <% } %>
-    
-        </div>
-  <!-- Add this script to handle the AJAX request -->
+                            </div>
 
-    
-    <script src="/javaScripts/uploadFile.js"></script>
+                        <% } else { %>
+                            <p>Unsupported file type: <%= file.type %></p>
+                        <% } %>
+
+                    </div>
+                <% }); %>
+            </div>
+        <% } %>
+
+    </div>
+
+    <script>
+        document.getElementById("uploadButton").addEventListener("click", function () {
+            document.getElementById("fileInput").click();
+        });
+
+        document.getElementById("fileInput").addEventListener("change", function () {
+            if (this.files.length > 0) {
+                document.getElementById("uploadForm").submit();
+            }
+        });
+
+        // Search functionality
+        document.getElementById("search").addEventListener("input", function () {
+            const searchValue = this.value.toLowerCase();
+            const mediaContainers = document.querySelectorAll(".media-container");
+
+            mediaContainers.forEach(container => {
+                const fileName = container.getAttribute("data-filename");
+
+                if (fileName.includes(searchValue)) {
+                    container.style.display = "block";
+                } else {
+                    container.style.display = "none";
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>
