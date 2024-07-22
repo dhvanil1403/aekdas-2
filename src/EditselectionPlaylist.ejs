@@ -1,0 +1,172 @@
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document</title>
+  <link rel="stylesheet" href="/css/groupScreen.css" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- SweetAlert2 Library -->
+
+  <script>  
+    const screenIDS = sessionStorage.getItem('screenIDS');
+    console.log("screenIDS", screenIDS);
+  </script>
+  <style>
+    .goback {
+      padding: 12px 20px;
+      border: 1px solid #0D6EFD;
+      font-weight: 700;
+      color: #0D6EFD;
+      background: transparent;
+    }
+    .header {
+      display: flex;
+      justify-content: flex-end;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="group">
+    <div class="header">
+      <div class="group-screen-btn">
+        <button class="goback" onclick="goback()">Go Back</button>
+        <button onclick="publishPlaylist()">Publish</button>
+      </div>
+    </div>
+    <div class="heading">
+      <h3>Select Screens to Publish Playlist</h3>
+    </div>
+    <div class="selection-screens">
+      <div class="select-screen">
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th>Screen ID</th>
+              <th>Address</th>
+              <th>SCREEN NAME</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (screens && screens.length) { %>
+              <% screens.forEach(screen => { %>
+                <tr>
+                  <td>
+                    <input type="checkbox" name="checkbox" value="<%= screen.screenid %>"/>
+                  </td>
+                  <td><%= screen.screenid %></td>
+                  <td><%= screen.location %></td>
+                  <td><%= screen.screenname %></td>
+                </tr>
+              <% }) %>
+            <% } else { %>
+              <tr>
+                <td colspan="6">No screens found</td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function goback() {
+      Swal.fire({
+        title: 'Are you sure?',
+        text: 'Are you sure you want to exit and discard changes?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, go back',
+        cancelButtonText: 'Cancel'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.history.back();
+        }
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const playlistId = sessionStorage.getItem("playlistId");
+      const playlistName = sessionStorage.getItem("playlistName");
+      const rawScreenIDs = sessionStorage.getItem("screenIDS");
+      const screenIDs = rawScreenIDs ? rawScreenIDs.replace(/[{}]/g, "").split(",").map(id => id.trim().replace(/"/g, "")) : [];
+      const playlistDescription = sessionStorage.getItem("playlistDescription");
+      const playlistUrls = sessionStorage.getItem("playlistUrls");
+      const urls = JSON.parse(playlistUrls);
+      let selectedScreens = [...screenIDs];
+
+      function initializeCheckboxes() {
+        const checkboxes = document.querySelectorAll('input[name="checkbox"]');
+        checkboxes.forEach((checkbox) => {
+          if (selectedScreens.includes(checkbox.value)) {
+            checkbox.checked = true;
+          }
+        });
+      }
+
+      initializeCheckboxes();
+
+      async function publishPlaylist() {
+        const checkboxes = document.querySelectorAll('input[name="checkbox"]:checked');
+        checkboxes.forEach((checkbox) => {
+          if (!selectedScreens.includes(checkbox.value)) {
+            selectedScreens.push(checkbox.value);
+          }
+        });
+
+        if (selectedScreens.length === 0) {
+          Swal.fire({
+            icon: 'warning',
+            title: 'No Screens Selected',
+            text: 'Please select at least one screen',
+          });
+          return;
+        }
+
+        console.log("playlistId", playlistId);
+        console.log("playlistName", playlistName);
+        console.log("playlistDescription", playlistDescription);
+        console.log("selectedUrls", urls);
+        console.log("selectedScreens", selectedScreens);
+
+        try {
+          const response = await fetch("/Dashboard/Playlist/editPlaylist", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              playlistId: playlistId,
+              screenIDs: selectedScreens,
+              urls: urls,
+              playlistName: playlistName,
+              playlistDescription: playlistDescription,
+            }),
+          });
+          if (!response.ok) {
+            throw new Error("Failed to edit playlist");
+          }
+          const responseData = await response.json();
+          console.log("Playlist edit:", responseData.playlist);
+          Swal.fire({
+            icon: 'success',
+            title: 'Playlist Edited',
+            text: 'Playlist edited successfully!',
+          }).then(() => {
+            window.location.href = '/Dashboard/Playlist';
+          });
+        } catch (error) {
+          console.error("Error editing playlist:", error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Failed to edit playlist. Please try again.',
+          });
+        }
+      }
+
+      window.publishPlaylist = publishPlaylist;
+    });
+  </script>
+</body>
+</html>
