@@ -184,3 +184,18 @@ input[type=submit] {
     text-align: center;
     border: none;
 }
+.btn2 button {
+    width: 108px;
+    height: 23px;
+    opacity: 90%; /* Optional, to keep the overall button slightly transparent */
+    background: transparent; /* Transparent background */
+    color: blue; /* Blue font color */
+    font-family: Nunito Sans;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 27.28px;
+    letter-spacing: -0.07142855226993561px;
+    text-align: center;
+    border: none;
+    text-decoration: underline; /* Underline the text */
+}
