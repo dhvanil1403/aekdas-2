@@ -12,11 +12,10 @@
             timer = setInterval(function() {
                 if (timeLeft <= 0) {
                     clearInterval(timer);
-                    
-                    document.getElementById('timer').innerHTML = 'OTP expiry in '+timeLeft + ' seconds';
+                    document.getElementById('timer').innerHTML = 'OTP expired';
                     document.getElementById('resend-btn').style.display = 'block';
                 } else {
-                    document.getElementById('timer').innerHTML = timeLeft + ' seconds remaining';
+                    document.getElementById('timer').innerHTML = 'OTP expiry in '+timeLeft + ' seconds';
                 }
                 timeLeft -= 1;
             }, 1000);
@@ -56,14 +55,14 @@
         </div>
         <div class="right">
             <form action="/verify-otp" method="POST">
-                <div class="details"  style="height: 450px;width: 400px;">
+                <div class="details" style="height: 500px;width: 90%;">
                     <div class="para1">
-                        <p style="margin-right:10px">Verify OTP</p>
+                        <p>Verify OTP</p>
                     </div>
                     <div class="para2">
-                        <p>We just sent a verification code to your mail</p>
+                        <p style="padding-left: 65px;">We just sent a verification code to your mail</p>
                     </div>
-                    <div class="emailField"  style="padding-left: 5%;">
+                    <div class="emailField">
                         <label for="otp">OTP:</label>
                         <input style="padding-right: 5px; width: 300px;" type="text" id="otp" placeholder="Enter OTP" name="otp" required>
                     </div>
@@ -84,3 +83,4 @@
     </div>
 </body>
 </html>
+
