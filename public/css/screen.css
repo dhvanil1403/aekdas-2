@@ -316,6 +316,7 @@ tr:nth-child(even) {
 }
 .offline {
   background: #dc3545;
+  width: 66px;
 }
 .online {
   background: #20c997;
