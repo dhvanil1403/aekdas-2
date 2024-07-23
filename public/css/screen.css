@@ -250,9 +250,10 @@ table {
 }
 th,
 td {
-  padding: 15px;
-  text-align: center;
-  font-weight: 400;
+  padding: 10px;
+  text-align: left;
+  font-weight: 380;
+  font-size: 15px;
   border: none;
 }
 th {
@@ -265,9 +266,9 @@ tr:nth-child(even) {
 }
 .action {
   display: flex;
-  justify-content: space-evenly;
-  text-align: center;
-  gap: 5px; /* Adds a minimum space of 5px between flex items */
+  /* justify-content: space-evenly; */
+  /* text-align: center; */
+  gap: 10px; /* Adds a minimum space of 5px between flex items */
 }
 
 
@@ -307,20 +308,36 @@ tr:nth-child(even) {
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 100%;
   text-align: center;
 }
-.status-cell > p {
+/* .status-cell > p {
   text-align: center;
   color: white;
   border-radius: 30px;
-}
+  font-size: 15px;
+  align-items: center;
+  text-align: center;
+} */
 .offline {
   background: #dc3545;
   width: 66px;
+  height: 25px;
+  color: white;
+  border-radius: 30px;
+  font-size: 12px; align-items: center;
+  justify-content: center;
 }
 .online {
   background: #20c997;
   width: 66px;
+  height: 25px;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  border-radius: 30px;
+  font-size: 12px;
+
 }
 input[type="search"] {
   width: 50%;
