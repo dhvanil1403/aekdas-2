@@ -12,7 +12,8 @@
             timer = setInterval(function() {
                 if (timeLeft <= 0) {
                     clearInterval(timer);
-                    document.getElementById('timer').innerHTML = 'OTP expired';
+                    
+                    document.getElementById('timer').innerHTML = 'OTP expiry in '+timeLeft + ' seconds';
                     document.getElementById('resend-btn').style.display = 'block';
                 } else {
                     document.getElementById('timer').innerHTML = timeLeft + ' seconds remaining';
