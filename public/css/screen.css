@@ -122,7 +122,8 @@
 }
 .newScreen-btn,
 .newGroup {
-  background: #d9d9d9;
+  background: #20C997;
+
   box-shadow: 0px 2px 3px 0px #00000040;
   padding: 10px 20px;
   font-size: 16px;
@@ -258,7 +259,8 @@ td {
 }
 th {
   background-color: #f2f2f2;
-  color: #202224;
+  color: #363636;
+  font-weight: bold;
 }
 tr:nth-child(even) {
   background-color: #f9f9f9;
