@@ -62,7 +62,7 @@
             <div class="screen-btn-3">
               <button class="allScreen" onclick="showAllScreen()">All Screens</button>
               <button class="screenGroups" onclick="showGroupScreen()">Screen Groups</button>
-              <button class="deletedScreen" onclick="showDeletedScreens()">Deleted Screens</button>
+              <button class="deletedScreen" onclick="showDeletedScreens()">Offline Screens</button>
             </div>
             <div class="screen-btn-2">
               <input type="search" id="searchInput" placeholder="Search">
@@ -214,9 +214,11 @@
             <% } %>
               <div class="show-Screen" id="show-Screen">
                 <h2>Screens/Players</h2>
+                <p style="font-size: small;">Total Screen - <%= onlineScreen %></p>
                 <table >
                   <thead>
                     <tr>
+                      <th>Sr No.</th>
                       <th>Screen Id</th>
                       <th>Pairing Code</th>
                       <th>Screen Name</th>
@@ -231,8 +233,11 @@
                   </thead>
                   <tbody>
                     <% if (screens && screens.length) { %>
-                      <% screens.forEach(screen=> { %>
+                      <% screens.forEach((screen,index)=> { %>
                         <tr data-pairingcode="<%= screen.pairingcode %>">
+                          <td>
+                            <%= index+1 %>
+                          </td>
                           <td id="screen.screenid">
                             <%= screen.screenid %>
                           </td>
@@ -244,7 +249,7 @@
                               screen.screenname %>
                           </td>
                           <td id="screen.playlistname">
-                           <div style="display: flex; justify-content: center; align-items: center;">
+                           <div style="display: flex; ">
                             <p>
                               <%= screen.playlistname && screen.playlistname.length> 20 ?
                                 screen.playlistname.substring(0, 20) + '...' : screen.playlistname %>
@@ -263,8 +268,8 @@
                             </button> 
                            </div>
                           </td>
-                          <td id="screen.deleted" class="status-cell" >
-                            <p class="<%= screen.deleted ? 'offline' : 'online' %>">
+                          <td id="screen.deleted"  >
+                            <p class="status-cell <%= screen.deleted ? 'offline' : 'online' %> ">
                               <%= screen.deleted ? 'Offline' : 'Online' %>
                             </p>
                           </td>
@@ -394,6 +399,7 @@
                 <table>
                   <thead>
                     <tr>
+                      <th>Sr No.</th>
                       <th>Screen Id</th>
                       <th>Pairing Code</th>
                       <th>Screen Name</th>
@@ -407,9 +413,10 @@
                   </thead>
                   <tbody>
                     <% if (deletedScreens && deletedScreens.length) { %>
-                      <% deletedScreens.forEach(deletedScreen=>
+                      <% deletedScreens.forEach((deletedScreen,index)=>
                         { %>
                         <tr data-pairingcode="<%= deletedScreen.pairingcode %>">
+                          <td><%= index+1 %></td>
                           <td>
                             <%= deletedScreen.screenid %>
                           </td>
@@ -419,8 +426,8 @@
                           <td>
                             <%= deletedScreen.screenname %>
                           </td>
-                          <td class="status-cell">
-                            <p class="<%= deletedScreen.deleted ? 'offline' : 'online' %>">
+                          <td>
+                            <p class="status-cell <%= deletedScreen.deleted ? 'offline' : 'online' %>">
                               <%= deletedScreen.deleted ? 'Offline' : 'Online' %>
                             </p>
                           </td>
