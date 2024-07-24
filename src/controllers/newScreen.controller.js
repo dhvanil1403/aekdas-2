@@ -439,11 +439,11 @@ const updateDeleteScreen = async (req, res) => {
 
     try {
         await screen.updateDeleteScreen(pairingCode);
-        await logAction('updateDeleteScreen', `Screen updated: ${pairingCode}`, req.ip);
+        await logAction('DeleteScreen', `Screen deleted: ${pairingCode}`, req.ip);
         res.sendStatus(204);
     } catch (error) {
         console.error(error);
-        await logAction('updateDeleteScreen', Error `updating screen: ${pairingCode}`, req.ip);
+        await logAction('DeleteScreen', Error `Deleteing screen: ${pairingCode}`, req.ip);
         res.status(500).send("Error deleting screen");
     }
 };
