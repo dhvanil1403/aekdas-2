@@ -47,10 +47,6 @@ const OTP = sequelize.define('OTP', {
 });
 
 const Log = sequelize.define('Log', {
-  userId: {
-    type: DataTypes.INTEGER,
-    allowNull: false
-  },
   action: {
     type: DataTypes.STRING,
     allowNull: false
@@ -66,8 +62,8 @@ const Log = sequelize.define('Log', {
 });
 
 // Middleware for logging actions
-const logAction = async (userId, action, message, ip) => {
-  await Log.create({ userId, action, message, ip });
+const logAction = async (action, message, ip) => {
+  await Log.create({ action, message, ip });
 };
 
 // Express middleware
@@ -108,7 +104,7 @@ app.post('/register', async (req, res) => {
   const user = await User.create({ email, password: hashedPassword });
 
   // Log the registration action
-  await logAction(user.id, 'register', 'User registered', req.ip);
+  await logAction('register', 'User registered', req.ip);
 
   res.redirect('/login');
 });
@@ -140,105 +136,90 @@ app.post('/login', async (req, res) => {
       from: 'aekads.otp@gmail.com',
       to: user.email,
       subject: 'Your login OTP Code',
-      text: `Your login OTP code is ${ otp }`
-  };
+      text: `Your login OTP code is ${otp}`
+    };
 
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log('Email sent: ' + info.response);
-    }
-  });
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log('Email sent: ' + info.response);
+      }
+    });
 
-  // Log the login action
-  await logAction(user.id, 'login', 'User logged in', req.ip);
+    // Log the login action
+    await logAction('login', 'User logged in', req.ip);
 
-  res.redirect('/verify-otp');
-} else {
-  req.flash('error_msg', 'Invalid email or password. Please check and try again.');
-  res.redirect('/');
-}
+    res.redirect('/verify-otp');
+  } else {
+    req.flash('error_msg', 'Invalid email or password. Please check and try again.');
+    res.redirect('/');
+  }
 });
 
 app.get('/verify-otp', (req, res) => {
   res.render('verify-otp');
 });
 
-// app.post('/verify-otp', async (req, res) => {
-  // const { otp } = req.body;
-  // const savedOtp = await OTP.findOne({ where: { userId: req.session.user.id, otp } });
-  // if (savedOtp) {
-    // await OTP.destroy({ where: { id: savedOtp.id } });
-
-    // Log the OTP verification action
-    // await logAction(req.session.user.id, 'verify-otp', 'OTP verified', req.ip);
-
-    // res.redirect('/Dashboard');
-  // } else {
-    // req.flash('error_msg', 'Invalid OTP. Please check and try again.');
-    // res.redirect('/verify-otp');
-  // }
-// });
 app.post('/verify-otp', async (req, res) => {
-    const { otp } = req.body;
-    const savedOtp = await OTP.findOne({ where: { userId: req.session.user.id, otp } });
-    
-    if (savedOtp) {
-        const otpCreationTime = savedOtp.createdAt;
-        const currentTime = new Date();
-        const timeDifference = (currentTime - otpCreationTime) / 1000; // Time difference in seconds
+  const { otp } = req.body;
+  const savedOtp = await OTP.findOne({ where: { userId: req.session.user.id, otp } });
+  
+  if (savedOtp) {
+    const otpCreationTime = savedOtp.createdAt;
+    const currentTime = new Date();
+    const timeDifference = (currentTime - otpCreationTime) / 1000; // Time difference in seconds
 
-        if (timeDifference > 60) {
-            await OTP.destroy({ where: { id: savedOtp.id } });
-            req.flash('error_msg', 'OTP has expired. Please request a new one.');
-            console.log('OTP expired');
-            res.redirect('/verify-otp');
-        } else {
-            await OTP.destroy({ where: { id: savedOtp.id } });
-            await logAction(req.session.user.id, 'verify-otp', 'OTP verified', req.ip);
-            res.redirect('/Dashboard');
-        }
+    if (timeDifference > 60) {
+      await OTP.destroy({ where: { id: savedOtp.id } });
+      req.flash('error_msg', 'OTP has expired. Please request a new one.');
+      console.log('OTP expired');
+      res.redirect('/verify-otp');
     } else {
-        req.flash('error_msg', 'Invalid OTP. Please check and try again.');
-        res.redirect('/verify-otp');
+      await OTP.destroy({ where: { id: savedOtp.id } });
+      await logAction('verify-otp', 'OTP verified', req.ip);
+      res.redirect('/Dashboard');
     }
+  } else {
+    req.flash('error_msg', 'Invalid OTP. Please check and try again.');
+    res.redirect('/verify-otp');
+  }
 });
+
 app.post('/resend-otp', async (req, res) => {
-    const user = req.session.user;
-    if (user) {
-        const otp = Math.floor(100000 + Math.random() * 900000).toString();
-        await OTP.create({ userId: user.id, otp });
+  const user = req.session.user;
+  if (user) {
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    await OTP.create({ userId: user.id, otp });
 
-        let transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: 'aekads.otp@gmail.com',
-                pass: 'ntkp cloo wjnx atep'
-            }
-        });
+    let transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'aekads.otp@gmail.com',
+        pass: 'ntkp cloo wjnx atep'
+      }
+    });
 
-        let mailOptions = {
-            from: 'aekads.otp@gmail.com',
-            to: user.email,
-            subject: 'Your login OTP Code',
-            text: `Your login OTP code is ${otp}`
-        };
+    let mailOptions = {
+      from: 'aekads.otp@gmail.com',
+      to: user.email,
+      subject: 'Your login OTP Code',
+      text: `Your login OTP code is ${otp}`
+    };
 
-        transporter.sendMail(mailOptions, (error, info) => {
-            if (error) {
-                console.log(error);
-                res.json({ success: false });
-            } else {
-                console.log('Email sent: ' + info.response);
-                res.json({ success: true });
-            }
-        });
-    } else {
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.log(error);
         res.json({ success: false });
-    }
+      } else {
+        console.log('Email sent: ' + info.response);
+        res.json({ success: true });
+      }
+    });
+  } else {
+    res.json({ success: false });
+  }
 });
-
 
 app.get('/logout', (req, res) => {
   req.session.destroy();
@@ -265,3 +246,4 @@ sequelize.sync().then(() => {
     console.log('Server is running on port 3000');
   });
 });
+  
