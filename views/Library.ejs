@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,17 +8,14 @@
     <link rel="stylesheet" href="/css/library.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
-
 <body>
 
     <%- include('Dashboard') %>
 
     <div class="library">
-
         <div class="home-library">
             <p>Home><b>Library</b></p>
         </div>
-
         <div class="media-widgets">
             <div class="media">
                 <p>Media</p>
@@ -28,7 +24,6 @@
                 <p>Widgets</p>
             </div>
         </div>
-
         <div class="media-info">
             <div class="left">
                 <div class="media-allFiles">
@@ -79,7 +74,6 @@
                     </svg>
                     <span>Browse Files(.jpg, .jpeg, .png, .mp4)</span>
                 </div>
-
             </div>
         <% } else { %>
             <!-- Show media files -->
@@ -93,30 +87,29 @@
                                 <source src="<%= file.url %>" type="<%= file.type %>">
                                 Your browser does not support the video tag.
                             </video>
-                            <div style="display: flex; justify-content: center;"> <p style="margin-top: 3px;">
-                                <%= file.filename.length> 10 ? file.filename.substring(0, 10) + '...' :
-                                file.filename %>  </p>
-                                <form style="justify-content:flex-end ;margin: 0px 10px;margin-top: 2px;" action="/Dashboard/Library/DeleteMedia/<%= file.id %>" method="POST" class="delete-form">
-                                    <button type="submit" class="delete-btn" style="justify-content:flex-end ;"><svg style="justify-content:flex-end ;" width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <circle cx="15" cy="15" r="15" fill="#DC3545"/>
-                                        <path d="M8.25 10.5H9.75H21.75" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                        <path d="M12 10.5V9C12 8.60218 12.158 8.22064 12.4393 7.93934C12.7206 7.65804 13.1022 7.5 13.5 7.5H16.5C16.8978 7.5 17.2794 7.65804 17.5607 7.93934C17.842 8.22064 18 8.60218 18 9V10.5M20.25 10.5V21C20.25 21.3978 20.092 21.7794 19.8107 22.0607C19.5294 22.342 19.1478 22.5 18.75 22.5H11.25C10.8522 22.5 10.4706 22.342 10.1893 22.0607C9.90804 21.7794 9.75 21.3978 9.75 21V10.5H20.25Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                        <path d="M13.5 14.25V18.75" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                        <path d="M16.5 14.25V18.75" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <div style="display: flex; justify-content: center;">
+                                <p style="margin-top: 3px;">
+                                    <%= file.filename.length > 10 ? file.filename.substring(0, 10) + '...' : file.filename %>
+                                </p>
+                                <form style="justify-content:flex-end; margin: 0px 10px; margin-top: 2px;" action="/Dashboard/Library/DeleteMedia/<%= file.id %>" method="POST" class="delete-form">
+                                    <button type="submit" class="delete-btn" style="justify-content:flex-end;">
+                                        <svg style="justify-content:flex-end;" width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <circle cx="15" cy="15" r="15" fill="#DC3545" />
+                                            <path d="M8.25 10.5H9.75H21.75" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                            <path d="M12 10.5V9C12 8.60218 12.158 8.22064 12.4393 7.93934C12.7206 7.65804 13.1022 7.5 13.5 7.5H16.5C16.8978 7.5 17.2794 7.65804 17.5607 7.93934C17.842 8.22064 18 8.60218 18 9V10.5M20.25 10.5V21C20.25 21.3978 20.092 21.7794 19.8107 22.0607C19.5294 22.342 19.1478 22.5 18.75 22.5H11.25C10.8522 22.5 10.4706 22.342 10.1893 22.0607C9.90804 21.7794 9.75 21.3978 9.75 21V10.5H20.25Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                            <path d="M13.5 14.25V18.75" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                            <path d="M16.5 14.25V18.75" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                                         </svg>
-                                        </button>
+                                    </button>
                                 </form>
                             </div>
-
                         <% } else { %>
                             <p>Unsupported file type: <%= file.type %></p>
                         <% } %>
-
                     </div>
                 <% }); %>
             </div>
         <% } %>
-
     </div>
 
     <script>
@@ -128,6 +121,18 @@
         // Show progress bar alert when uploading
         document.getElementById('fileInput').addEventListener('change', function() {
             if (this.files && this.files.length > 0) {
+                const file = this.files[0];
+                const allowedTypes = ['video/mp4'];
+
+                if (!allowedTypes.includes(file.type)) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'File not supported. Please upload an MP4 file.',
+                    });
+                    return; // Exit the function if file type is not supported
+                }
+
                 Swal.fire({
                     title: 'Uploading...',
                     html: 'Please wait while your file is being uploaded.',
@@ -173,8 +178,9 @@
                 });
             });
         });
-          // Search functionality
-          document.getElementById("search").addEventListener("input", function () {
+
+        // Search functionality
+        document.getElementById("search").addEventListener("input", function () {
             const searchValue = this.value.toLowerCase();
             const mediaContainers = document.querySelectorAll(".media-container");
 
@@ -188,8 +194,6 @@
                 }
             });
         });
-
     </script>
 </body>
-
 </html>
