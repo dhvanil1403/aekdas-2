@@ -130,7 +130,7 @@
                     <thead>
                         <tr>
                             <!-- <th>ID</th> -->
-                            <th>User ID</th>
+                            
                             <th>Date</th>
                             <th>Action</th>
                             <th>Message</th>
@@ -140,14 +140,15 @@
                     <tbody id="logsTableBody">
                         <% logs.forEach(log => { %>
                             <tr>
-                                <!-- <td><%= log.id %></td> -->
-                                <td><%= log.userId %></td>
-                                <td><%= new Date(log.createdAt).toLocaleString() %></td>
-                                <td><%= log.action %></td>
-                                <td><%= log.message %></td>
-                                <td><%= log.ip %></td>
+                                <td><%= log.createdAt %></td>
+                              <td><%= log.action %></td>
+                             
+                             
+                              <td><%= log.message %></td>
+                              <td><%= log.ip %></td>
+                            
                             </tr>
-                        <% }) %>
+                          <% }) %>
                     </tbody>
                 </table>
             </div>
