@@ -5,25 +5,18 @@ const sequelize = new Sequelize('dbzvtfeophlfnr', 'u3m7grklvtlo6', 'AekAds@24', 
 });
 
 const Log = sequelize.define('Log', {
-    userId: {
-        type: DataTypes.INTEGER,
-        allowNull: false
-    },
     action: {
-        type: DataTypes.STRING,
-        allowNull: false
+      type: DataTypes.STRING,
+      allowNull: false
     },
     message: {
-        type: DataTypes.STRING,
-        allowNull: false
+      type: DataTypes.STRING,
+      allowNull: true
     },
     ip: {
-        type: DataTypes.STRING,
-        allowNull: false
+      type: DataTypes.STRING,
+      allowNull: false
     }
-}, {
-    timestamps: true,
-    tableName: 'logs' // Adjust according to your actual table name
-});
+  });
 
-module.exports = { Log };
+module.exports = { Log };
