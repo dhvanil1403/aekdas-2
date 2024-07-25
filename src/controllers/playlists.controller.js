@@ -1,16 +1,47 @@
 const playlists = require("../models/playlists.model");
 const groupScreen = require("../models/groupScreen.model");
-const screenModel=require("../models/newScreen.model")
+const screenModel = require("../models/newScreen.model");
 const library = require("../models/library.model");
 const { json } = require("express");
+const { Log } = require('../models/log.model');
 
+// Helper function to log actions
+const logAction = async (action, message, ip) => {
+  try {
+      await Log.create({ action, message, ip });
+  } catch (error) {
+      console.error('Failed to log action:', error);
+  }
+};
+
+// Controller to handle logs
+exports.getLogs = async (req, res) => {
+  try {
+      const logs = await Log.findAll({
+          order: [['createdAt', 'DESC']]
+      });
+      res.json(logs);
+  } catch (error) {
+      console.error('Error fetching logs:', error);
+      res.status(500).json({ message: 'Error fetching logs. Please try again.' });
+  }
+};
+
+// Controller to create a new log
+exports.createLog = async (req, res) => {
+  const { action, message, ip } = req.body;
+  try {
+      const log = await Log.create({ action, message, ip });
+      res.status(201).json(log);
+  } catch (error) {
+      console.error('Error creating log:', error);
+      res.status(500).json({ message: 'Error creating log. Please try again.' });
+  }
+};
 const createPlaylist = async (req, res) => {
   try {
     const { urls, screenIDs, playlistName, playlistDescription } = req.body;
-    // console.log("urls", urls);
-    // console.log("screenID", screenIDs);
-    // console.log("playlistName", playlistName);
-    // console.log("playlistDescription", playlistDescription);
+
     // Create playlist object
     const playlistData = {
       screenIDs,
@@ -20,79 +51,26 @@ const createPlaylist = async (req, res) => {
     };
 
     // Call model function to save playlist
-     const newPlaylist = await playlists.createPlaylist(playlistData);
-     await playlists.updateScreensWithPlaylist(screenIDs, playlistName, playlistDescription, urls);
-    console.log("newplaylist created");
+    const newPlaylist = await playlists.createPlaylist(playlistData);
+    await playlists.updateScreensWithPlaylist(screenIDs, playlistName, playlistDescription, urls);
+
+    // Log the create playlist action
+    await logAction('createPlaylist', `Playlist created: ${playlistName}`, req.ip);
+
     // Respond with the newly created playlist
-    res
-      .status(201)
-      .json({
-        message: "Playlist created successfully",
-        playlist: newPlaylist,
-      });
+    res.status(201).json({
+      message: "Playlist created successfully",
+      playlist: newPlaylist,
+    });
   } catch (err) {
     console.error("Error creating playlist:", err);
     res.status(500).json({ error: "Failed to create playlist" });
   }
 };
 
-
-const showPlaylist=async(req,res)=>{
-  try {
-    const playlistsData=await playlists.viewPlaylist();
-    res.render('Playlist',{playlists:playlistsData})     
-     
-  } catch (error) {
-    console.error("Controller showPlaylist error", error);
-    res.status(500).send("Error retrieving playlists");
-  }
-}
-
-const showAvailableScreen = async (req, res) => {
-  
-
-  const screens = await screenModel.getNotdeletedScreen();
-
-  res.render("selectionNewPlaylist", { screens});
-};
-const showAvailableScreenForEditPlaylist = async (req, res) => {
-  
-  const playlistsAll = await playlists.viewPlaylist();
-  console.log("playlist all",playlistsAll);
-
-  const screens = await screenModel.getNotdeletedScreen();
-  // console.log('screens',screens)
-  res.render("EditselectionPlaylist", { screens,playlistsAll});
-};
-const getPlaylistById = async(req, res) => {
-  const playlistId = req.params.playlistId;
-  try {
-    const playlist = await playlists.getPlaylistById(playlistId);
-    // console.log('Fetched playlist:', playlist);
-    const mediafiles = await library.viewMedia();
-    const convertedMediaFiles = mediafiles.map(file => {
-      const durationString = intervalToString(file.duration);
-      // console.log(durationString);
-      return { ...file, durationString };
-    });
-    // console.log('Converted media files:', convertedMediaFiles);
-    res.render('newEditPlaylist', { playlist,mediafiles: convertedMediaFiles});
-  } catch (error) {
-    console.error('Error fetching playlist:', error);
-    res.status(500).send('Internal Server Error');
-  }
-}
-
-function intervalToString(interval) {
-  const hours = interval.hours ? `${interval.hours}h ` : '';
-  const minutes = interval.minutes ? `${interval.minutes}m ` : '';
-  const seconds = interval.seconds ? `${interval.seconds} sec` : '';
-  return `${hours}${minutes}${seconds}`.trim();
-}
-
 const editPlaylist = async (req, res) => {
   try {
-    const { playlistId,urls, screenIDs, playlistName, playlistDescription } = req.body;
+    const { playlistId, urls, screenIDs, playlistName, playlistDescription } = req.body;
 
     // Create playlist object
     const playlistData = {
@@ -109,7 +87,8 @@ const editPlaylist = async (req, res) => {
     // Update screens with the new playlist
     await playlists.updateScreensWithPlaylist(screenIDs, playlistName, playlistDescription, urls);
 
-    console.log("Playlist updated");
+    // Log the edit playlist action
+    await logAction('editPlaylist', `Playlist edited: ${playlistName}`, req.ip);
 
     // Respond with the updated playlist
     res.status(200).json({
@@ -122,179 +101,49 @@ const editPlaylist = async (req, res) => {
   }
 };
 
-// const deletePlaylist = async (req, res) => {
-//   try {
-//     const { playlistId,urls, screenIDs, playlistName, playlistDescription } = req.body;
-
-//     // Create playlist object
-//     const playlistData = {
-//       playlistId,
-//       screenIDs:null,
-//       playlistName:null,
-//       playlistDescription:null,
-//       urls:null,
-//     };
-
-//     // Call model function to update playlist
-//     const updatedPlaylist = await playlists.deletePlaylist(playlistData);
-
-//     // Update screens with the new playlist
-//     await playlists.deleteScreensWithPlaylist(playlistData);
-
-//     console.log("Playlist updated");
-
-//     // Respond with the updated playlist
-//     res.status(200).json({
-//       message: "Playlist deleted successfully",
-//       playlist: updatedPlaylist,
-//     });
-//   } catch (err) {
-//     console.error("Error deleted playlist:", err);
-//     res.status(500).json({ error: "Failed to deleted playlist" });
-//   }
-// };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// const deletePlaylist = async (req, res) => {
-//   try {
-//     const { playlistId } = req.params;
-//     const screenIDs = await playlists.getScreenIDsByPlaylistId(playlistId);
-
-//     // Update screens to remove playlist associations
-//     await playlists.deleteScreensWithPlaylist(screenIDs);
-
-//     // Remove playlist from database
-//     const deletedPlaylist = await playlists.deletePlaylistById(playlistId);
-
-//     // Respond with the deleted playlist
-//     res.status(200).json({
-//       message: "Playlist deleted successfully",
-//       playlist: deletedPlaylist,
-//     });
-//   } catch (err) {
-//     console.error("Error deleting playlist:", err);
-//     res.status(500).json({ error: "Failed to delete playlist" });
-//   }
-// };
-
-// module.exports = {
-//   deletePlaylist,
-// };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+const showPlaylist = async (req, res) => {
+  try {
+    const playlistsData = await playlists.viewPlaylist();
+    res.render('Playlist', { playlists: playlistsData });
+  } catch (error) {
+    console.error("Controller showPlaylist error", error);
+    res.status(500).send("Error retrieving playlists");
+  }
+};
+
+const showAvailableScreen = async (req, res) => {
+  const screens = await screenModel.getNotdeletedScreen();
+  res.render("selectionNewPlaylist", { screens });
+};
+
+const showAvailableScreenForEditPlaylist = async (req, res) => {
+  const playlistsAll = await playlists.viewPlaylist();
+  const screens = await screenModel.getNotdeletedScreen();
+  res.render("EditselectionPlaylist", { screens, playlistsAll });
+};
+
+const getPlaylistById = async (req, res) => {
+  const playlistId = req.params.playlistId;
+  try {
+    const playlist = await playlists.getPlaylistById(playlistId);
+    const mediafiles = await library.viewMedia();
+    const convertedMediaFiles = mediafiles.map(file => {
+      const durationString = intervalToString(file.duration);
+      return { ...file, durationString };
+    });
+    res.render('newEditPlaylist', { playlist, mediafiles: convertedMediaFiles });
+  } catch (error) {
+    console.error('Error fetching playlist:', error);
+    res.status(500).send('Internal Server Error');
+  }
+};
+
+function intervalToString(interval) {
+  const hours = interval.hours ? `${interval.hours}h ` : '';
+  const minutes = interval.minutes ? `${interval.minutes}m ` : '';
+  const seconds = interval.seconds ? `${interval.seconds} sec` : '';
+  return `${hours}${minutes}${seconds}`.trim();
+}
 
 
 const deletePlaylist = async (req, res) => {
@@ -312,7 +161,10 @@ const deletePlaylist = async (req, res) => {
 
     // Update screens to remove playlist associations
     await playlists.deleteScreensWithPlaylist(screenIDs);
-    console.log("Screens updated successfully");
+    await logAction('deletePlaylist', `Playlist deleted: ${playlistId}`, req.ip);
+
+    
+    console.log("Screens updated successfully");       
 
     // Remove playlist from the database
     const deletedPlaylist = await playlists.deletePlaylistById(playlistId);
@@ -340,6 +192,10 @@ const deletePlaylist = async (req, res) => {
 
 
 
+module.exports = { createPlaylist, showPlaylist, showAvailableScreen, getPlaylistById, showAvailableScreenForEditPlaylist, editPlaylist, deletePlaylist };
 
 
-module.exports = { createPlaylist ,showPlaylist,showAvailableScreen,getPlaylistById,showAvailableScreenForEditPlaylist,editPlaylist,deletePlaylist};
+
+
+
+
