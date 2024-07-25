@@ -249,7 +249,7 @@
           // Show confirmation dialog using SweetAlert
           Swal.fire({
             title: 'Are you sure?',
-            text: 'This action cannot be undone!',
+            text: 'You want to unassign this screen',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Yes, delete it!',
@@ -321,14 +321,16 @@
                     'success'
                   );
                 });
-            } else if (result.dismiss === Swal.DismissReason.cancel) {
-              // User canceled deletion, do nothing or show a cancellation message
-              Swal.fire(
-                'Cancelled',
-                'Your playlist is safe :)',
-                'info'
-              );
             }
+            
+            // else if (result.dismiss === Swal.DismissReason.cancel) {
+            //   // User canceled deletion, do nothing or show a cancellation message
+            //   Swal.fire(
+            //     'Cancelled',
+            //     'Your playlist is safe :)',
+            //     'info'
+            //   );
+            // }
           });
         };
       });
