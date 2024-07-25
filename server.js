@@ -85,7 +85,7 @@ app.use((req, res, next) => {
 });
 
 // Routes
-app.use("/Dashboard", dashboardRoutes);
+app.use("/Dashboard", dashboardRoutes.router);
 
 app.get("/", (req, res) => {
   res.render("Login", { message: null });
@@ -110,7 +110,7 @@ app.post('/register', async (req, res) => {
 });
 
 app.get('/login', (req, res) => {
-  res.render('login');
+  res.render('Login');
 });
 
 app.post('/login', async (req, res) => {
@@ -227,7 +227,7 @@ app.get('/logout', (req, res) => {
 });
 
 // Route to display logs
-app.get('/logs', authMiddleware, async (req, res) => {
+app.get('/logs', dashboardRoutes.isAuthenticated, async (req, res) => {
   try {
     const logs = await Log.findAll({
       order: [['createdAt', 'DESC']]
