@@ -11,7 +11,7 @@ const bodyParser = require('body-parser');
 const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
 const { Sequelize, DataTypes } = require('sequelize');
-const authMiddleware = require('./src/middlewares/authMiddleware'); // Import authMiddleware
+
 
 const app = express();
 const api = require('./src/controllers/api.controller');
