@@ -20,12 +20,12 @@ router.get("/", isAuthenticated, (req, res) => {
     res.render("Dashboard", { message: null });
   });
 
-router.use("/Screens",screenRouter);
-router.use("/Teams", teamRouter);
-router.use("/Library", libraryRouter);
-router.use("/Playlist", playlistRouter );
-router.use("/LiveContent", liveContentRouter );
+router.use("/Screens",isAuthenticated,screenRouter);
+router.use("/Teams",isAuthenticated, teamRouter);
+router.use("/Library", isAuthenticated,libraryRouter);
+router.use("/Playlist",isAuthenticated, playlistRouter );
+router.use("/LiveContent", isAuthenticated,liveContentRouter );
 
 
 
-module.exports = router;
+module.exports = {router,isAuthenticated};
