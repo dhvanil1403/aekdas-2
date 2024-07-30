@@ -11,10 +11,11 @@ const bodyParser = require('body-parser');
 const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
 const { Sequelize, DataTypes } = require('sequelize');
-const cloudinary=require('./src/config/cloudinaryConfig');
+const cloudinary = require('./src/config/cloudinaryConfig');
 const app = express();
 const api = require('./src/controllers/api.controller');
 const moment = require('moment-timezone');
+
 // Database setup
 const sequelize = new Sequelize('dbzvtfeophlfnr', 'u3m7grklvtlo6', 'AekAds@24', {
   host: '35.209.89.182',
@@ -61,7 +62,8 @@ const Log = sequelize.define('Log', {
 });
 
 // Middleware for logging actions
-const logAction = async (action, message, ip) => {
+const logAction = async (req, action, message) => {
+  const ip = req?.headers?.['x-forwarded-for'] || req?.connection?.remoteAddress || 'Unknown IP';
   await Log.create({ action, message, ip });
 };
 
@@ -100,10 +102,10 @@ app.get('/register', (req, res) => {
 app.post('/register', async (req, res) => {
   const { email, password } = req.body;
   const hashedPassword = await bcrypt.hash(password, 10);
-  const user = await User.create({ email, password: hashedPassword });
+  await User.create({ email, password: hashedPassword });
 
   // Log the registration action
-  await logAction('register', 'User registered', req.ip);
+  await logAction(req, 'register', 'User registered');
 
   res.redirect('/login');
 });
@@ -147,7 +149,7 @@ app.post('/login', async (req, res) => {
     });
 
     // Log the login action
-    await logAction('login', 'User logged in', req.ip);
+    await logAction(req, 'login', 'User logged in');
 
     res.redirect('/verify-otp');
   } else {
@@ -176,7 +178,7 @@ app.post('/verify-otp', async (req, res) => {
       res.redirect('/verify-otp');
     } else {
       await OTP.destroy({ where: { id: savedOtp.id } });
-      await logAction('verify-otp', 'OTP verified', req.ip);
+      await logAction(req, 'verify-otp', 'OTP verified');
       res.redirect('/Dashboard');
     }
   } else {
@@ -220,7 +222,6 @@ app.post('/resend-otp', async (req, res) => {
   }
 });
 
-
 // Function to fetch Cloudinary storage data
 const getCloudinaryStorageData = async () => {
   try {
@@ -237,7 +238,6 @@ app.get('/api/cloudinary-storage', async (req, res) => {
   res.json(data);
 });
 
-
 app.get('/logout', (req, res) => {
   req.session.destroy();
   res.redirect('/');
@@ -252,18 +252,16 @@ app.get('/logs', dashboardRoutes.isAuthenticated, async (req, res) => {
     // Convert timestamps to IST
     const logsWithIST = logs.map(log => ({
       ...log.dataValues,
-      createdAt: moment(log.createdAt).tz('Asia/Kolkata').format(' HH:mm:ss DD-MM-YYYY')
+      createdAt: moment(log.createdAt).tz('Asia/Kolkata').format('HH:mm:ss DD-MM-YYYY')
     }));
 
     res.render('logs', { logs: logsWithIST });
-  } catch (error) {
+  } catch (error) { 
     console.error('Error fetching logs:', error);
     req.flash('error_msg', 'Error fetching logs. Please try again.');
     res.redirect('/Dashboard');
   }
 });
-
-
 
 // Sync database and start server
 sequelize.sync().then(() => {
@@ -271,4 +269,4 @@ sequelize.sync().then(() => {
     console.log('Server is running on port 3000');
   });
 });
-    
+ 
