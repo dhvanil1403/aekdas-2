@@ -75,6 +75,12 @@ app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(flash());
+// Middleware to get client's IP address
+app.use((req, res, next) => {
+  const ipAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  req.clientIp = ipAddress.split(',').pop().trim();
+  next();
+});
 
 app.use((req, res, next) => {
   res.locals.success_msg = req.flash('success_msg');
@@ -245,7 +251,11 @@ app.get('/logout', (req, res) => {
 
 app.get('/logs', dashboardRoutes.isAuthenticated, async (req, res) => {
   try {
+    const clientIp = req.clientIp;
     const logs = await Log.findAll({
+      where: {
+        ip: clientIp
+      },
       order: [['createdAt', 'DESC']]
     });
 
