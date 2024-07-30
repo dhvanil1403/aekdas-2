@@ -64,6 +64,15 @@ const Log = sequelize.define('Log', {
 const logAction = async (action, message, ip) => {
   await Log.create({ action, message, ip });
 };
+const getClientIp = (req, res, next) => {
+  req.clientIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  next();
+};
+
+app.use((req, res, next) => {
+  req.clientIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  next();
+});
 
 // Express middleware
 app.use(express.urlencoded({ extended: true }));
@@ -243,16 +252,22 @@ app.get('/logout', (req, res) => {
   res.redirect('/');
 });
 
-app.get('/logs', dashboardRoutes.isAuthenticated, async (req, res) => {
+app.get('/logs', dashboardRoutes.isAuthenticated, getClientIp, async (req, res) => {
   try {
+    const clientIp = req.clientIp; // Get the client's IP address
+
+    // Fetch logs for the specific client IP
     const logs = await Log.findAll({
+      where: {
+        ip: clientIp
+      },
       order: [['createdAt', 'DESC']]
     });
 
     // Convert timestamps to IST
     const logsWithIST = logs.map(log => ({
       ...log.dataValues,
-      createdAt: moment(log.createdAt).tz('Asia/Kolkata').format(' HH:mm:ss DD-MM-YYYY')
+      createdAt: moment(log.createdAt).tz('Asia/Kolkata').format('HH:mm:ss DD-MM-YYYY')
     }));
 
     res.render('logs', { logs: logsWithIST });
