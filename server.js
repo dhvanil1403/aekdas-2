@@ -11,11 +11,10 @@ const bodyParser = require('body-parser');
 const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
 const { Sequelize, DataTypes } = require('sequelize');
-
-
+const cloudinary=require('./src/config/cloudinaryConfig');
 const app = express();
 const api = require('./src/controllers/api.controller');
-
+const moment = require('moment-timezone');
 // Database setup
 const sequelize = new Sequelize('dbzvtfeophlfnr', 'u3m7grklvtlo6', 'AekAds@24', {
   host: '35.209.89.182',
@@ -65,6 +64,15 @@ const Log = sequelize.define('Log', {
 const logAction = async (action, message, ip) => {
   await Log.create({ action, message, ip });
 };
+const getClientIp = (req, res, next) => {
+  req.clientIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  next();
+};
+
+app.use((req, res, next) => {
+  req.clientIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  next();
+});
 
 // Express middleware
 app.use(express.urlencoded({ extended: true }));
@@ -221,18 +229,48 @@ app.post('/resend-otp', async (req, res) => {
   }
 });
 
+
+// Function to fetch Cloudinary storage data
+const getCloudinaryStorageData = async () => {
+  try {
+    const result = await cloudinary.api.usage();
+    console.log('Cloudinary Storage Data:', result); // Debug log
+    return result;
+  } catch (error) {
+    console.error('Error fetching Cloudinary storage data:', error);
+  }
+};
+
+app.get('/api/cloudinary-storage', async (req, res) => {
+  const data = await getCloudinaryStorageData();
+  res.json(data);
+});
+
+
 app.get('/logout', (req, res) => {
   req.session.destroy();
   res.redirect('/');
 });
 
-// Route to display logs
-app.get('/logs', dashboardRoutes.isAuthenticated, async (req, res) => {
+app.get('/logs', dashboardRoutes.isAuthenticated, getClientIp, async (req, res) => {
   try {
+    const clientIp = req.clientIp; // Get the client's IP address
+
+    // Fetch logs for the specific client IP
     const logs = await Log.findAll({
+      where: {
+        ip: clientIp
+      },
       order: [['createdAt', 'DESC']]
     });
-    res.render('logs', { logs });
+
+    // Convert timestamps to IST
+    const logsWithIST = logs.map(log => ({
+      ...log.dataValues,
+      createdAt: moment(log.createdAt).tz('Asia/Kolkata').format('HH:mm:ss DD-MM-YYYY')
+    }));
+
+    res.render('logs', { logs: logsWithIST });
   } catch (error) {
     console.error('Error fetching logs:', error);
     req.flash('error_msg', 'Error fetching logs. Please try again.');
@@ -240,10 +278,11 @@ app.get('/logs', dashboardRoutes.isAuthenticated, async (req, res) => {
   }
 });
 
+
+
 // Sync database and start server
 sequelize.sync().then(() => {
   app.listen(3000, () => {
     console.log('Server is running on port 3000');
   });
 });
-  
