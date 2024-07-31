@@ -277,7 +277,7 @@ app.get('/logs', dashboardRoutes.isAuthenticated, async (req, res) => {
 
 
 // Route to display all users
-app.get('/admin/users', async (req, res) => {
+app.get('/admin/users',dashboardRoutes.isAuthenticated, async (req, res) => {
   const user = req.session.user;
 
  
