@@ -303,6 +303,8 @@ exports.createLog = async (req, res) => {
     }
 };
 
+
+
 // Add a new screen
 const addScreen = async (req, res) => {
     const {
@@ -329,6 +331,7 @@ const addScreen = async (req, res) => {
                 offlineScreen: 0,
                 groupscreen: 0,
                 deletedScreens: 0,
+                screenStatus:0
             });
         }
 
@@ -340,7 +343,7 @@ const addScreen = async (req, res) => {
             const offlineScreen = await screen.getDeletedScreenCount();
             const deletedScreens = await screen.getDeletedScreen();
             const groupscreen = await screen.getGroupScreen();
-
+          const  screenStatus=await screen.getStatus();
             await logAction('addScreen', 'Failed to add screen: pairing code already exists');
             return res.render("Screen", {
                 message: {
@@ -353,6 +356,7 @@ const addScreen = async (req, res) => {
                 offlineScreen,
                 deletedScreens,
                 groupscreen,
+                screenStatus
             });
         }
 
@@ -366,6 +370,7 @@ const addScreen = async (req, res) => {
             const deletedScreens = await screen.getDeletedScreen();
             const groupscreen = await screen.getGroupScreen();
 
+            const  screenStatus=await screen.getStatus();
             return res.render("Screen", {
                 message: {
                     type: "error",
@@ -376,7 +381,7 @@ const addScreen = async (req, res) => {
                 onlineScreen,
                 offlineScreen,
                 deletedScreens,
-                groupscreen,
+                groupscreen,screenStatus
             });
         }
 
@@ -399,6 +404,7 @@ const addScreen = async (req, res) => {
         const allScreens = await screen.getNotdeletedScreen();
         const deletedScreens = await screen.getDeletedScreen();
         const groupscreen = await screen.getGroupScreen();
+        const  screenStatus=await screen.getStatus();
 
         req.session.successMessage = 'Successfully added screen!';
         res.render("Screen", {
@@ -411,7 +417,7 @@ const addScreen = async (req, res) => {
             onlineScreen,
             offlineScreen,
             deletedScreens,
-            groupscreen,
+            groupscreen,screenStatus
         });
     } catch (error) {
         console.error(error);
@@ -429,6 +435,7 @@ const getAllScreens = async (req, res) => {
         const offlineScreen = await screen.getDeletedScreenCount();
         const deletedScreens = await screen.getDeletedScreen();
         const groupscreen = await screen.getGroupScreen();
+        const  screenStatus=await screen.getStatus();
 
         res.render("Screen", {
             message: null,
@@ -437,7 +444,7 @@ const getAllScreens = async (req, res) => {
             onlineScreen,
             offlineScreen,
             deletedScreens,
-            groupscreen,
+            groupscreen,screenStatus
         });
     } catch (error) {
         console.error("Error fetching all screens:", error);
@@ -529,7 +536,7 @@ const editScreen = async (req, res) => {
             onlineScreen,
             offlineScreen,
             deletedScreens,
-            groupscreen,
+            groupscreen,screenStatus
         });
     } catch (error) {
         console.error(error);
