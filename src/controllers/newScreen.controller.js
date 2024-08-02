@@ -525,6 +525,8 @@ const editScreen = async (req, res) => {
         const allScreens = await screen.getNotdeletedScreen();
         const deletedScreens = await screen.getDeletedScreen();
         const groupscreen = await screen.getGroupScreen();
+        const  screenStatus=await screen.getStatus();
+
 
         res.render("Screen", {
             message: {
