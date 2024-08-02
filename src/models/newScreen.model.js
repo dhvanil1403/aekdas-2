@@ -219,6 +219,17 @@ const deleteScreenById = async (screenid) => {
       throw error;
   }
 };
+
+
+const getStatus = async () => {
+  try {
+    const result = await db.query("SELECT * FROM client_statuses ORDER BY client_id DESC");
+    return result.rows;
+  } catch (err) {
+    console.error("Error occurred at fetching all screens:", err);
+    throw err;
+  }
+};
 module.exports = {
   restoreScreenInDB,
   newScreen,
@@ -234,5 +245,5 @@ module.exports = {
   getGroupScreen,
   deletePlaylist,
   deleteScreenById,
-  screenByName
+  screenByName,getStatus
 };
