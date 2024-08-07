@@ -138,7 +138,29 @@ const getNotDeletedScreenCount = async () => {
     throw error;
   }
 };
+const getOnlineCountByClientTable = async () => {
+  try {
+    const result = await db.query(
+      "SELECT COUNT(*) AS count FROM client_statuses WHERE status='online'"
+    );
+    return result.rows[0].count;
+  } catch (error) {
+    console.error("Error fetching not deleted screen count:", error);
+    throw error;
+  }
+};
 
+const getOfflineCountByClientTable = async () => {
+  try {
+    const result = await db.query(
+      "SELECT COUNT(*) AS count FROM client_statuses WHERE status='offline'"
+    );
+    return result.rows[0].count;
+  } catch (error) {
+    console.error("Error fetching not deleted screen count:", error);
+    throw error;
+  }
+};
 const getDeletedScreenCount = async () => {
   try {
     const result = await db.query(
@@ -245,5 +267,5 @@ module.exports = {
   getGroupScreen,
   deletePlaylist,
   deleteScreenById,
-  screenByName,getStatus
+  screenByName,getStatus,getOnlineCountByClientTable,getOfflineCountByClientTable
 };
