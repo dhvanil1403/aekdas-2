@@ -9,7 +9,7 @@ const showAllDashboardData=async (req, res) => {
     const onlineScreenCount=await screen.getOnlineCountByClientTable();
     const offlineScreenCount=await screen.getOfflineCountByClientTable();
     const totalMediaFiles=await library.getmediafileCount();
-
+    const  screenStatus=await screen.getStatus();
     const allScreens =await screen.getNotdeletedScreen();
     const logs =await logdetails.logData();
  
@@ -26,7 +26,7 @@ const showAllDashboardData=async (req, res) => {
     //     res.redirect('/Dashboard');
     //   }
 // console.log(totalScreenCount,onlineScreenCount,deletedScreenCount,totalMediaFiles,allScreens,logs);
-    res.render("showdashboard",{totalScreenCount,onlineScreenCount,offlineScreenCount,totalMediaFiles,allScreens,logs});
+    res.render("showdashboard",{totalScreenCount,onlineScreenCount,offlineScreenCount,totalMediaFiles,allScreens,logs,screenStatus});
 }
 
 module.exports={
