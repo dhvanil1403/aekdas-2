@@ -245,7 +245,7 @@ input {
  
 }
 .tableClass {
-  max-height: 55vh; /* Adjust the height as needed */
+  max-height: 73vh; /* Adjust the height as needed */
   overflow-y: auto; /* Enable vertical scrolling */
 }
 table {
