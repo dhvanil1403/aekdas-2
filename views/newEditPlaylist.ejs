@@ -81,7 +81,7 @@
                         <div class="media-container" data-index="<%= index %>">
                             <% if (file.type && file.type.startsWith('image/')) { %>
                                 <% } else if (file) { %>
-                                <video controls class="media-item video-item" >
+                                <video controls class="media-item video-item" preload="metadata" >
                                     <source src="<%= file.url %>" type="video/mp4" data-layout-name="<%= file.filename %>" >>
                                     Your browser does not support the video tag.
                                 </video>
