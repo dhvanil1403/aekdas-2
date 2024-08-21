@@ -26,7 +26,7 @@ const newScreen = async (
 const screenByPairingCode = async (pairingCode) => {
   try {
     const result = await db.query(
-      "SELECT * FROM screens WHERE PairingCode=$1",
+      "SELECT * FROM screens WHERE screenid=$1",
       [pairingCode]
     );
     return result.rows;
@@ -72,7 +72,7 @@ const getNotdeletedScreen = async () => {
 const updateDeleteScreen = async (pairingCode) => {
   try {
     const result = await db.query(
-      "UPDATE screens SET deleted = true WHERE pairingcode = $1",
+      "UPDATE screens SET deleted = true WHERE screenid = $1",
       [pairingCode]
     );
  
@@ -85,7 +85,7 @@ const updateDeleteScreen = async (pairingCode) => {
 const restoreScreenInDB = async (pairingCode) => {
   try {
     const result = await db.query(
-      "UPDATE screens SET deleted = false WHERE pairingcode = $1",
+      "UPDATE screens SET deleted = false WHERE screenid = $1",
       [pairingCode]
     );
     return result.rows;
