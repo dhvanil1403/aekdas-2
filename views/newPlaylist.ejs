@@ -58,7 +58,7 @@
                             <% if (file.type && file.type.startsWith('image/')) { %>
                                
                                 <% } else if (file) { %>
-                                    <video class="media-item video-item" controls>
+                                    <video class="media-item video-item" preload="metadata" controls>
                                         <source src="<%= file.url %>" type="video/mp4">
                                         Your browser does not support the video tag.
                                     </video>
