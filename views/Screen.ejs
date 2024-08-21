@@ -303,6 +303,7 @@
                   <% if (screens && screens.length) { %>
                     <% screens.forEach((screen, index)=> { %>
                       <tr data-pairingcode="<%= screen.screenid %>">
+                    
                         <td>
                           <input type="checkbox" class="row-select" />
                         </td>
@@ -316,14 +317,12 @@
                           <%= screen.pairingcode %>
                         </td>
                         <td id="screen.screenname">
-                          <%= screen.screenname.length> 20 ? screen.screenname.substring(0, 20) + '...' :
-                            screen.screenname %>
+                          <%= screen.screenname %>
                         </td>
                         <td id="screen.playlistname">
                           <div style="display: flex;">
                             <p>
-                              <%= screen.playlistname && screen.playlistname.length> 20 ?
-                                screen.playlistname.substring(0, 20) + '...' : screen.playlistname %>
+                              <%= screen.playlistname %>
                             </p>
                             <button class="delete" onclick="deletePlaylist('<%= screen.screenid %>')">
                               <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -394,7 +393,7 @@
                         </td>
                         <td>
                           <div class="action">
-                            <button class="edit" onclick="editScreen('<%= screen.pairingcode %>')">
+                            <button class="edit" onclick="editScreen('<%= screen.screenid %>')">
                               <svg width="30" height="30" viewBox="0 0 30 30" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <circle cx="15" cy="15" r="15" fill="#E8AF04" />
@@ -413,7 +412,7 @@
                                 </defs>
                               </svg>
                             </button>
-                            <button class="delete" onclick="markAsDeleted('<%= screen.pairingcode %>')">
+                            <button class="delete" onclick="markAsDeleted('<%= screen.screenid %>')">
                               <svg width="30" height="30" viewBox="0 0 30 30" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <circle cx="15" cy="15" r="15" fill="#DC3545" />
@@ -527,7 +526,7 @@
                   <% if (deletedScreens && deletedScreens.length) { %>
                     <% deletedScreens.forEach((deletedScreen,index)=>
                       { %>
-                      <tr data-pairingcode="<%= deletedScreen.pairingcode %>">
+                      <tr data-pairingcode="<%= deletedScreen.screenid %>">
                         <td>
                           <%= index+1 %>
                         </td>
@@ -559,7 +558,7 @@
                         </td>
                         <td>
                           <div class="action">
-                            <button class="restore" onclick="restoreScreen('<%= deletedScreen.pairingcode %>')">
+                            <button class="restore" onclick="restoreScreen('<%= deletedScreen.screenid %>')">
                               <svg width="30" height="30" viewBox="0 0 30 30" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <circle cx="15" cy="15" r="15" fill="#20C997" />
