@@ -252,7 +252,8 @@
 
           <div class="show-Screen" id="show-Screen">
             <div>
-              <h2 style="display: flex;justify-content: space-between;text-align: center;">Screens/Players   <button id="exportButton" class="export-btn" style="display: flex;">Export</button>
+              <h2 style="display: flex;justify-content: space-between;text-align: center;">Screens/Players   <button id="exportButton" class="export-btn" style="display: none;">Export</button>
+
               </h2>
               <p style="font-size: small;">Total Screen : <%= screenCount %>
               </p>
@@ -604,7 +605,49 @@
             </div>
           </div>
         </div>
+        <script>
+// Function to toggle the visibility of the Export button
+function toggleExportButton() {
+  const checkboxes = document.querySelectorAll('.row-select');
+  const exportButton = document.getElementById('exportButton');
+  
+  // Check if any checkbox is selected
+  const anySelected = Array.from(checkboxes).some(checkbox => checkbox.checked);
+  
+  // Show or hide the Export button
+  exportButton.style.display = anySelected ? 'flex' : 'none';
+}
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          // Event listener for the Select All checkbox
+document.getElementById('selectAll').addEventListener('change', function() {
+  const isChecked = this.checked;
+  const checkboxes = document.querySelectorAll('.row-select');
+  checkboxes.forEach(checkbox => {
+    checkbox.checked = isChecked;
+  });
+  toggleExportButton(); // Check if any checkbox is selected
+});
+
+// Event listener for each row checkbox
+document.querySelectorAll('.row-select').forEach(checkbox => {
+  checkbox.addEventListener('change', toggleExportButton);
+});
+
+        </script>
         <script src="/javaScripts/screen.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.1/xlsx.full.min.js"></script>
         <script>
