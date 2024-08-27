@@ -155,7 +155,7 @@ cursor: pointer;
 }
 
 .show-media .media-container {
-  width: 48%;
+  /* width: 48%; */
   margin: 1%;
   box-sizing: border-box;
 }
