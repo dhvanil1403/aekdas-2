@@ -96,10 +96,16 @@ const getExternalIP = async () => {
 };
 
 // Middleware for logging actions
-const logAction = async (req, action, message) => {
-  const ip = await getExternalIP();
-  await Log.create({ action, message, ip });
+const logAction = async (req, action, message, user) => {
+  try {
+    const ip = await getExternalIP();
+    const logMessage = `${user.name} ${message}`;
+    await Log.create({ action, message: logMessage, ip });
+  } catch (error) {
+    console.error('Error logging action:', error);
+  }
 };
+
 
 
 const logAction2 = async (req, action, message) => {
@@ -197,9 +203,12 @@ app.post('/login', async (req, res) => {
         console.log('Email sent: ' + info.response);
       }
     });
+   // Assuming password check passed
+   req.user = user;  // Set req.user
 
     // Log the login action
-    await logAction(req, 'login', 'User logged in');
+    // await logAction(req, 'login', 'User logged in');
+    await logAction(req, 'login', 'logged in', req.user);
 
     res.redirect('/verify-otp');
   } else {
