@@ -262,30 +262,117 @@
         noResultsMessage.style.display = visibleRowCount === 0 ? 'block' : 'none';
       }
 
-      window.deletePlaylist = function deletePlaylist(screenId) {
-        Swal.fire({
-          title: 'Are you sure?',
-          text: "You won't be able to revert this!",
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Yes, delete it!'
-        }).then((result) => {
-          if (result.isConfirmed) {
-            removeSelectedScreenRow(screenId);
-            const checkbox = document.querySelector(`input[name="checkbox"][value="${screenId}"]`);
-            if (checkbox) {
-              checkbox.checked = false;
+
+
+
+
+
+
+
+
+
+
+
+
+
+      window.deletePlaylist = function deletePlaylist(screenID) {
+          // Show confirmation dialog using SweetAlert
+          Swal.fire({
+            title: 'Are you sure?',
+            text: 'You want to unassign this screen',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel',
+            reverseButtons: true
+          }).then((result) => {
+            if (result.isConfirmed) {
+              // User confirmed deletion, proceed with fetch request
+              fetch(`/Dashboard/Screens/${screenID}/deletePlaylist`, {
+                method: 'PUT',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                  playlistname: null
+                })
+              })
+                .then(response => {
+                  
+                  // Remove the screen from selectedScreens
+                  selectedScreens = selectedScreens.filter(id => id !== screenID);
+                  console.log("selectedScreens after screen playlist data fetch requestr",selectedScreens);
+                  // Update the UI
+                  removeSelectedScreenRow(screenID);
+                  const checkbox = document.querySelector(`input[value="${screenID}"]`);
+                  if (checkbox) {
+                    checkbox.checked = false;
+                  }
+                  console.log(' after delete in screen table')
+                  console.log("playlistId", playlistId);
+                   console.log("playlistName", playlistName);
+                      console.log("playlistDescription", playlistDescription);
+                  console.log("selectedUrls", urls);
+                  console.log("selectedScreens", selectedScreens);
+                  // Update the database
+                  fetch("/Dashboard/Playlist/editPlaylist", {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                      playlistId: sessionStorage.getItem("playlistId"),
+                      screenIDs: selectedScreens,
+                      urls: JSON.parse(sessionStorage.getItem("playlistUrls")),
+                      playlistName: sessionStorage.getItem("playlistName"),
+                      playlistDescription: sessionStorage.getItem("playlistDescription"),
+                    }),
+                  });
+                })
+                .then(response => {
+                  if (!response.ok) {
+                    throw new Error('Failed to edit playlist');
+                  }
+                  return response.json();
+                })
+                .then(responseData => {
+                  console.log("Playlist edit:", responseData.playlist);
+                  Swal.fire(
+                    'Deleted!',
+                    'Playlist deleted successfully.',
+                    'success'
+                  );
+                })
+                .catch(error => {
+                  console.error('Error deleting playlist:', error);
+                  Swal.fire(
+                    'Deleted!',
+                    'Playlist deleted successfully.',
+                    'success'
+                  );
+                });
             }
-            Swal.fire(
-              'Deleted!',
-              'Your file has been deleted.',
-              'success'
-            );
-          }
-        });
-      };
+            
+            // else if (result.dismiss === Swal.DismissReason.cancel) {
+            //   // User canceled deletion, do nothing or show a cancellation message
+            //   Swal.fire(
+            //     'Cancelled',
+            //     'Your playlist is safe :)',
+            //     'info'
+            //   );
+            // }
+          });
+        };
+
+
+
+
+
+
+
+
+
+
     });
   </script>
 </body>
