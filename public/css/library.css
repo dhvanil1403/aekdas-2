@@ -211,7 +211,7 @@
 }
 
 .media-item {
-  width: 180px; /* 9/16 of 320px height */
+  /* width: 180px; 9/16 of 320px height */
   height: 300px; /* Maintain the 9:16 aspect ratio */
   /* box-shadow: 0px 0px 4px 0px #00000040; */
   object-fit: cover; /* Ensures the content is resized to fit the container */
