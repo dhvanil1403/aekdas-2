@@ -269,10 +269,11 @@ const getExternalIP = async () => {
 };
 
 // Helper function to log actions
-const logAction = async (action, message) => {
+const logAction = async (action, message, user = null) => {
     try {
-        const ip = await getExternalIP();
-        await Log.create({ action, message, ip });
+        const ip = await getExternalIP();    
+        const userName = user ? user.name : 'Anonymous'; // Default to 'Anonymous' if no user info
+        await Log.create({ action, message: `${message} by ${userName}`, ip });
     } catch (error) {
         console.error('Failed to log action:', error);
     }
@@ -396,7 +397,9 @@ const addScreen = async (req, res) => {
             pincode
         );
 
-        await logAction('addScreen', 'Successfully added screen');
+        // await logAction('addScreen', 'Successfully added screen');
+        const user = req.session.user; // Retrieve user from session
+        await logAction('addScreen', `Successfully added screen`, user);
 
         const screenCount = await screen.getTotalScreenCount();
         const onlineScreen = await screen.getNotDeletedScreenCount();
@@ -483,11 +486,13 @@ const updateDeleteScreen = async (req, res) => {
 
     try {
         await screen.updateDeleteScreen(pairingCode);
-        await logAction('DeleteScreen', `Screen deleted: ${pairingCode}`);
+        // await logAction('DeleteScreen', `Screen deleted: ${pairingCode}`);
+        const user = req.session.user; // Retrieve user from session
+        await logAction('DeleteScreen',  `Screen deleted: ${pairingCode}`, user);
         res.sendStatus(204);
     } catch (error) {
         console.error(error);
-        await logAction('updateDeleteScreen', `Error updating screen: ${pairingCode}`);
+        await logAction('DeleteScreen', `Error DeleteScreen`);
         res.status(500).send("Error deleting screen");
     }
 };
@@ -519,8 +524,8 @@ const editScreen = async (req, res) => {
             pincode
         );
 
-        await logAction('editScreen', `Screen edited: ${screenid}`);
-
+        const user = req.session.user; // Retrieve user from session
+        await logAction('editScreen', `Screen edited: ${screenid}`, user);
         const screenCount = await screen.getTotalScreenCount();
         const onlineScreen = await screen.getNotDeletedScreenCount();
         const offlineScreen = await screen.getDeletedScreenCount();
@@ -544,7 +549,8 @@ const editScreen = async (req, res) => {
         });
     } catch (error) {
         console.error(error);
-        await logAction('editScreen', `Error editing screen: ${pairingCode}`);
+        const user = req.session.user; // Retrieve user from session
+        await logAction('editScreen', `Error editing screen: ${screenid}`, user);
         res.status(500).send("Error editing screen");
     }
 };
