@@ -6,49 +6,51 @@ const axios = require('axios');
 
 // Helper function to get external IP
 const getExternalIP = async () => {
-    try {
-        const response = await axios.get('https://api.ipify.org?format=json');
-        return response.data.ip;
-    } catch (error) {
-        console.error('Failed to retrieve external IP:', error);
-        return null;
-    }
+  try {
+      const response = await axios.get('https://api.ipify.org?format=json');
+      return response.data.ip;
+  } catch (error) {
+      console.error('Failed to retrieve external IP:', error);
+      return null;
+  }
 };
 
 // Helper function to log actions
-const logAction = async (action, message) => {
-    try {
-        const ip = await getExternalIP();
-        await Log.create({ action, message, ip });
-    } catch (error) {
-        console.error('Failed to log action:', error);
-    }
+const logAction = async (action, message, user = null) => {
+  try {
+      const ip = await getExternalIP();    
+      const userName = user ? user.name : 'Anonymous'; // Default to 'Anonymous' if no user info
+      await Log.create({ action, message: `${message} by ${userName}`, ip });
+  } catch (error) {
+      console.error('Failed to log action:', error);
+  }
 };
 
 // Controller to handle logs
 exports.getLogs = async (req, res) => {
-    try {
-        const logs = await Log.findAll({
-            order: [['createdAt', 'DESC']]
-        });
-        res.json(logs);
-    } catch (error) {
-        console.error('Error fetching logs:', error);
-        res.status(500).json({ message: 'Error fetching logs. Please try again.' });
-    }
+  try {
+      const logs = await Log.findAll({
+          order: [['createdAt', 'DESC']]
+      });
+      res.json(logs);
+  } catch (error) {
+      console.error('Error fetching logs:', error);
+      res.status(500).json({ message: 'Error fetching logs. Please try again.' });
+  }
 };
 
 // Controller to create a new log
 exports.createLog = async (req, res) => {
-    const { action, message } = req.body;
-    try {
-        const log = await Log.create({ action, message, ip: req.ip });
-        res.status(201).json(log);
-    } catch (error) {
-        console.error('Error creating log:', error);
-        res.status(500).json({ message: 'Error creating log. Please try again.' });
-    }
+  const { action, message } = req.body;
+  try {
+      const log = await Log.create({ action, message, ip: req.ip });
+      res.status(201).json(log);
+  } catch (error) {
+      console.error('Error creating log:', error);
+      res.status(500).json({ message: 'Error creating log. Please try again.' });
+  }
 };
+
 
 
 const handleUploadInDB = async (req, res) => {
@@ -90,7 +92,9 @@ const handleUploadInDB = async (req, res) => {
     }
     const mediafiles = await library.viewMedia();
     const fileCount = await library.getmediafileCount();
-    await logAction('UPLOAD', `video uploaded: ${fileName}`, req.ip);
+    // await logAction('UPLOAD', `video uploaded: ${fileName}`, req.ip);
+    const user = req.session.user; // Retrieve user from session
+    await logAction('UPLOAD ', `video uploaded: ${fileName}`, user);
     res.render("Library", { mediafiles: mediafiles, fileCount });
   } catch (err) {
     console.error(err);
@@ -138,7 +142,9 @@ const handleUploadInDBForNewPlaylist = async (req, res) => {
     }
     const mediafiles = await library.viewMedia();
     const fileCount = await library.getmediafileCount();
-    await logAction('UPLOAD', `File uploaded for new playlist: ${fileName}`, req.ip);
+    // await logAction('UPLOAD', `File uploaded for new playlist: ${fileName}`, req.ip);
+    const user = req.session.user; // Retrieve user from session
+    await logAction('UPLOAD ', `File uploaded for new playlist: ${fileName}`, user);
     res.render("newPlaylist", { mediafiles: mediafiles, fileCount });
   } catch (err) {
     console.error(err);
@@ -187,7 +193,9 @@ const getPhotoes = async (req, res) => {
   try {
     const mediafiles = await library.getPhotoes();
     const fileCount = await library.getmediafileCount();
-    await logAction('Image/video', 'Add photos', req.ip);
+    // await logAction('Image/video', 'Add photos', req.ip);
+    const user = req.session.user; // Retrieve user from session
+    await logAction('Image/video ', 'Add photos', user);
     res.render("Library", { mediafiles: mediafiles, fileCount });
   } catch (err) {
     console.error(err);
@@ -235,7 +243,9 @@ const deleteMedia = async (req, res) => {
   try {
     await library.deleteMediaById(id);
     // Optionally, delete from Cloudinary or other storage
-    await logAction('DELETE', `Media deleted with ID: ${id}`, req.ip);
+    // await logAction('DELETE', `Media deleted with ID: ${id}`, req.ip);
+    const user = req.session.user; // Retrieve user from session
+    await logAction('DELETE ', `Media deleted with ID: ${id}`, user);
     res.redirect('/Dashboard/Library');
   } catch (err) {
     console.error(err);
