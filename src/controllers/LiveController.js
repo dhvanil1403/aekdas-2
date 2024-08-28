@@ -5,48 +5,49 @@ const axios = require('axios');
 
 // Helper function to get external IP
 const getExternalIP = async () => {
-    try {
-        const response = await axios.get('https://api.ipify.org?format=json');
-        return response.data.ip;
-    } catch (error) {
-        console.error('Failed to retrieve external IP:', error);
-        return null;
-    }
+  try {
+      const response = await axios.get('https://api.ipify.org?format=json');
+      return response.data.ip;
+  } catch (error) {
+      console.error('Failed to retrieve external IP:', error);
+      return null;
+  }
 };
 
 // Helper function to log actions
-const logAction = async (action, message) => {
-    try {
-        const ip = await getExternalIP();
-        await Log.create({ action, message, ip });
-    } catch (error) {
-        console.error('Failed to log action:', error);
-    }
+const logAction = async (action, message, user = null) => {
+  try {
+      const ip = await getExternalIP();    
+      const userName = user ? user.name : 'Anonymous'; // Default to 'Anonymous' if no user info
+      await Log.create({ action, message: `${message} by ${userName}`, ip });
+  } catch (error) {
+      console.error('Failed to log action:', error);
+  }
 };
 
 // Controller to handle logs
 exports.getLogs = async (req, res) => {
-    try {
-        const logs = await Log.findAll({
-            order: [['createdAt', 'DESC']]
-        });
-        res.json(logs);
-    } catch (error) {
-        console.error('Error fetching logs:', error);
-        res.status(500).json({ message: 'Error fetching logs. Please try again.' });
-    }
+  try {
+      const logs = await Log.findAll({
+          order: [['createdAt', 'DESC']]
+      });
+      res.json(logs);
+  } catch (error) {
+      console.error('Error fetching logs:', error);
+      res.status(500).json({ message: 'Error fetching logs. Please try again.' });
+  }
 };
 
 // Controller to create a new log
 exports.createLog = async (req, res) => {
-    const { action, message } = req.body;
-    try {
-        const log = await Log.create({ action, message, ip: req.ip });
-        res.status(201).json(log);
-    } catch (error) {
-        console.error('Error creating log:', error);
-        res.status(500).json({ message: 'Error creating log. Please try again.' });
-    }
+  const { action, message } = req.body;
+  try {
+      const log = await Log.create({ action, message, ip: req.ip });
+      res.status(201).json(log);
+  } catch (error) {
+      console.error('Error creating log:', error);
+      res.status(500).json({ message: 'Error creating log. Please try again.' });
+  }
 };
 
 const showAvailableScreen = async (req, res) => {
@@ -93,7 +94,9 @@ const createlive = async (req, res) => {
     await liveModel.updateScreenWithLive(screenIDs, pairingCodes, liveData);
 
     // Log the creation action
-    await logAction('CREATE', `Live content created: ${liveName}`, req.ip);
+    // await logAction('CREATE', `Live content created: ${liveName}`, req.ip);
+    const user = req.session.user; // Retrieve user from session
+    await logAction('CREATE Live', `Live content created: ${liveName}`, user);
 
     res.status(200).json({ message: "Live content published successfully!" });
   } catch (error) {
@@ -133,7 +136,9 @@ const deleteLive = async (req, res) => {
     const deletedLive = await liveModel.deleteLiveById(liveId);
 
     // Log the deletion action
-    await logAction('DELETE', `Live content deleted: ${liveId}`, req.ip);
+    // await logAction('DELETE', `Live content deleted: ${liveId}`, req.ip);
+    const user = req.session.user; // Retrieve user from session
+    await logAction('DELETE ', `Live content deleted: ${liveId}`, user);
 
     // Log the deleted live content to ensure it's deleted correctly
     console.log("Deleted Live Content:", deletedLive);
