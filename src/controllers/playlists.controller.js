@@ -9,49 +9,51 @@ const axios = require('axios');
 
 // Helper function to get external IP
 const getExternalIP = async () => {
-    try {
-        const response = await axios.get('https://api.ipify.org?format=json');
-        return response.data.ip;
-    } catch (error) {
-        console.error('Failed to retrieve external IP:', error);
-        return null;
-    }
+  try {
+      const response = await axios.get('https://api.ipify.org?format=json');
+      return response.data.ip;
+  } catch (error) {
+      console.error('Failed to retrieve external IP:', error);
+      return null;
+  }
 };
 
 // Helper function to log actions
-const logAction = async (action, message) => {
-    try {
-        const ip = await getExternalIP();
-        await Log.create({ action, message, ip });
-    } catch (error) {
-        console.error('Failed to log action:', error);
-    }
+const logAction = async (action, message, user = null) => {
+  try {
+      const ip = await getExternalIP();    
+      const userName = user ? user.name : 'Anonymous'; // Default to 'Anonymous' if no user info
+      await Log.create({ action, message: `${message} by ${userName}`, ip });
+  } catch (error) {
+      console.error('Failed to log action:', error);
+  }
 };
 
 // Controller to handle logs
 exports.getLogs = async (req, res) => {
-    try {
-        const logs = await Log.findAll({
-            order: [['createdAt', 'DESC']]
-        });
-        res.json(logs);
-    } catch (error) {
-        console.error('Error fetching logs:', error);
-        res.status(500).json({ message: 'Error fetching logs. Please try again.' });
-    }
+  try {
+      const logs = await Log.findAll({
+          order: [['createdAt', 'DESC']]
+      });
+      res.json(logs);
+  } catch (error) {
+      console.error('Error fetching logs:', error);
+      res.status(500).json({ message: 'Error fetching logs. Please try again.' });
+  }
 };
 
 // Controller to create a new log
 exports.createLog = async (req, res) => {
-    const { action, message } = req.body;
-    try {
-        const log = await Log.create({ action, message, ip: req.ip });
-        res.status(201).json(log);
-    } catch (error) {
-        console.error('Error creating log:', error);
-        res.status(500).json({ message: 'Error creating log. Please try again.' });
-    }
+  const { action, message } = req.body;
+  try {
+      const log = await Log.create({ action, message, ip: req.ip });
+      res.status(201).json(log);
+  } catch (error) {
+      console.error('Error creating log:', error);
+      res.status(500).json({ message: 'Error creating log. Please try again.' });
+  }
 };
+
 
 const createPlaylist = async (req, res) => {
   try {
@@ -70,7 +72,10 @@ const createPlaylist = async (req, res) => {
     await playlists.updateScreensWithPlaylist(screenIDs, playlistName, playlistDescription, urls);
 
     // Log the create playlist action
-    await logAction('createPlaylist', `Playlist created: ${playlistName}`, req.ip);
+    // await logAction('createPlaylist', `Playlist created: ${playlistName}`, req.ip);
+    const user = req.session.user; // Retrieve user from session
+    await logAction('createPlaylist',`Playlist created: ${playlistName}`, user);
+
 
     // Respond with the newly created playlist
     res.status(201).json({
@@ -103,7 +108,9 @@ const editPlaylist = async (req, res) => {
     await playlists.updateScreensWithPlaylist(screenIDs, playlistName, playlistDescription, urls);
 
     // Log the edit playlist action
-    await logAction('editPlaylist', `Playlist edited: ${playlistName}`, req.ip);
+    // await logAction('editPlaylist', `Playlist edited: ${playlistName}`, req.ip);
+    const user = req.session.user; // Retrieve user from session
+    await logAction('editPlaylist',`Playlist edited: ${playlistName}`, user);
 
     // Respond with the updated playlist
     res.status(200).json({
@@ -176,7 +183,9 @@ const deletePlaylist = async (req, res) => {
 
     // Update screens to remove playlist associations
     await playlists.deleteScreensWithPlaylist(screenIDs);
-    await logAction('deletePlaylist', `Playlist deleted: ${playlistId}`, req.ip);
+    // await logAction('deletePlaylist', `Playlist deleted: ${playlistId}`, req.ip);
+    const user = req.session.user; // Retrieve user from session
+    await logAction('deletePlaylist', `Playlist deleted: ${playlistId}`, user);
 
     
     console.log("Screens updated successfully");       
