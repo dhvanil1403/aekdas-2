@@ -8,26 +8,22 @@ const axios = require('axios');
 
 
 // Helper function to get external IP
-const getExternalIP = async () => {
-  try {
-      const response = await axios.get('https://api.ipify.org?format=json');
-      return response.data.ip;
-  } catch (error) {
-      console.error('Failed to retrieve external IP:', error);
-      return null;
-  }
+const getClientIP = (req) => {
+  const forwarded = req.headers['x-forwarded-for'];
+  return forwarded ? forwarded.split(',')[0] : req.ip;
 };
 
 // Helper function to log actions
-const logAction = async (action, message, user = null) => {
+const logAction = async (req, action, message, user = null) => {
   try {
-      const ip = await getExternalIP();    
+      const ip = getClientIP(req);
       const userName = user ? user.name : 'Anonymous'; // Default to 'Anonymous' if no user info
       await Log.create({ action, message: `${message} by ${userName}`, ip });
   } catch (error) {
       console.error('Failed to log action:', error);
   }
 };
+
 
 // Controller to handle logs
 exports.getLogs = async (req, res) => {
@@ -73,8 +69,12 @@ const createPlaylist = async (req, res) => {
 
     // Log the create playlist action
     // await logAction('createPlaylist', `Playlist created: ${playlistName}`, req.ip);
+    // const user = req.session.user; // Retrieve user from session
+    // await logAction('createPlaylist',`Playlist created: ${playlistName}`, user);
     const user = req.session.user; // Retrieve user from session
-    await logAction('createPlaylist',`Playlist created: ${playlistName}`, user);
+await logAction(req, 'createPlaylist', `Playlist created: ${playlistName}`, user);
+
+
 
 
     // Respond with the newly created playlist
@@ -110,7 +110,7 @@ const editPlaylist = async (req, res) => {
     // Log the edit playlist action
     // await logAction('editPlaylist', `Playlist edited: ${playlistName}`, req.ip);
     const user = req.session.user; // Retrieve user from session
-    await logAction('editPlaylist',`Playlist edited: ${playlistName}`, user);
+    await logAction(req,'editPlaylist',`Playlist edited: ${playlistName}`, user);
 
     // Respond with the updated playlist
     res.status(200).json({
@@ -185,7 +185,7 @@ const deletePlaylist = async (req, res) => {
     await playlists.deleteScreensWithPlaylist(screenIDs);
     // await logAction('deletePlaylist', `Playlist deleted: ${playlistId}`, req.ip);
     const user = req.session.user; // Retrieve user from session
-    await logAction('deletePlaylist', `Playlist deleted: ${playlistId}`, user);
+    await logAction(req,'deletePlaylist', `Playlist deleted: ${playlistId}`, user);
 
     
     console.log("Screens updated successfully");       
