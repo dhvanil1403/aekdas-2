@@ -463,23 +463,24 @@ const getAllScreens = async (req, res) => {
 
 
 
-
 const getAllScreens1 = async (req, res) => {
     try {
         const allScreens = await screen.getNotdeletedScreen();
-        const onlineScreen = await screen.getNotDeletedScreenCount();
+        // const onlineScreen = await screen.getNotDeletedScreenCount();
         const screenCount = await screen.getTotalScreenCount();
-        const offlineScreen = await screen.getDeletedScreenCount();
+        // const offlineScreen = await screen.getDeletedScreenCount();
         const deletedScreens = await screen.getDeletedScreen();
         const groupscreen = await screen.getGroupScreen();
         const  screenStatus=await screen.getStatus();
-
+        // const totalScreenCount= await screen.getTotalScreenCount();
+        const onlineScreenCount=await screen.getOnlineCountByClientTable();
+        const offlineScreenCount=await screen.getOfflineCountByClientTable();
         res.render("sales", {
             message: null,
             screens: allScreens,
             screenCount,
-            onlineScreen,
-            offlineScreen,
+            onlineScreen:onlineScreenCount,
+            offlineScreen:offlineScreenCount,
             deletedScreens,
             groupscreen,screenStatus
         });
@@ -488,6 +489,9 @@ const getAllScreens1 = async (req, res) => {
         res.status(500).send("Error fetching screens");
     }
 };
+
+
+
 
 
 
