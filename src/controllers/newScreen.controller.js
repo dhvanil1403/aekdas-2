@@ -453,6 +453,60 @@ const getAllScreens = async (req, res) => {
     }
 };
 
+
+
+
+
+
+
+
+
+
+
+
+const getAllScreens1 = async (req, res) => {
+    try {
+        const allScreens = await screen.getNotdeletedScreen();
+        const onlineScreen = await screen.getNotDeletedScreenCount();
+        const screenCount = await screen.getTotalScreenCount();
+        const offlineScreen = await screen.getDeletedScreenCount();
+        const deletedScreens = await screen.getDeletedScreen();
+        const groupscreen = await screen.getGroupScreen();
+        const  screenStatus=await screen.getStatus();
+
+        res.render("Screen", {
+            message: null,
+            screens: allScreens,
+            screenCount,
+            onlineScreen,
+            offlineScreen,
+            deletedScreens,
+            groupscreen,screenStatus
+        });
+    } catch (error) {
+        console.error("Error fetching all screens:", error);
+        res.status(500).send("Error fetching screens");
+    }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Get all screens data
 const getAllScreensAllData = async (req, res) => {
     try {
@@ -626,6 +680,7 @@ const deleteScreen = async (req, res) => {
 module.exports = {
     addScreen,
     getAllScreens,  
+        getAllScreens1,
     getNotdeletedScreen,
     updateDeleteScreen,
     editScreen,
