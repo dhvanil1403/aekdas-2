@@ -5,20 +5,15 @@ const axios = require('axios');
 
 
 // Helper function to get external IP
-const getExternalIP = async () => {
-  try {
-      const response = await axios.get('https://api.ipify.org?format=json');
-      return response.data.ip;
-  } catch (error) {
-      console.error('Failed to retrieve external IP:', error);
-      return null;
-  }
+const getClientIP = (req) => {
+  const forwarded = req.headers['x-forwarded-for'];
+  return forwarded ? forwarded.split(',')[0] : req.ip;
 };
 
 // Helper function to log actions
-const logAction = async (action, message, user = null) => {
+const logAction = async (req, action, message, user = null) => {
   try {
-      const ip = await getExternalIP();    
+      const ip = getClientIP(req);
       const userName = user ? user.name : 'Anonymous'; // Default to 'Anonymous' if no user info
       await Log.create({ action, message: `${message} by ${userName}`, ip });
   } catch (error) {
@@ -94,7 +89,7 @@ const handleUploadInDB = async (req, res) => {
     const fileCount = await library.getmediafileCount();
     // await logAction('UPLOAD', `video uploaded: ${fileName}`, req.ip);
     const user = req.session.user; // Retrieve user from session
-    await logAction('UPLOAD ', `video uploaded: ${fileName}`, user);
+    await logAction(req,'UPLOAD ', `video uploaded: ${fileName}`, user);
     res.render("Library", { mediafiles: mediafiles, fileCount });
   } catch (err) {
     console.error(err);
@@ -144,7 +139,7 @@ const handleUploadInDBForNewPlaylist = async (req, res) => {
     const fileCount = await library.getmediafileCount();
     // await logAction('UPLOAD', `File uploaded for new playlist: ${fileName}`, req.ip);
     const user = req.session.user; // Retrieve user from session
-    await logAction('UPLOAD ', `File uploaded for new playlist: ${fileName}`, user);
+    await logAction(req,'UPLOAD ', `File uploaded for new playlist: ${fileName}`, user);
     res.render("newPlaylist", { mediafiles: mediafiles, fileCount });
   } catch (err) {
     console.error(err);
@@ -195,7 +190,7 @@ const getPhotoes = async (req, res) => {
     const fileCount = await library.getmediafileCount();
     // await logAction('Image/video', 'Add photos', req.ip);
     const user = req.session.user; // Retrieve user from session
-    await logAction('Image/video ', 'Add photos', user);
+    await logAction(req,'Image/video ', 'Add photos', user);
     res.render("Library", { mediafiles: mediafiles, fileCount });
   } catch (err) {
     console.error(err);
@@ -245,7 +240,7 @@ const deleteMedia = async (req, res) => {
     // Optionally, delete from Cloudinary or other storage
     // await logAction('DELETE', `Media deleted with ID: ${id}`, req.ip);
     const user = req.session.user; // Retrieve user from session
-    await logAction('DELETE ', `Media deleted with ID: ${id}`, user);
+    await logAction(req,'DELETE ', `Media deleted with ID: ${id}`, user);
     res.redirect('/Dashboard/Library');
   } catch (err) {
     console.error(err);
