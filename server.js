@@ -85,31 +85,27 @@ const Log2 = sequelize.define('Log2', {
 
 
 // Function to fetch external IP
-const getExternalIP = async () => {
-  try {
-    const response = await axios.get('https://api.ipify.org?format=json');
-    return response.data.ip;
-  } catch (error) {
-    console.error('Error fetching external IP:', error);
-    return 'Unknown IP';
-  }
+const getClientIP = (req) => {
+  const forwarded = req.headers['x-forwarded-for'];
+  return forwarded ? forwarded.split(',')[0] : req.ip;
 };
 
 // Middleware for logging actions
 const logAction = async (req, action, message, user) => {
   try {
-    const ip = await getExternalIP();
+    const ip = getClientIP(req);
     const logMessage = `${user.name} ${message}`;
     await Log.create({ action, message: logMessage, ip });
   } catch (error) {
     console.error('Error logging action:', error);
   }
 };
+       
 
 
 
 const logAction2 = async (req, action, message) => {
-  const ip = await getExternalIP();
+  const ip = getClientIP(req);
   await Log2.create({ action, message, ip });
 };
 
