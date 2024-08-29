@@ -258,20 +258,15 @@ const axios = require('axios');
 dotenv.config();
 
 // Helper function to get external IP
-const getExternalIP = async () => {
-    try {
-        const response = await axios.get('https://api.ipify.org?format=json');
-        return response.data.ip;
-    } catch (error) {
-        console.error('Failed to retrieve external IP:', error);
-        return null;
-    }
-};
+const getClientIP = (req) => {
+    const forwarded = req.headers['x-forwarded-for'];
+    return forwarded ? forwarded.split(',')[0] : req.ip;
+  };
 
 // Helper function to log actions
-const logAction = async (action, message, user = null) => {
+const logAction = async (req, action, message, user = null) => {
     try {
-        const ip = await getExternalIP();    
+        const ip = getClientIP(req);
         const userName = user ? user.name : 'Anonymous'; // Default to 'Anonymous' if no user info
         await Log.create({ action, message: `${message} by ${userName}`, ip });
     } catch (error) {
@@ -398,8 +393,11 @@ const addScreen = async (req, res) => {
         );
 
         // await logAction('addScreen', 'Successfully added screen');
+        // const user = req.session.user; // Retrieve user from session
+        // await logAction('addScreen', `Successfully added screen`, user);
         const user = req.session.user; // Retrieve user from session
-        await logAction('addScreen', `Successfully added screen`, user);
+await logAction(req, 'addScreen', 'Successfully added screen', user);
+
 
         const screenCount = await screen.getTotalScreenCount();
         const onlineScreen = await screen.getNotDeletedScreenCount();
@@ -487,8 +485,11 @@ const updateDeleteScreen = async (req, res) => {
     try {
         await screen.updateDeleteScreen(pairingCode);
         // await logAction('DeleteScreen', `Screen deleted: ${pairingCode}`);
+        // const user = req.session.user; // Retrieve user from session
+        // await logAction('DeleteScreen',  `Screen deleted: ${pairingCode}`, user);
         const user = req.session.user; // Retrieve user from session
-        await logAction('DeleteScreen',  `Screen deleted: ${pairingCode}`, user);
+        await logAction(req, 'DeleteScreen', `Screen deleted: ${pairingCode}`, user);
+        
         res.sendStatus(204);
     } catch (error) {
         console.error(error);
@@ -524,8 +525,12 @@ const editScreen = async (req, res) => {
             pincode
         );
 
+        // const user = req.session.user; // Retrieve user from session
+        // await logAction('editScreen', `Screen edited: ${screenid}`, user);
         const user = req.session.user; // Retrieve user from session
-        await logAction('editScreen', `Screen edited: ${screenid}`, user);
+        await logAction(req, 'editScreen', `Screen edited: ${screenid}`, user);
+        
+        
         const screenCount = await screen.getTotalScreenCount();
         const onlineScreen = await screen.getNotDeletedScreenCount();
         const offlineScreen = await screen.getDeletedScreenCount();
