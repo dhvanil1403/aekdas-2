@@ -474,7 +474,7 @@ const getAllScreens1 = async (req, res) => {
         const groupscreen = await screen.getGroupScreen();
         const  screenStatus=await screen.getStatus();
 
-        res.render("Screen", {
+        res.render("sales", {
             message: null,
             screens: allScreens,
             screenCount,
