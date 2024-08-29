@@ -4,20 +4,35 @@ const axios = require('axios');
 
 
 // Helper function to get external IP
-const getExternalIP = async () => {
-  try {
-      const response = await axios.get('https://api.ipify.org?format=json');
-      return response.data.ip;
-  } catch (error) {
-      console.error('Failed to retrieve external IP:', error);
-      return null;
-  }
+// const getExternalIP = async () => {
+//   try {
+//       const response = await axios.get('https://api.ipify.org?format=json');
+//       return response.data.ip;
+//   } catch (error) {
+//       console.error('Failed to retrieve external IP:', error);
+//       return null;
+//   }
+// };
+
+// // Helper function to log actions
+// const logAction = async (action, message, user = null) => {
+//   try {
+//       const ip = await getExternalIP();    
+//       const userName = user ? user.name : 'Anonymous'; // Default to 'Anonymous' if no user info
+//       await Log.create({ action, message: `${message} by ${userName}`, ip });
+//   } catch (error) {
+//       console.error('Failed to log action:', error);
+//   }
+// };
+const getClientIP = (req) => {
+  const forwarded = req.headers['x-forwarded-for'];
+  return forwarded ? forwarded.split(',')[0] : req.ip;
 };
 
 // Helper function to log actions
-const logAction = async (action, message, user = null) => {
+const logAction = async (req, action, message, user = null) => {
   try {
-      const ip = await getExternalIP();    
+      const ip = getClientIP(req);
       const userName = user ? user.name : 'Anonymous'; // Default to 'Anonymous' if no user info
       await Log.create({ action, message: `${message} by ${userName}`, ip });
   } catch (error) {
@@ -96,7 +111,7 @@ const createlive = async (req, res) => {
     // Log the creation action
     // await logAction('CREATE', `Live content created: ${liveName}`, req.ip);
     const user = req.session.user; // Retrieve user from session
-    await logAction('CREATE Live', `Live content created: ${liveName}`, user);
+    await logAction(req,'CREATE Live', `Live content created: ${liveName}`, user);
 
     res.status(200).json({ message: "Live content published successfully!" });
   } catch (error) {
@@ -138,7 +153,7 @@ const deleteLive = async (req, res) => {
     // Log the deletion action
     // await logAction('DELETE', `Live content deleted: ${liveId}`, req.ip);
     const user = req.session.user; // Retrieve user from session
-    await logAction('DELETE ', `Live content deleted: ${liveId}`, user);
+    await logAction(req,'DELETE ', `Live content deleted: ${liveId}`, user);
 
     // Log the deleted live content to ensure it's deleted correctly
     console.log("Deleted Live Content:", deletedLive);
