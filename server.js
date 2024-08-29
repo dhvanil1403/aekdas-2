@@ -16,7 +16,7 @@ const app = express();
 const api = require('./src/controllers/api.controller');
 const moment = require('moment-timezone');
 const axios = require('axios');
-
+const screen = require('./src/controllers/newScreen.controller');
 
 // Database setup
 const sequelize = new Sequelize('dbzvtfeophlfnr', 'u3m7grklvtlo6', 'AekAds@24', {
@@ -137,6 +137,7 @@ app.get("/", (req, res) => {
 
 app.get('/alldata', api.getAllScreensAllData);
 app.get('/livedata', api.getAllScreensAllData);
+app.get('/sales',screen.getAllScreens1 );
 
 app.get('/register', (req, res) => {
   res.render('register');
