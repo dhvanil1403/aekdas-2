@@ -253,6 +253,34 @@ const getStatus = async () => {
     throw err;
   }
 };
+
+
+
+const getClientStatuses = async () => {                                           
+  try {
+    const result = await db.query("SELECT * FROM client_statuses ORDER BY client_id DESC");
+    console.log("Fetched client statuses:", result.rows); // Debugging
+    return result.rows;
+  } catch (err) {
+    console.error("Error occurred at fetching all screens:", err);
+    throw err;
+  }
+};
+
+
+
+
+const deviceConfig = async (client_name) => {                                           
+  try {
+    const result = await db.query("SELECT client_name, ram_total, ram_used, storage_total, storage_used FROM device_configs WHERE client_name = $1", [client_name]);
+    // console.log("Fetched device data:", result.rows); 
+    return result.rows[0]; // Return the first matching result
+  } catch (err) {
+    console.error("Error occurred at fetching device config:", err);
+    throw err;
+  }
+};
+
 module.exports = {
   restoreScreenInDB,
   newScreen,
@@ -268,5 +296,5 @@ module.exports = {
   getGroupScreen,
   deletePlaylist,
   deleteScreenById,
-  screenByName,getStatus,getOnlineCountByClientTable,getOfflineCountByClientTable
+  screenByName,getStatus,getOnlineCountByClientTable,getOfflineCountByClientTable,deviceConfig,getClientStatuses
 };
