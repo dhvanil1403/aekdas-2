@@ -639,7 +639,7 @@ const restoreScreenInDB = async (req, res) => {
     try {
         await screen.restoreScreenInDB(screenid);
         const user = req.session.user; // Retrieve user from session
-        await logAction(req, 'restoreScreen', `Screen restored: ${pairingCode}`, user);
+        await logAction(req, 'restoreScreen', 'Screen restored', user);
         
           //await logAction('restoreScreen', `Screen restored: ${pairingCode}`);
         res.sendStatus(204);
