@@ -6,6 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Screens</title>
   <link rel="icon" type="image/png" href="https://res.cloudinary.com/dqfnwh89v/image/upload/v1724408615/qxvvfcf7ftgklhl2k03v.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
 
   <link rel="stylesheet" href="/css/screen.css" />
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
@@ -46,6 +48,26 @@
 .column-selection label {
   display: block;
   margin: 5px 0;
+}
+
+
+
+.settings {
+   background-color: #f0f0f0;
+   border: none;
+   padding: 10px;
+   border-radius: 5px;
+   cursor: pointer;
+   display: flex;
+   align-items: center;
+}
+
+.settings i {
+   margin-right: 5px;
+}
+
+.settings:hover {
+   background-color: #e0e0e0;
 }
 
   </style>
@@ -429,6 +451,11 @@
                                   stroke-linejoin="round" />
                               </svg>
                             </button>
+                            <a href="/setting/<%= screen.screenid %>">
+                              <button class="settings">
+                                 <i class="fas fa-cog"></i>
+                              </button>
+                           </a>
                           </div>
                         </td>
                       </tr>
