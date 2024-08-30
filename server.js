@@ -16,8 +16,8 @@ const app = express();
 const api = require('./src/controllers/api.controller');
 const moment = require('moment-timezone');
 const axios = require('axios');
-const screen = require('./src/controllers/newScreen.controller');
-
+const { getStatus, getScreenById, deviceConfig  } = require('./src/models/newScreen.model');
+const { viewPlaylist  } = require('./src/models/playlists.model');
 // Database setup
 const sequelize = new Sequelize('dbzvtfeophlfnr', 'u3m7grklvtlo6', 'AekAds@24', {
   host: '35.209.89.182',
@@ -28,7 +28,7 @@ const sequelize = new Sequelize('dbzvtfeophlfnr', 'u3m7grklvtlo6', 'AekAds@24', 
 const User = sequelize.define('User', {
   name: DataTypes.STRING,
   email: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING, 
     allowNull: false,
     unique: true,
   },
@@ -137,7 +137,6 @@ app.get("/", (req, res) => {
 
 app.get('/alldata', api.getAllScreensAllData);
 app.get('/livedata', api.getAllScreensAllData);
-app.get('/sales',screen.getAllScreens1 );
 
 app.get('/register', (req, res) => {
   res.render('register');
@@ -459,6 +458,38 @@ app.get('/admin/logs', dashboardRoutes.isAuthenticated, async (req, res) => {
     req.flash('error_msg', 'Error fetching logs. Please try again.');
     res.redirect('/Dashboard');
   }
+});
+
+
+//devcvdsojvh
+app.get('/setting/:screenid', async (req, res) => {
+  try {
+    const screenid = req.params.screenid;
+
+    // Fetch the screen data by screenid
+    const screenData = await getScreenById(screenid);
+    if (!screenData) {
+      return res.status(404).send("Screen not found");
+    }
+
+    // Fetch the device config using client_name from the screen data
+    const deviceConfigData = await deviceConfig(screenData.client_name);
+    const playlists = await viewPlaylist();
+
+    // Prepare screen details with device config
+    const screenDetails = {
+      ...screenData,
+      deviceConfig: deviceConfigData || {}, // Ensure it doesn't crash if no data found
+      playlists: playlists
+    };
+
+    // Render the screen settings view and pass the data
+    res.render('screensetting', { screen: screenDetails });
+
+  } catch (err) { 
+    console.error("Error fetching screen settings:", err);
+    res.status(500).send("Internal Server Error");
+  }   
 });
 
 
