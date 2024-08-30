@@ -542,7 +542,11 @@ const updateDeleteScreen = async (req, res) => {
 
     try {
         await screen.updateDeleteScreen(screenid);
-        await logAction('DeleteScreen', `Screen deleted: ${screenid}`);
+       // await logAction('DeleteScreen', `Screen deleted: ${screenid}`);
+         const user = req.session.user; // Retrieve user from session
+await logAction(req, 'DeleteScreen', `Screen deleted: ${screenid}`, user);
+
+
         res.sendStatus(204);
     } catch (error) {
         console.error(error);
