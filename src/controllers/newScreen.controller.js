@@ -634,13 +634,11 @@ const restoreScreenInDB = async (req, res) => {
 
     try {
         await screen.restoreScreenInDB(screenid);
-         const user = req.session.user; // Retrieve user from session
-await logAction(req, 'restore', 'Successfully  screen restore', user);
-
+         
         res.sendStatus(204);
     } catch (error) {
         console.error(error);
-        await logAction('restoreScreen', `Error restoring screen: ${screenid}`);
+
         res.status(500).send("Error restoring screen");
     }
 };
