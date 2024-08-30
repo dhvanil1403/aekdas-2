@@ -538,20 +538,15 @@ const getNotdeletedScreen = async (req, res) => {
 
 // Update or delete a screen
 const updateDeleteScreen = async (req, res) => {
-    const { pairingCode } = req.body;
+    const { screenid } = req.body;
 
     try {
-        await screen.updateDeleteScreen(pairingCode);
-        // await logAction('DeleteScreen', `Screen deleted: ${pairingCode}`);
-        // const user = req.session.user; // Retrieve user from session
-        // await logAction('DeleteScreen',  `Screen deleted: ${pairingCode}`, user);
-        const user = req.session.user; // Retrieve user from session
-        await logAction(req, 'DeleteScreen', `Screen deleted: ${pairingCode}`, user);
-        
+        await screen.updateDeleteScreen(screenid);
+        await logAction('DeleteScreen', `Screen deleted: ${screenid}`);
         res.sendStatus(204);
     } catch (error) {
         console.error(error);
-        await logAction('DeleteScreen', `Error DeleteScreen`);
+        await logAction('updateDeleteScreen', `Error updating screen: ${screenid}`);
         res.status(500).send("Error deleting screen");
     }
 };
@@ -634,19 +629,20 @@ const screenByPairingCode = async (req, res) => {
 };
 
 // Restore a screen
-const restoreScreen = async (req, res) => {
-    const { pairingCode } = req.body;
+const restoreScreenInDB = async (req, res) => {
+    const { screenid } = req.body;
 
     try {
-        await screen.restoreScreen(pairingCode);
-        await logAction('restoreScreen', `Screen restored: ${pairingCode}`);
+        await screen.restoreScreenInDB(screenid);
+        await logAction('restoreScreen', `Screen restored: ${screenid}`);
         res.sendStatus(204);
     } catch (error) {
         console.error(error);
-        await logAction('restoreScreen', `Error restoring screen: ${pairingCode}`);
+        await logAction('restoreScreen', `Error restoring screen: ${screenid}`);
         res.status(500).send("Error restoring screen");
     }
 };
+
 
 
 // Delete a playlist
@@ -689,7 +685,7 @@ module.exports = {
     updateDeleteScreen,
     editScreen,
     screenByPairingCode,
-    restoreScreen, 
+    restoreScreenInDB, 
     getAllScreensAllData,
     deletePlaylist,
     deleteScreen
