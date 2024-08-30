@@ -23,20 +23,18 @@ const newScreen = async (
   }
 };
 
-const screenByPairingCode = async (pairingCode) => { 
+const screenByPairingCode = async (pairingCode) => {
   try {
     const result = await db.query(
-      "SELECT * FROM screens WHERE PairingCode = $1",
+      "SELECT * FROM screens WHERE screenid=$1",
       [pairingCode]
     );
-    console.log("Fetched screen data:", result.rows); // Debugging
     return result.rows;
   } catch (err) {
     console.error("Error occurred at find SCREEN in SCREEN TABLE:", err);
     throw err;
   }
 };
-
 const screenByName = async (screenName) => {
   try {
     const result = await db.query(
@@ -59,17 +57,6 @@ const getAllScreens = async () => {
   }
 };
 
-const getScreenById = async (id) => {
-  try {
-    const result = await db.query("SELECT * FROM screens WHERE screenid = $1", [id]);
-    return result.rows[0]; // Assuming only one row is returned
-  } catch (err) {
-    console.error("Error fetching screen by ID:", err);
-    throw err;
-  }
-};
-
-
 const getNotdeletedScreen = async () => {
   try {
     const result = await db.query(
@@ -82,11 +69,11 @@ const getNotdeletedScreen = async () => {
   }
 };
 
-const updateDeleteScreen = async (pairingCode) => {
+const updateDeleteScreen = async (screenid) => {
   try {
     const result = await db.query(
-      "UPDATE screens SET deleted = true WHERE pairingcode = $1",
-      [pairingCode]
+      "UPDATE screens SET deleted = true WHERE screenid = $1",
+      [screenid]
     );
  
   } catch (err) {
@@ -95,11 +82,11 @@ const updateDeleteScreen = async (pairingCode) => {
   }
 };
 
-const restoreScreenInDB = async (pairingCode) => {
+const restoreScreenInDB = async (screenid) => {
   try {
     const result = await db.query(
-      "UPDATE screens SET deleted = false WHERE pairingcode = $1",
-      [pairingCode]
+      "UPDATE screens SET deleted = false WHERE screenid = $1",
+      [screenid]
     );
     return result.rows;
   } catch (err) {
@@ -109,7 +96,8 @@ const restoreScreenInDB = async (pairingCode) => {
 };
 
 const editScreen = async (
-  pairingCode,
+  screenid,
+ 
   screenName,
   tags,
   location,
@@ -120,8 +108,8 @@ const editScreen = async (
 ) => {
   try {
     const result = await db.query(
-      "UPDATE screens SET screenname = $2, tags = $3, location = $4, city = $5, state = $6, country = $7, pincode = $8 WHERE pairingcode = $1",
-      [pairingCode, screenName, tags, location, city, state, country, pincode]
+      "UPDATE screens SET screenname = $2, tags = $3, location = $4, city = $5, state = $6, country = $7, pincode = $8 WHERE screenid = $1",
+      [screenid, screenName, tags, location, city, state, country, pincode]
     );
     return result.rows;
   } catch (err) {
@@ -254,58 +242,17 @@ const deleteScreenById = async (screenid) => {
       throw error;
   }
 };
+
+
 const getStatus = async () => {
   try {
-    const result = await db.query("SELECT * FROM client_statuses ORDER BY status DESC");
-    return result.rows;
-  } catch (err) {
-    console.error("Error fetching client statuses:", err);
-    throw err;
-  }
-};
-
-const getClientStatuses = async () => {                                           
-  try {
     const result = await db.query("SELECT * FROM client_statuses ORDER BY client_id DESC");
-    console.log("Fetched client statuses:", result.rows); // Debugging
     return result.rows;
   } catch (err) {
     console.error("Error occurred at fetching all screens:", err);
     throw err;
   }
 };
-
-
-
-// const deviceConfig = async (clientName) => {
-//   try {
-//     const result = await db.query(
-//       "SELECT * FROM device_configs WHERE client_name = $1",
-//       [clientName]
-//     );
-//     console.log("Fetched device data:", result.rows); // Debugging
-//     return result.rows[0]; // Return the specific row
-//   } catch (err) {
-//     console.error("Error occurred at fetching device config:", err);
-//     throw err;
-//   }
-// };
-
-const deviceConfig = async (client_name) => {                                           
-  try {
-    const result = await db.query("SELECT client_name, ram_total, ram_used, storage_total, storage_used FROM device_configs WHERE client_name = $1", [client_name]);
-    console.log("Fetched device data:", result.rows); // Debugging
-    return result.rows[0]; // Return the first matching result
-  } catch (err) {
-    console.error("Error occurred at fetching device config:", err);
-    throw err;
-  }
-};
-
-
-
-
-
 module.exports = {
   restoreScreenInDB,
   newScreen,
@@ -318,9 +265,8 @@ module.exports = {
   getNotDeletedScreenCount,
   getDeletedScreenCount,
   getDeletedScreen,
-  
   getGroupScreen,
   deletePlaylist,
   deleteScreenById,
-  screenByName,getStatus,getOnlineCountByClientTable,getOfflineCountByClientTable,getClientStatuses,getScreenById,deviceConfig
+  screenByName,getStatus,getOnlineCountByClientTable,getOfflineCountByClientTable
 };
