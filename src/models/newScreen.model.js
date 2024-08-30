@@ -186,6 +186,18 @@ const getDeletedScreen = async () => {
   }
 };
 
+
+const getScreenById = async (id) => {
+  try {
+    const result = await db.query("SELECT * FROM screens WHERE screenid = $1", [id]);
+    return result.rows[0]; // Assuming only one row is returned
+  } catch (err) {
+    console.error("Error fetching screen by ID:", err);
+    throw err;
+  }
+};
+
+
 const getGroupScreen=async () => {
 try {
   const result = await db.query(
