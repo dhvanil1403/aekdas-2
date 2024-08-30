@@ -461,8 +461,8 @@ app.get('/admin/logs', dashboardRoutes.isAuthenticated, async (req, res) => {
 });
 
 
-//devcvdsojvh
-app.get('/setting/:screenid', async (req, res) => {
+//device settind
+app.get('/setting/:screenid',dashboardRoutes.isAuthenticated, async (req, res) => {
   try {
     const screenid = req.params.screenid;
 
