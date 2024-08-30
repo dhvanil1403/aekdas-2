@@ -68,7 +68,7 @@ const express = require("express");
   
   router
     .route("/restore")  
-    .post(screen.restoreScreen)
+    .post(screen.restoreScreenInDB)
     .get(screen.getAllScreens)
 
   // GET all deleted screens
