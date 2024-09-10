@@ -16,8 +16,10 @@ const app = express();
 const api = require('./src/controllers/api.controller');
 const moment = require('moment-timezone');
 const axios = require('axios');
-const { getStatus, getScreenById, deviceConfig  } = require('./src/models/newScreen.model');
-const { viewPlaylist  } = require('./src/models/playlists.model');
+const { getStatus, getScreenById, deviceConfig  } = require('./src/models/newScreen.model');    
+const { viewPlaylist  } = require('./src/models/playlists.model');     
+const db = require("./src/config/dbConnection");
+const { createHash } = require("crypto");
 // Database setup
 const sequelize = new Sequelize('dbzvtfeophlfnr', 'u3m7grklvtlo6', 'AekAds@24', {
   host: '35.209.89.182',
@@ -461,8 +463,21 @@ app.get('/admin/logs', dashboardRoutes.isAuthenticated, async (req, res) => {
 });
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 //device settind
-app.get('/setting/:screenid',dashboardRoutes.isAuthenticated, async (req, res) => {
+app.get('/setting/:screenid',  async (req, res) => {
   try {
     const screenid = req.params.screenid;
 
@@ -472,25 +487,47 @@ app.get('/setting/:screenid',dashboardRoutes.isAuthenticated, async (req, res) =
       return res.status(404).send("Screen not found");
     }
 
-    // Fetch the device config using client_name from the screen data
-    const deviceConfigData = await deviceConfig(screenData.client_name);
+    // Fetch the device config using screenid (which matches client_name)
+    const deviceConfigData = await deviceConfig(screenid);
     const playlists = await viewPlaylist();
 
     // Prepare screen details with device config
-    const screenDetails = {
+    const screenDetails = {       
       ...screenData,
       deviceConfig: deviceConfigData || {}, // Ensure it doesn't crash if no data found
       playlists: playlists
-    };
+    };                                                                                    
+    
 
     // Render the screen settings view and pass the data
     res.render('screensetting', { screen: screenDetails });
-
+             
   } catch (err) { 
     console.error("Error fetching screen settings:", err);
     res.status(500).send("Internal Server Error");
-  }   
-});
+  }        
+});                                                                                     
+
+          
+                             
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
