@@ -177,7 +177,7 @@ hr {
   justify-content: space-between;
   align-items: center;
   flex-direction: row;
-  font-family: Nunito sans-serif;
+/*   font-family: Nunito sans-serif; */
   font-weight: 800;
   line-height: 19.1px;
   color: #202224;
