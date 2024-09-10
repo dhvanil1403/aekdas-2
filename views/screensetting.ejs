@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -206,13 +207,15 @@
        </style>
 </head>
 <body>
-    <%- include('Dashboard') %>
+
+
+<%- include('Dashboard') %>
 <div class="container">
     <!-- Breadcrumb -->
     <nav class="breadcrumb">
         <span>Home</span> > <span>Screen Name</span>
     </nav>
-
+        
     <!-- Screen Information Section -->
     <section class="screen-info">
         
@@ -221,31 +224,35 @@
                 <h1><%= screen.screenname %></h1>
                 <span class="status"><%= screen.status %></span>
             </div>
-            
+                     
             <p class="location-info"><%= screen.city %> |  <%= screen.last_updated %></p>
             <div class="details-grid">    
-                
-                <div class="detail-box">                 <strong>RAM Total:</strong> <%= screen.ram_total %></div>
-                <div class="detail-box">      <strong>RAM Used:</strong> <%= screen.ram_used %> </div>
-                <div class="detail-box">   <strong>Storage Total:</strong> <%= screen.storage_total %> </div>
-                <div class="detail-box">   <strong>Storage Used:</strong> <%= screen.storage_used %> </div>
-                <div class="detail-box"> <strong>Resolution:</strong> <%= screen.resolution %> </div>
-                <div class="detail-box">  <strong>Downstream Bandwidth:</strong> <%= screen.downstream_bandwidth %> </div>
-                <div class="detail-box">   <strong>Upstream Bandwidth:</strong> <%= screen.upstream_bandwidth %></div>
-                    <div class="detail-box">  <strong>Manufacturer:</strong> <%= screen.manufacturer %></div>
-                        <div class="detail-box">  <strong>Model:</strong> <%= screen.model %></div>
-                            <div class="detail-box">  <strong>OS Version:</strong> <%= screen.os_version %></div>
-                                <div class="detail-box">  <strong>WiFi Enabled:</strong> <%= screen.wifi_enabled ? 'Yes' : 'No' %></div>
-                                    <div class="detail-box"> <strong>WiFi MAC Address:</strong> <%= screen.wifi_mac_address %></div>
-                                        <div class="detail-box"> <strong>WiFi Network SSID:</strong> <%= screen.wifi_network_ssid %></div>
-                                            <div class="detail-box"> <strong>WiFi Signal Strength (dBm):</strong> <%= screen.wifi_signal_strength_dbm %></div>
-                                                <div class="detail-box">  <strong>Android ID:</strong> <%= screen.android_id %></div>
-                                                    <div class="detail-box">  <strong>Second Screen Present:</strong> <%= screen.IfSecondScreenIsPresentOnDevice ? 'Yes' : 'No' %></div>
-                                                        <div class="detail-box"> <strong>Last Updated:</strong> <%= screen.updated_at %></div>
+                <% if (screen.deviceConfig && Object.keys(screen.deviceConfig).length > 0) { %>
+                <div class="detail-box">                 <strong>RAM Total:</strong>  <%= screen.deviceConfig.ram_total %> MB</div>
+                <div class="detail-box">      <strong>RAM Used:</strong> <%= screen.deviceConfig.ram_used %> </div>
+                <div class="detail-box">   <strong>Storage Total:</strong> <%= screen.deviceConfig.storage_total %> MB </div>
+                <div class="detail-box">   <strong>Storage Used:</strong> <%= screen.deviceConfig.storage_used %> MB</div>
+                <div class="detail-box"> <strong>Resolution:</strong> <%= screen.deviceConfig.resolution %> </div>
+                <div class="detail-box">  <strong>Downstream Bandwidth:</strong> <%= screen.deviceConfig.downstream_bandwidth %> </div>
+                <div class="detail-box">   <strong>Upstream Bandwidth:</strong> <%= screen.deviceConfig.upstream_bandwidth %></div>
+                <div class="detail-box">  <strong>Manufacturer:</strong> <%= screen.deviceConfig.manufacturer %></div>
+                <div class="detail-box">  <strong>Model:</strong> <%= screen.deviceConfig.model %></div>
+                <div class="detail-box">  <strong>OS Version:</strong> <%= screen.deviceConfig.os_version %></div>
+                <div class="detail-box">  <strong>WiFi Enabled:</strong> <%= screen.deviceConfig.wifi_enabled ? 'Yes' : 'No' %></div>
+                <div class="detail-box"> <strong>WiFi MAC Address:</strong> <%=screen.deviceConfig.wifi_mac_address %></div>
+                <div class="detail-box"> <strong>WiFi Network SSID:</strong> <%=screen.deviceConfig.wifi_network_ssid %></div>
+                <div class="detail-box"> <strong>WiFi Signal Strength (dBm):</strong> <%= screen.deviceConfig.wifi_signal_strength_dbm %></div>
+                <div class="detail-box">  <strong>Android ID:</strong> <%=screen.deviceConfig.android_id %></div>
+                <div class="detail-box">  <strong>Second Screen Present:</strong> <%= screen.deviceConfig.IfSecondScreenIsPresentOnDevice ? 'Yes' : 'No' %></div>
+                <div class="detail-box"> <strong>Last Updated:</strong> <%= screen.deviceConfig.updated_at %></div>
                   
-
+                                                                                            
 
             </div>
+            <% } else { %>
+                <p>No device configuration data available.</p>
+              <% } %>                                             
+                                                                                                                                                                                                              
             <section style="margin-top: 3%;" class="tabs">        
                 <ul>   
                     <li><a href="#">Media</a></li>     
@@ -260,7 +267,7 @@
     </section>
                                                         
     <!-- Assign Playlist Section -->
-    <div class="detail-box">  <br> <h2>Assign Playlist </h2></div>   
+    <div class="detail-box">  <br> <h2> </h2></div>   
 
     <section class="assign-playlist">
         
@@ -270,17 +277,18 @@
                     // Check if the current playlist is assigned
                     const isAssigned = screen.assignedPlaylists && screen.assignedPlaylists.includes(playlist.id);
                 %>
-                    <div class="playlist-item <%= isAssigned ? 'assigned' : '' %>">
+                    <div class="playlist-item ">
                         <div class="playlist-img">
                             <!-- Placeholder for playlist image -->
+                             
                         </div>
                         <div class="playlist-info2">
                             <button class="edit-btn" onclick="location.href='/Dashboard/Playlist/PlaylistEdit/<%= playlist.id %>'">Edit</button>
                             <button class="delete-btn" onclick="deletePlaylist('<%= playlist.id %>')">Delete</button>
                         </div>
                         <div class="playlist-info">
-                            <p class="playlist-name"><strong><%= playlist.playlistname %></strong></p>
-                            <p class="playlist-date">March 19, 2024</p>
+                            <p class="playlist-name"><strong><%=  playlist.playlistname %></strong></p>
+                            
                         </div>
                         <div class="playlist-info3">
                             <p class="playlist-layouts">2 Layouts</p>
@@ -293,7 +301,7 @@
         </div>
     </section>
     
-</div>
+</div>  
 
 <script>
     function deletePlaylist(id) {
@@ -304,18 +312,7 @@
     }
 </script>
 
+
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
 
