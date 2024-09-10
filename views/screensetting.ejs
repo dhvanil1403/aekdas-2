@@ -21,15 +21,7 @@
                 <div class="detail-box">      <strong>RAM Used:</strong> <%= screen.deviceConfig.ram_used %> </div>
                 <div class="detail-box">   <strong>Storage Total:</strong> <%= screen.deviceConfig.storage_total %> MB </div>
                 <div class="detail-box">   <strong>Storage Used:</strong> <%= screen.deviceConfig.storage_used %> MB</div>
-                <% 
-                // Assuming the resolution is in 'WIDTHxHEIGHT' format, e.g., '1920x1080'
-                const resolution = screen.deviceConfig.resolution;
-                const [width, height] = resolution.split('x').map(Number); // Split and convert to numbers
-              
-                // Apply your horizontal and vertical size filters here
-                const minHorizontalSize = 1280; // Example filter values, change as needed
-                const minVerticalSize = 720;
-              %>
+                <div class="detail-box"> <strong>Resolution:</strong> <%= screen.deviceConfig.resolution %> </div> 
               
               <div class="detail-box">
                 <strong>Resolution:</strong> 
