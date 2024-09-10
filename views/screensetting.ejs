@@ -15,22 +15,13 @@
             </div>
                      
             <p class="location-info"><%= screen.city %> |  <%= screen.last_updated %></p>
-            <div class="details-grid">    
+           <div class="details-grid">    
                 <% if (screen.deviceConfig && Object.keys(screen.deviceConfig).length > 0) { %>
                 <div class="detail-box">                 <strong>RAM Total:</strong>  <%= screen.deviceConfig.ram_total %> MB</div>
                 <div class="detail-box">      <strong>RAM Used:</strong> <%= screen.deviceConfig.ram_used %> </div>
                 <div class="detail-box">   <strong>Storage Total:</strong> <%= screen.deviceConfig.storage_total %> MB </div>
                 <div class="detail-box">   <strong>Storage Used:</strong> <%= screen.deviceConfig.storage_used %> MB</div>
-                <div class="detail-box"> <strong>Resolution:</strong> <%= screen.deviceConfig.resolution %> </div> 
-              
-              <div class="detail-box">
-                <strong>Resolution:</strong> 
-                <% if (width >= minHorizontalSize && height >= minVerticalSize) { %>
-                  <%= resolution %> <!-- Show the resolution if it meets the filter conditions -->
-                <% } else { %>
-                  <span>Resolution does not meet the size requirements</span>
-                <% } %>
-              </div>
+                <div class="detail-box"> <strong>Resolution:</strong> <%= screen.deviceConfig.resolution %> </div>
                 <div class="detail-box">  <strong>Downstream Bandwidth:</strong> <%= screen.deviceConfig.downstream_bandwidth %> </div>
                 <div class="detail-box">   <strong>Upstream Bandwidth:</strong> <%= screen.deviceConfig.upstream_bandwidth %></div>
                 <div class="detail-box">  <strong>Manufacturer:</strong> <%= screen.deviceConfig.manufacturer %></div>
