@@ -97,7 +97,7 @@ const restoreScreenInDB = async (screenid) => {
 
 const editScreen = async (
   screenid,
- 
+  pairingCode,
   screenName,
   tags,
   location,
@@ -108,8 +108,8 @@ const editScreen = async (
 ) => {
   try {
     const result = await db.query(
-      "UPDATE screens SET screenname = $2, tags = $3, location = $4, city = $5, state = $6, country = $7, pincode = $8 WHERE screenid = $1",
-      [screenid, screenName, tags, location, city, state, country, pincode]
+      "UPDATE screens SET screenname = $2, tags = $3, location = $4, city = $5, state = $6, country = $7, pincode = $8,pairingcode = $9 WHERE screenid = $1",
+      [screenid, screenName, tags, location, city, state, country, pincode,pairingCode]
     );
     return result.rows;
   } catch (err) {
@@ -278,17 +278,17 @@ const getClientStatuses = async () => {
 };
 
 
-
+// Function to fetch device config by client_name
 const deviceConfig = async (client_name) => {                                           
   try {
-    const result = await db.query("SELECT client_name, ram_total, ram_used, storage_total, storage_used FROM device_configs WHERE client_name = $1", [client_name]);
-    // console.log("Fetched device data:", result.rows); 
+    const result = await db.query("SELECT client_name, ram_total, ram_used, storage_total, storage_used, resolution, downstream_bandwidth, upstream_bandwidth, date_time, manufacturer, model, os_version, wifi_enabled, wifi_mac_address, wifi_network_ssid, wifi_signal_strength_dbm, android_id, updated_at, ifsecondscreenispresentondevice FROM device_configs WHERE client_name = $1", [client_name]); 
     return result.rows[0]; // Return the first matching result
   } catch (err) {
     console.error("Error occurred at fetching device config:", err);
     throw err;
   }
 };
+
 
 module.exports = {
   restoreScreenInDB,
