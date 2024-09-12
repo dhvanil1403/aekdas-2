@@ -7,7 +7,7 @@
   <title>Document</title>
   <link rel="stylesheet" href="/css/groupScreen.css" />
   <link rel="icon" type="image/png" href="https://res.cloudinary.com/dqfnwh89v/image/upload/v1724408615/qxvvfcf7ftgklhl2k03v.png">
-  <link rel="stylesheet" href="/css/font.css" />
+
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- SweetAlert2 Library -->
   <script>
     const screenIDS = sessionStorage.getItem('screenIDS');
@@ -66,6 +66,7 @@
               <th></th>
               <th>Screen ID</th>
               <th>SCREEN NAME</th>
+              <th>Playlist</th>
               <th>Address</th>
             </tr>
           </thead>
@@ -78,6 +79,8 @@
                   </td>
                   <td><%= screen.screenid %></td>
                   <td class="screen-screenname"><%= screen.screenname %></td>
+                  <td><%= screen.playlistname %></td>
+
                   <td><%= screen.location %></td>
                 </tr>
               <% }) %>
@@ -160,7 +163,7 @@
         console.log("selectedScreens", selectedScreens);
 
         try {
-          const response = await fetch("/Dashboard/Playlist/editPlaylist", {
+          const response = await fetch("/Dashboard/asdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmasdfghjklqwertyuiopzxcvbn/editPlaylist", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -183,7 +186,7 @@
             title: 'Playlist Edited',
             text: 'Playlist edited successfully!',
           }).then(() => {
-            window.location.href = '/Dashboard/Playlist';
+            window.location.href = '/Dashboard/asdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmasdfghjklqwertyuiopzxcvbn';
           });
         } catch (error) {
           console.error("Error editing playlist:", error);
@@ -197,14 +200,87 @@
 
       window.publishPlaylist = publishPlaylist;
 
+      // window.handleCheckboxChange = function handleCheckboxChange(event) {
+      //   const checkbox = event.target;
+      //   if (checkbox.checked) {
+      //     addSelectedScreenRow(checkbox);
+      //   } else {
+      //     removeSelectedScreenRow(checkbox.value);
+      //   }
+      // };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       window.handleCheckboxChange = function handleCheckboxChange(event) {
-        const checkbox = event.target;
-        if (checkbox.checked) {
-          addSelectedScreenRow(checkbox);
+    const checkbox = event.target;
+    const playlistName = checkbox.closest('tr').querySelector('td:nth-child(4)').textContent.trim(); // Playlist column
+
+    if (checkbox.checked) {
+        if (playlistName) {
+            // If a playlist already exists, confirm if the user wants to unassign it
+            Swal.fire({
+                title: 'Screen already has a playlist',
+                text: 'Do you want to unassign the current playlist before assigning a new one?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, unassign it',
+                cancelButtonText: 'No, keep it'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Call deletePlaylist to remove the current playlist
+                    deletePlaylist(checkbox.value);
+                    
+                } else {
+                    checkbox.checked = false; // Revert checkbox selection
+                    
+                }
+                
+            });
         } else {
-          removeSelectedScreenRow(checkbox.value);
+            // No existing playlist, proceed with adding the screen
+            addSelectedScreenRow(checkbox);
+            
         }
-      };
+    } else {
+        // Checkbox unchecked, remove the screen row
+        removeSelectedScreenRow(checkbox.value);
+    }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
       function addSelectedScreenRow(checkbox) {
         const selectedScreensTable = document.getElementById('selectedScreensTable').getElementsByTagName('tbody')[0];
@@ -288,7 +364,7 @@
           }).then((result) => {
             if (result.isConfirmed) {
               // User confirmed deletion, proceed with fetch request
-              fetch(`/Dashboard/Screens/${screenID}/deletePlaylist`, {
+              fetch(`/Dashboard/screen/${screenID}/deletePlaylist`, {
                 method: 'PUT',
                 headers: {
                   'Content-Type': 'application/json'
@@ -342,6 +418,8 @@
                     'Playlist deleted successfully.',
                     'success'
                   );
+                   // Reload the page after deletion and confirmation
+          window.location.reload();
                 })
                 .catch(error => {
                   console.error('Error deleting playlist:', error);
@@ -350,6 +428,8 @@
                     'Playlist deleted successfully.',
                     'success'
                   );
+                   // Reload the page after deletion and confirmation
+          window.location.reload();
                 });
             }
             
