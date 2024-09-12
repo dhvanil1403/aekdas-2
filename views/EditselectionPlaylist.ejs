@@ -163,7 +163,7 @@
         console.log("selectedScreens", selectedScreens);
 
         try {
-          const response = await fetch("/Dashboard/asdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmasdfghjklqwertyuiopzxcvbn/editPlaylist", {
+          const response = await fetch("/Dashboard/Playlist/editPlaylist", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -186,7 +186,7 @@
             title: 'Playlist Edited',
             text: 'Playlist edited successfully!',
           }).then(() => {
-            window.location.href = '/Dashboard/asdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmasdfghjklqwertyuiopzxcvbn';
+            window.location.href = '/Dashboard/Playlist';
           });
         } catch (error) {
           console.error("Error editing playlist:", error);
@@ -364,7 +364,7 @@
           }).then((result) => {
             if (result.isConfirmed) {
               // User confirmed deletion, proceed with fetch request
-              fetch(`/Dashboard/screen/${screenID}/deletePlaylist`, {
+              fetch(`/Dashboard/screens/${screenID}/deletePlaylist`, {
                 method: 'PUT',
                 headers: {
                   'Content-Type': 'application/json'
