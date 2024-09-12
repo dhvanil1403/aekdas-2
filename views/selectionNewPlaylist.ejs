@@ -133,7 +133,7 @@
       }
 
       try {
-        const response = await fetch("/Dashboard/asdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmasdfghjklqwertyuiopzxcvbn/createPlaylist", {
+        const response = await fetch("/Dashboard/Playlist/createPlaylist", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -154,7 +154,7 @@
           title: 'Success!',
           text: 'Playlist created successfully!',
         }).then(() => {
-          window.location.href = '/Dashboard/asdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmasdfghjklqwertyuiopzxcvbn';
+          window.location.href = '/Dashboard/Playlist';
         });
       } catch (error) {
         Swal.fire({
@@ -460,7 +460,7 @@ window.deletePlaylist = function deletePlaylist(screenID) {
   }).then((result) => {
     if (result.isConfirmed) {
       // User confirmed deletion, proceed with fetch request
-      fetch(`/Dashboard/screen/${screenID}/deletePlaylist`, {
+      fetch(`/Dashboard/screens/${screenID}/deletePlaylist`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
