@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Document</title>
+  <title>Select Screens to Publish Playlist</title>
   <link rel="icon" type="image/png" href="https://res.cloudinary.com/dqfnwh89v/image/upload/v1724408615/qxvvfcf7ftgklhl2k03v.png">
   <link rel="stylesheet" href="/css/groupScreen.css" />
   <style>
@@ -15,19 +15,22 @@
       color: #0D6EFD;
       background: transparent;
     }
-    .goback:hover{
+
+    .goback:hover {
       background: #0D6EFD;
       color: white;
     }
+
     .header {
       display: flex;
       justify-content: flex-end;
     }
+
     button5 {
       width: 30px;
       height: 30px;
       border-radius: 50%;
-      background-color:transparent;
+      background-color: transparent;
       border: none;
       color: white;
       cursor: pointer;
@@ -66,22 +69,24 @@
             <% if (screens && screens.length) { %>
               <% screens.forEach(screen => { %>
                 <tr class="screen-row">
-                  <td> <input type="checkbox" 
-                    name="checkbox" 
-                    value="<%= screen.screenid %>" 
-                    data-screenname="<%= screen.screenname %>" 
-                    data-address="<%= screen.location %>" 
-                    data-playlistname="<%= screen.playlistname %>"</td>
+                  <td>
+                    <input type="checkbox"
+                      name="checkbox"
+                      value="<%= screen.screenid %>"
+                      data-screenname="<%= screen.screenname %>"
+                      data-address="<%= screen.location %>"
+                      data-playlistname="<%= screen.playlistname %>"
+                      onchange="handleCheckboxChange(event)" />
+                  </td>
                   <td><%= screen.screenid %></td>
-                  <td><%= screen.screenname %></td>
-
-                  <td ><%= screen.playlistname %></td>
+                  <td class="screen-screenname"><%= screen.screenname %></td>
+                  <td><%= screen.playlistname %></td>
                   <td><%= screen.location %></td>
                 </tr>
               <% }) %>
             <% } else { %>
               <tr>
-                <td colspan="6">No screens found</td>
+                <td colspan="5">No screens found</td>
               </tr>
             <% } %>
           </tbody>
@@ -97,6 +102,7 @@
               <th>Screen ID</th>
               <th>Screen Name</th>
               <th>Address</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody id="selectedScreensTable">
@@ -111,467 +117,344 @@
       window.history.back();
     }
 
-    const playlistName = sessionStorage.getItem("playlistName");
-    const playlistDescription = sessionStorage.getItem("playlistDescription");
-    const playlistUrls = sessionStorage.getItem("selectedItems");
-    const urls = JSON.parse(playlistUrls);
+    document.addEventListener("DOMContentLoaded", () => {
 
-    async function publishPlaylist() {
-      const selectedScreens = [];
-      const checkboxes = document.querySelectorAll('input[name="checkbox"]:checked');
-      checkboxes.forEach((checkbox) => {
-        selectedScreens.push(checkbox.value);
-      });
-
-      if (selectedScreens.length === 0) {
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: 'Please select at least one screen',
-        });
-        return;
-      }
-
+      const playlistName = sessionStorage.getItem("playlistName");
+      const playlistDescription = sessionStorage.getItem("playlistDescription");
+      const playlistUrls = sessionStorage.getItem("selectedItems");
+      let urls;
       try {
-        const response = await fetch("/Dashboard/Playlist/createPlaylist", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            screenIDs: selectedScreens,
-            urls: urls,
-            playlistName: playlistName,
-            playlistDescription: playlistDescription,
-          }),
-        });
-        if (!response.ok) {
-          throw new Error("Failed to create playlist");
-        }
-        const responseData = await response.json();
-        Swal.fire({
-          icon: 'success',
-          title: 'Success!',
-          text: 'Playlist created successfully!',
-        }).then(() => {
-          window.location.href = '/Dashboard/Playlist';
-        });
-      } catch (error) {
-        Swal.fire({
-          icon: 'error',
-          title: 'Error!',
-          text: 'Failed to create playlist. Please try again.',
-        });
-        console.error("Error creating playlist:", error);
+        urls = JSON.parse(playlistUrls);
+      } catch (e) {
+        console.error("Error parsing playlistUrls from sessionStorage:", e);
+        urls = [];
       }
-    }
 
-    window.publishPlaylist = publishPlaylist;
+      let selectedScreens = [];
 
-    document.addEventListener('DOMContentLoaded', () => {
-      const checkboxes = document.querySelectorAll('input[name="checkbox"]');
-      checkboxes.forEach((checkbox) => {
-        checkbox.addEventListener('change', handleCheckboxChange);
-      });
+      async function publishPlaylist() {
+        const checkboxes = document.querySelectorAll('input[name="checkbox"]:checked');
+        selectedScreens = Array.from(checkboxes).map(checkbox => checkbox.value.trim()).filter(Boolean);
+
+        if (selectedScreens.length === 0) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Please select at least one screen',
+          });
+          return;
+        }
+
+        try {
+          const response = await fetch("/Dashboard/Playlist/createPlaylist", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              screenIDs: selectedScreens,
+              urls: urls,
+              playlistName: playlistName,
+              playlistDescription: playlistDescription,
+            }),
+          });
+
+          if (!response.ok) throw new Error("Failed to create playlist");
+
+          const responseData = await response.json();
+          Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: 'Playlist created successfully!',
+          }).then(() => {
+            window.location.href = '/Dashboard/Playlist';
+          });
+        } catch (error) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error!',
+            text: 'Failed to create playlist. Please try again.',
+          });
+          console.error("Error creating playlist:", error);
+        }
+      }
+
+      window.publishPlaylist = publishPlaylist;
 
       const searchInput = document.getElementById('searchInput');
-      searchInput.addEventListener('input', filterScreens);
-    });
-
-    // function handleCheckboxChange(event) {
-    //   const checkbox = event.target;
-    //   const selectedScreensTable = document.getElementById('selectedScreensTable');
-    //   if (checkbox.checked) {
-    //     const newRow = selectedScreensTable.insertRow();
-    //     newRow.setAttribute('data-screenid', checkbox.value);
-    //     newRow.innerHTML = `
-    //       <td>${selectedScreensTable.rows.length + 1}</td>
-    //       <td>${checkbox.value}</td>
-    //       <td>${checkbox.getAttribute('data-screenname')}</td>
-    //       <td>${checkbox.getAttribute('data-address')}</td>
-    //     `;
-    //   } else {
-    //     const rows = selectedScreensTable.rows;
-    //     for (let i = 0; i < rows.length; i++) {
-    //       if (rows[i].getAttribute('data-screenid') === checkbox.value) {
-    //         selectedScreensTable.deleteRow(i);
-    //         break;
-    //       }
-    //     }
-    //     // Update serial numbers
-    //     for (let i = 0; i < rows.length; i++) {
-    //       rows[i].cells[0].innerText = i + 1;
-    //     }
-    //   }
-    // }
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//     function handleCheckboxChange(event) {
-//   const checkbox = event.target;
-//   const screenID = checkbox.value;
-//   const playlistName = checkbox.getAttribute('data-playlistname'); // Add this attribute to know if playlist is assigned
-//   const selectedScreensTable = document.getElementById('selectedScreensTable');
-
-//   if (playlistName) {
-//     // If the screen already has a playlist, prompt to unassign it first
-//     window.deletePlaylist(screenID).then(() => {
-//       // After the playlist is deleted, process the checkbox click
-//       toggleScreenSelection(checkbox, selectedScreensTable);
-//     });
-//   } else {
-//     // Directly process the checkbox click
-//     toggleScreenSelection(checkbox, selectedScreensTable);
-//   }
-// }
-
-// function toggleScreenSelection(checkbox, selectedScreensTable) {
-//   if (checkbox.checked) {
-//     const newRow = selectedScreensTable.insertRow();
-//     newRow.setAttribute('data-screenid', checkbox.value);
-//     newRow.innerHTML = `
-//       <td>${selectedScreensTable.rows.length + 0}</td>
-//       <td>${checkbox.value}</td>
-//       <td>${checkbox.getAttribute('data-screenname')}</td>
-//       <td>${checkbox.getAttribute('data-address')}</td>
-//     `;
-//   } else {
-//     const rows = selectedScreensTable.rows;
-//     for (let i = 0; i < rows.length; i++) {
-//       if (rows[i].getAttribute('data-screenid') === checkbox.value) {
-//         selectedScreensTable.deleteRow(i);
-//         break;
-//       }
-//     }
-//     // Update serial numbers
-//     for (let i = 0; i < rows.length; i++) {
-//       rows[i].cells[0].innerText = i + 1;
-//     }
-//   }
-// }
-
-
-function handleCheckboxChange(event) {
-  const checkbox = event.target;
-  const screenID = checkbox.value;
-  const playlistName = checkbox.getAttribute('data-playlistname'); // Check if a playlist is assigned
-  const selectedScreensTable = document.getElementById('selectedScreensTable');
-
-  if (playlistName) {
-    // If the screen already has a playlist, ask to unassign it
-    window.deletePlaylist(screenID).then((result) => {
-      if (result) {
-        // If the user confirms deletion, process the checkbox
-        toggleScreenSelection(checkbox, selectedScreensTable);
-      } else {
-        // If the user cancels, uncheck the checkbox
-        checkbox.checked = false;
+      if (searchInput) {
+        searchInput.addEventListener('input', filterScreens);
       }
-    });
-  } else {
-    // If no playlist is assigned, proceed normally
-    toggleScreenSelection(checkbox, selectedScreensTable);
-  }
-}
 
-function toggleScreenSelection(checkbox, selectedScreensTable) {
-  if (checkbox.checked) {
-    const newRow = selectedScreensTable.insertRow();
-    newRow.setAttribute('data-screenid', checkbox.value);
-    newRow.innerHTML = `
-      <td>${selectedScreensTable.rows.length + 1}</td>
-      <td>${checkbox.value}</td>
-      <td>${checkbox.getAttribute('data-screenname')}</td>
-      <td>${checkbox.getAttribute('data-address')}</td>
-    `;
-  } else {
-    const rows = selectedScreensTable.rows;
-    for (let i = 0; i < rows.length; i++) {
-      if (rows[i].getAttribute('data-screenid') === checkbox.value) {
-        selectedScreensTable.deleteRow(i);
-        break;
-      }
-    }
-    // Update serial numbers
-    for (let i = 0; i < rows.length; i++) {
-      rows[i].cells[0].innerText = i + 1;
-    }
-  }
-}
+      window.handleCheckboxChange = function handleCheckboxChange(event) {
+        const checkbox = event.target;
+        const playlistName = checkbox.closest('tr').querySelector('td:nth-child(4)').textContent.trim();
 
+        console.log("hi from handleCheckboxChange");
 
+        if (checkbox.checked) {
+          console.log("i am checked");
 
+          if (playlistName) {
+            // If a playlist already exists, confirm if the user wants to unassign it
+            console.log("i have playlist");
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// window.deletePlaylist = function deletePlaylist(screenID) {
-//           // Show confirmation dialog using SweetAlert
-//           Swal.fire({
-//             title: 'Are you sure?',
-//             text: 'You want to unassign this screen',
-//             icon: 'warning',
-//             showCancelButton: true,
-//             confirmButtonText: 'Yes, delete it!',
-//             cancelButtonText: 'No, cancel',
-//             reverseButtons: true
-//           }).then((result) => {
-//             if (result.isConfirmed) {
-//               // User confirmed deletion, proceed with fetch request
-//               fetch(`/Dashboard/Screens/${screenID}/deletePlaylist`, {
-//                 method: 'PUT',
-//                 headers: {
-//                   'Content-Type': 'application/json'
-//                 },
-//                 body: JSON.stringify({
-//                   playlistname: null
-//                 })
-//               })
-//                 .then(response => {
-                  
-//                   // Remove the screen from selectedScreens
-//                   selectedScreens = selectedScreens.filter(id => id !== screenID);
-//                   console.log("selectedScreens after screen playlist data fetch requestr",selectedScreens);
-//                   // Update the UI
-//                   removeSelectedScreenRow(screenID);
-//                   const checkbox = document.querySelector(`input[value="${screenID}"]`);
-//                   if (checkbox) {
-//                     checkbox.checked = false;
-//                   }
-//                   console.log(' after delete in screen table')
-//                   console.log("playlistId", playlistId);
-//                    console.log("playlistName", playlistName);
-//                       console.log("playlistDescription", playlistDescription);
-//                   console.log("selectedUrls", urls);
-//                   console.log("selectedScreens", selectedScreens);
-//                   // Update the database
-//                   fetch("/Dashboard/Playlist/editPlaylist", {
-//                     method: "POST",
-//                     headers: {
-//                       "Content-Type": "application/json",
-//                     },
-//                     body: JSON.stringify({
-//                       playlistId: sessionStorage.getItem("playlistId"),
-//                       screenIDs: selectedScreens,
-//                       urls: JSON.parse(sessionStorage.getItem("playlistUrls")),
-//                       playlistName: sessionStorage.getItem("playlistName"),
-//                       playlistDescription: sessionStorage.getItem("playlistDescription"),
-//                     }),
-//                   });
-//                 })
-//                 .then(response => {
-//                   if (!response.ok) {
-//                     throw new Error('Failed to edit playlist');
-//                   }
-//                   return response.json();
-//                 })
-//                 .then(responseData => {
-//                   console.log("Playlist edit:", responseData.playlist);
-//                   Swal.fire(
-//                     'Deleted!',
-//                     'Playlist deleted successfully.',
-//                     'success'
-//                   );
-//                    // Reload the page after deletion and confirmation
-//           window.location.reload();
-//                 })
-//                 .catch(error => {
-//                   console.error('Error deleting playlist:', error);
-//                   Swal.fire(
-//                     'Deleted!',
-//                     'Playlist deleted successfully.',
-//                     'success'
-//                   );
-//                    // Reload the page after deletion and confirmation
-//           window.location.reload();
-//                 });
-//             }
-//           });
-//         };
-
-
-window.deletePlaylist = function deletePlaylist(screenID) {
-  // Show confirmation dialog using SweetAlert
-  Swal.fire({
-    title: 'Are you sure?',
-    text: 'You want to unassign this screen',
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonText: 'Yes, delete it!',
-    cancelButtonText: 'No, cancel',
-    reverseButtons: true
-  }).then((result) => {
-    if (result.isConfirmed) {
-      // User confirmed deletion, proceed with fetch request
-      fetch(`/Dashboard/screens/${screenID}/deletePlaylist`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          playlistname: null
-        })
-      })
-      .then(response => {
-        // Remove the screen from selectedScreens
-        selectedScreens = selectedScreens.filter(id => id !== screenID);
-        console.log("selectedScreens after screen playlist data fetch requestr", selectedScreens);
-        // Update the UI
-        removeSelectedScreenRow(screenID);
-        const checkbox = document.querySelector(`input[value="${screenID}"]`);
-        if (checkbox) {
-          checkbox.checked = false;
-        }
-        console.log(' after delete in screen table');
-        console.log("playlistId", playlistId);
-        console.log("playlistName", playlistName);
-        console.log("playlistDescription", playlistDescription);
-        console.log("selectedUrls", urls);
-        console.log("selectedScreens", selectedScreens);
-        
-        // Update the database
-        return fetch("/Dashboard/Playlist/editPlaylist", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            playlistId: sessionStorage.getItem("playlistId"),
-            screenIDs: selectedScreens,
-            urls: JSON.parse(sessionStorage.getItem("playlistUrls")),
-            playlistName: sessionStorage.getItem("playlistName"),
-            playlistDescription: sessionStorage.getItem("playlistDescription"),
-          }),
-        });
-      })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Failed to edit playlist');
-        }
-        return response.json();
-      })
-      .then(responseData => {
-        console.log("Playlist edit:", responseData.playlist);
-        Swal.fire(
-          'Deleted!',
-          'Playlist deleted successfully.',
-          'success'
-        );
-        // Reload the page after deletion and confirmation
-        window.location.reload();
-      })
-      .catch(error => {
-        console.error('Error deleting playlist:', error);
-        Swal.fire(
-         'Deleted!',
-          'Playlist deleted successfully.',
-          'success'
-        );
-        // Reload the page after error
-        window.location.reload();
-      });
-    } else if (result.dismiss === Swal.DismissReason.cancel) {
-      // User canceled deletion, reload the page
-      window.location.reload();
-    }
-  });
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    function filterScreens() {
-      const filter = document.getElementById('searchInput').value.toLowerCase();
-      const rows = document.querySelectorAll('.screen-row');
-      let visibleRows = 0;
-
-      rows.forEach(row => {
-        const screenName = row.querySelector('.screen-screenname').textContent.toLowerCase();
-        if (screenName.includes(filter)) {
-          row.style.display = '';
-          visibleRows++;
+            Swal.fire({
+              title: 'Screen already has a playlist',
+              text: 'Do you want to unassign the current playlist before assigning a new one?',
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonText: 'Yes, unassign it',
+              cancelButtonText: 'No, keep it',
+            }).then(result => {
+              if (result.isConfirmed) {
+                // Call deletescreenIdfromAllPlaylist to remove the current playlist
+                deletescreenIdfromAllPlaylist(checkbox.value);
+              } else {
+                checkbox.checked = false; // Revert checkbox selection
+              }
+            });
+          } else {
+            // No existing playlist, proceed with adding the screen
+            addSelectedScreenRow(checkbox);
+          }
         } else {
-          row.style.display = 'none';
+          // Checkbox unchecked, remove the screen row
+          removeSelectedScreenRow(checkbox.value);
         }
-      });
+      };
 
-      const noResultsMessage = document.getElementById('noResultsMessage');
-      noResultsMessage.style.display = visibleRows === 0 ? '' : 'none';
-    }
+      function addSelectedScreenRow(checkbox) {
+        const selectedScreensTable = document.getElementById('selectedScreensTable');
+        const existingRow = selectedScreensTable.querySelector(`tr[data-screenid="${checkbox.value}"]`);
+
+        if (existingRow) {
+          return; // Prevent adding duplicate rows
+        }
+
+        const newRow = selectedScreensTable.insertRow();
+        newRow.setAttribute('data-screenid', checkbox.value);
+
+        newRow.innerHTML = `
+          <td>${selectedScreensTable.rows.length + 1}</td>
+          <td>${checkbox.value}</td>
+          <td>${checkbox.getAttribute('data-screenname')}</td>
+          <td>${checkbox.getAttribute('data-address')}</td>
+          <td>
+            <button onclick="removeSelectedScreenRow('${checkbox.value}')">
+              <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="15" cy="15" r="15" fill="#DC3545" />
+                <path d="M8.25 10.5H9.75H21.75" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M12 10.5V9C12 8.60218 12.158 8.22064 12.4393 7.93934C12.7206 7.65804 13.1022 7.5 13.5 7.5H16.5C16.8978 7.5 17.2794 7.65804 17.5607 7.93934C17.842 8.22064 18 8.60218 18 9V10.5M20.25 10.5V21C20.25 21.3978 20.092 21.7794 19.8107 22.0607C19.5294 22.342 19.1478 22.5 18.75 22.5H11.25C10.8522 22.5 10.4706 22.342 10.1893 22.0607C9.90804 21.7794 9.75 21.3978 9.75 21V10.5H20.25Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M12.75 13.5V18.75" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M17.25 13.5V18.75" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+          </td>
+        `;
+      }
+
+      function removeSelectedScreenRow(screenId) {
+        const selectedScreensTable = document.getElementById('selectedScreensTable');
+        const rowToDelete = selectedScreensTable.querySelector(`tr[data-screenid="${screenId}"]`);
+
+        if (rowToDelete) {
+          selectedScreensTable.deleteRow(rowToDelete.rowIndex);
+          updateRowNumbers(selectedScreensTable);
+        }
+      }
+
+      function updateRowNumbers(tableBody) {
+        Array.from(tableBody.rows).forEach((row, index) => {
+          row.cells[0].textContent = index + 1; // Update row number
+        });
+      }
+
+      window.deletescreenIdfromAllPlaylist = function deletescreenIdfromAllPlaylist(screenID) {
+        // Show confirmation dialog using SweetAlert
+        console.log("deletescreenIdfromAllPlaylist screenid received", screenID);
+
+        Swal.fire({
+          title: 'Are you sure?',
+          text: 'You want to unassign this screen from all playlists',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Yes, remove it!',
+          cancelButtonText: 'No, cancel',
+          reverseButtons: true
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // User confirmed deletion, proceed with fetch request
+            fetch(`/Dashboard/screens/${screenID}/deletePlaylist`, {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                playlistname: null
+              })
+            })
+              .then(() => {
+                // Remove the screen from selectedScreens
+                selectedScreens = selectedScreens.filter(id => id !== screenID);
+                console.log("selectedScreens after screen playlist data fetch request", selectedScreens);
+
+                // Update the UI
+                removeSelectedScreenRow(screenID);
+                const checkbox = document.querySelector(`input[value="${screenID}"]`);
+                if (checkbox) {
+                  checkbox.checked = false;
+                }
+
+                console.log("start of fetching `/Dashboard/Playlist/${screenID}/deleteScreenids`............ ");
+
+                // Fetch to delete screen IDs and retrieve JSON response
+                return fetch(`/Dashboard/Playlist/${screenID}/deleteScreenids`, {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  }
+                });
+              })
+              .then(response => {
+                if (!response.ok) {
+                  throw new Error('Failed to remove the screen ID from playlists');
+                }
+                return response.json();
+              })
+              .then(newActionResponse => {
+                console.log("New action response:", newActionResponse); // Log the JSON response
+                console.log("Retrieved Playlists:", newActionResponse.data); // Log the retrieved playlists
+
+                // Show success message for screen ID removal
+                Swal.fire(
+                  'Removed!',
+                  'Screen ID has been successfully removed from all playlists.',
+                  'success'
+                );
+                window.location.reload();
+              })
+              .catch(error => {
+                console.error('Error executing new action:', error);
+                Swal.fire(
+                  'Error!',
+                  'There was an error while processing the removal.',
+                  'error'
+                );
+              });
+          }
+        });
+      };
+
+      window.deletePlaylist = function deletePlaylist(screenID) {
+        // Show confirmation dialog using SweetAlert
+        Swal.fire({
+          title: 'Are you sure?',
+          text: 'You want to unassign this screen',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Yes, delete it!',
+          cancelButtonText: 'No, cancel',
+          reverseButtons: true
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // User confirmed deletion, proceed with fetch request
+            fetch(`/Dashboard/screens/${screenID}/deletePlaylist`, {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                playlistname: null
+              })
+            })
+              .then(response => {
+                // Remove the screen from selectedScreens
+                selectedScreens = selectedScreens.filter(id => id !== screenID);
+                console.log("selectedScreens after screen playlist data fetch request", selectedScreens);
+                // Update the UI
+                removeSelectedScreenRow(screenID);
+                const checkbox = document.querySelector(`input[value="${screenID}"]`);
+                if (checkbox) {
+                  checkbox.checked = false;
+                }
+                console.log('after delete in screen table');
+                // Assuming playlistId is defined elsewhere; if not, this will cause an error
+                // console.log("playlistId", playlistId); 
+                console.log("playlistName", playlistName);
+                console.log("playlistDescription", playlistDescription);
+                console.log("selectedUrls", urls);
+                console.log("selectedScreens", selectedScreens);
+
+                // Update the database
+                return fetch("/Dashboard/Playlist/editPlaylist", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    playlistId: sessionStorage.getItem("playlistId"),
+                    screenIDs: selectedScreens,
+                    urls: JSON.parse(sessionStorage.getItem("playlistUrls")),
+                    playlistName: sessionStorage.getItem("playlistName"),
+                    playlistDescription: sessionStorage.getItem("playlistDescription"),
+                  }),
+                });
+              })
+              .then(response => {
+                if (!response.ok) {
+                  throw new Error('Failed to edit playlist');
+                }
+                return response.json();
+              })
+              .then(responseData => {
+                console.log("Playlist edit:", responseData.playlist);
+                Swal.fire(
+                  'Deleted!',
+                  'Playlist deleted successfully.',
+                  'success'
+                );
+                // Reload the page after deletion and confirmation
+                window.location.reload();
+              })
+              .catch(error => {
+                console.error('Error deleting playlist:', error);
+                Swal.fire(
+                  'Error!',
+                  'There was an error while deleting the playlist.',
+                  'error'
+                );
+                // Optionally reload the page after error
+                window.location.reload();
+              });
+          } else if (result.dismiss === Swal.DismissReason.cancel) {
+            // User canceled deletion, reload the page
+            window.location.reload();
+          }
+        });
+      };
+
+      function filterScreens() {
+        const filter = document.getElementById('searchInput').value.toLowerCase();
+        const rows = document.querySelectorAll('.screen-row');
+        let visibleRows = 0;
+
+        rows.forEach(row => {
+          // Assuming the screen name is in the third <td>
+          const screenName = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
+          if (screenName.includes(filter)) {
+            row.style.display = '';
+            visibleRows++;
+          } else {
+            row.style.display = 'none';
+          }
+        });
+
+        const noResultsMessage = document.getElementById('noResultsMessage');
+        noResultsMessage.style.display = visibleRows === 0 ? '' : 'none';
+      }
+
+    });
   </script>
+
 </body>
 
 </html>
