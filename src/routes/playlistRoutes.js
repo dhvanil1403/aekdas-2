@@ -23,4 +23,7 @@ router.post("/PlaylistDelete/:playlistId", playlist.deletePlaylist);
 router.get("/newPlaylist/selectScreens",playlist.showAvailableScreen)
 
 
+router.post("/:screenID/deleteScreenids",playlist.deleteScreenidsFromPlaylist)
+
+
 module.exports = router;
