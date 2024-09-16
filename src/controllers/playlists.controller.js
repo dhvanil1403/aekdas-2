@@ -211,12 +211,61 @@ const deletePlaylist = async (req, res) => {
 
 
 
+// const deleteScreenidsFromPlaylist = async (req, res) => {
+//   const { screenID } = req.params;
+// console.log(" strat of the deleteScreenidsFromPlaylist ");
+
+//   try {
+//     // Fetch all playlists related to the screenID
+//     const playlistsAll = await playlists.searchScreenidandRemove(screenID);
+// console.log("searchScreenidandRemove",playlistsAll);
+
+//     // Return the playlists data in JSON format
+//     res.json({
+//       success: true,
+//       message: 'Screen IDs retrieved successfully',
+//       data: playlistsAll,
+//     });
+//   } catch (error) {
+//     res.status(500).json({
+//       success: false,
+//       message: 'Error retrieving screen IDs',
+//       error: error.message,
+//     });
+//   }
+// };
+
+// Controller function for deleting screen ID from playlists
+const deleteScreenidsFromPlaylist = async (req, res) => {
+  console.log("Start of the deleteScreenidsFromPlaylist function");
+
+  const { screenID } = req.params;
+
+  try {
+    // Fetch all playlists related to the screenID and remove the screenID
+    const playlistsAll = await playlists.searchScreenidandRemove(screenID);
+    console.log("searchScreenidandRemove", playlistsAll);
+
+    // Return the playlists data in JSON format
+    res.json({
+      success: true,
+      message: 'Screen ID removed successfully from all playlists',
+      data: playlistsAll,
+    });
+  } catch (error) {
+    // Return error response in case of failure
+    res.status(500).json({
+      success: false,
+      message: 'Error removing screen ID from playlists',
+      error: error.message,
+    });
+  }
+};
 
 
 
-
-
-module.exports = { createPlaylist, showPlaylist, showAvailableScreen, getPlaylistById, showAvailableScreenForEditPlaylist, editPlaylist, deletePlaylist };
+module.exports = { createPlaylist, showPlaylist, showAvailableScreen, getPlaylistById, 
+  showAvailableScreenForEditPlaylist, editPlaylist, deletePlaylist,deleteScreenidsFromPlaylist };
 
 
 
