@@ -464,6 +464,60 @@ const getPlaylistById = async (playlistId) => {
     throw new Error('Error fetching playlist');
   }
 };
+
+
+
+
+
+// const searchScreenidandRemove = async (screenID) => {
+//   try {
+//     // Query to select all rows where the screenID is present in the screen_id column
+//     const result = await db.query(`
+//       SELECT id, screen_id, playlistname, playlistdescription, slot1, slot2, slot3, slot4, slot5, slot6, slot7, slot8, slot9, slot10 
+//       FROM public.playlists
+//       WHERE screen_id LIKE $1
+//       ORDER BY id DESC;
+//     `, [`%${screenID}%`]);
+
+//     return result.rows;
+//   } catch (error) {
+//     throw new Error('Error fetching playlists with the given screenID');
+//   }
+// };
+
+
+// Function to search for screenID in playlists and remove it
+const searchScreenidandRemove = async (screenID) => {
+  try {
+    // Step 1: Query to select all rows where the screenID is present in the screen_id column
+    const result = await db.query(`
+      SELECT id, screen_id, playlistname, playlistdescription, slot1, slot2, slot3, slot4, slot5, slot6, slot7, slot8, slot9, slot10 
+      FROM public.playlists
+      WHERE screen_id LIKE $1
+      ORDER BY id DESC;
+    `, [`%${screenID}%`]);
+
+    const rows = result.rows;
+
+    // Step 2: Iterate through the results and update the screen_id by removing the specific screenID
+    for (let row of rows) {
+      await db.query(`
+        UPDATE public.playlists
+        SET screen_id = TRIM(BOTH ',' FROM REPLACE(screen_id, $1, ''))
+        WHERE id = $2;
+      `, [screenID, row.id]);
+    }
+
+    return { message: `Successfully removed screenID ${screenID} from all matching records.`, affectedRows: rows.length };
+
+  } catch (error) {
+    throw new Error('Error updating playlists with the given screenID');
+  }
+};
+
+
+
 module.exports={
-    createPlaylist,viewPlaylist,updateScreensWithPlaylist,getPlaylistById,editPlaylist,deletePlaylist,deleteScreensWithPlaylist,getScreenIDsByPlaylistId,deletePlaylistById
+    createPlaylist,viewPlaylist,updateScreensWithPlaylist,getPlaylistById,editPlaylist,deletePlaylist,deleteScreensWithPlaylist,
+    getScreenIDsByPlaylistId,deletePlaylistById,searchScreenidandRemove
 }
