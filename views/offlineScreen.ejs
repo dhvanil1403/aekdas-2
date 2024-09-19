@@ -7,9 +7,10 @@
     <link rel="stylesheet" href="/css/screen.css" />
 </head>
 <body>
+  <%- include('Dashboard') %>
     <div class="show-Screen" id="show-Screen" style="height: 92vh;width: 98%;">
         <div>
-            <h2 style="display: flex; justify-content: space-between; text-align: center;">Screens/Players
+            <h2 style="display: flex; justify-content: space-between; text-align: center;">Offline Screens
                 <button id="exportButton" class="export-btn" style="display: none;">Export</button>
             </h2>
             <p style="font-size: small;">Total Offline Screens: <%= totalOfflineCount %></p>
