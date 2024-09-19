@@ -18,7 +18,8 @@ const isAuthenticated = (req, res, next) => {
 };
 //  router.use(dashboardAuth)
 router.get("/", isAuthenticated,dashboardController.showAllDashboardData);
-
+router.get("/OnlineScreens",isAuthenticated,dashboardController.OnlineScreensAll);
+router.get("/OfflineScreens",isAuthenticated,dashboardController.OfflineScreensAll);
 router.use("/Screens",isAuthenticated,screenRouter);
 router.use("/Teams",isAuthenticated, teamRouter);
 router.use("/Library",isAuthenticated,libraryRouter);
