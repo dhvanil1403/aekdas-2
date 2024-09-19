@@ -131,7 +131,8 @@
             <td style="display: none;"><%= user.id %></td>
             <td><%= index+1 %></td>
 
-            <td><%= user.name %></td>
+            <td class="user-name"><%= user.name %></td>
+
             <td><%= user.email %></td>
             <td><%= user.role %></td>
             <td style="display: flex;gap: 10px;align-items: center;">
@@ -181,6 +182,28 @@
   <!-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script> -->
+  <script>
+    function processName() {
+      const names = document.querySelectorAll('.user-name');
+      names.forEach(nameElement => {
+        let nameText = nameElement.textContent;
+        
+        // Check if the name contains a '/' and truncate it before the '/'
+        if (nameText.includes('/')) {
+          nameText = nameText.split('/')[0];
+        }
+        
+        // Apply the 10-character limit with '...' if necessary
+        // if (nameText.length > 10) {
+        //   nameText = nameText.substring(0, 10) + '...';
+        // }
+        
+        // Update the text content
+        nameElement.textContent = nameText;
+      });
+    }
   
+    document.addEventListener('DOMContentLoaded', processName);
+  </script>
 </body>
 </html>
