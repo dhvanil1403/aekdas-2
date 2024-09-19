@@ -29,6 +29,41 @@ const showAllDashboardData=async (req, res) => {
     res.render("showdashboard",{totalScreenCount,onlineScreenCount,offlineScreenCount,totalMediaFiles,allScreens,logs,screenStatus});
 }
 
+
+const OnlineScreensAll = async (req, res) => {
+    try {
+      // Call the model function to get online screens and total count
+      const { onlineScreens, totalOnlineCount } = await screen.AllOnlineScreens();
+    //   const  screenStatus=await screen.getStatus();
+  
+      // Render the onlineScreens page, passing the data
+      res.render('onlineScreen', {
+        onlineScreens,
+        totalOnlineCount
+      });
+    } catch (err) {
+      console.error("Error fetching online screens:", err);
+      res.status(500).send('Internal Server Error');
+    }
+  };
+  
+  const OfflineScreensAll = async (req, res) => {
+    try {
+      // Call the model function to get online screens and total count
+      const { offlineScreens, totalOfflineCount } = await screen.AllOfflineScreens();
+    //   const  screenStatus=await screen.getStatus();
+  
+      // Render the onlineScreens page, passing the data
+      res.render('offlineScreen', {
+        offlineScreens,
+        totalOfflineCount
+      });
+    } catch (err) {
+      console.error("Error fetching online screens:", err);
+      res.status(500).send('Internal Server Error');
+    }
+  };
 module.exports={
-    showAllDashboardData
+    showAllDashboardData,
+    OnlineScreensAll,OfflineScreensAll
 }
