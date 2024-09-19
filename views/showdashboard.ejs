@@ -580,37 +580,33 @@
             </div>
             <!-- END pop up of NEW PLAYLIST -->
 
-
             <div class="stats-container">
-                <div class="stat-item" id="total-screens">
+                <div class="stat-item" id="total-screens" onclick="window.location.href='/Dashboard/Screens'">
                     <p>Total Screens</p>
-                    <h2>
-                        <%= totalScreenCount %>
-                    </h2>
+                    <h2><%= totalScreenCount %></h2>
                 </div>
-                <div class="stat-item" id="online-screens">
+            
+                <div class="stat-item" id="online-screens" onclick="window.location.href='/Dashboard/OnlineScreens'">
                     <p>Online Screens</p>
-                    <h2>
-                        <%= onlineScreenCount %>
-                    </h2>
+                    <h2><%= onlineScreenCount %></h2>
                 </div>
-                <div class="stat-item" id="offline-screens">
+            
+                <div class="stat-item" id="offline-screens" onclick="window.location.href='/Dashboard/OfflineScreens'">
                     <p>Offline Screens</p>
-                    <h2>
-                        <%= offlineScreenCount %>
-                    </h2>
+                    <h2><%= offlineScreenCount %></h2>
                 </div>
-                <div class="stat-item" id="total-media-files">
+            
+                <div class="stat-item" id="total-media-files" onclick="window.location.href='/Dashboard/Library'">
                     <p>Total Media Files</p>
-                    <h2>
-                        <%= totalMediaFiles %>
-                    </h2>
+                    <h2><%= totalMediaFiles %></h2>
                 </div>
-                <div class="stat-item" id="storage-used">
+            
+                <div class="stat-item" id="storage-used" >
                     <p>Storage Used</p>
                     <h2 id="storage-used-value">Loading...</h2>
                 </div>
             </div>
+            
             <div class="main-content">
                 <div class="screens" style="width: 50%;height: 339px;">
                     <div style="display: flex;white-space: nowrap;justify-content: space-between; ">
