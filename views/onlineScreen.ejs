@@ -11,7 +11,7 @@
     <div class="show-Screen" id="show-Screen" style="height: 92vh;width: 98%;">
         <div>
           <h2 style="display: flex;justify-content: space-between;text-align: center;">Online Screens
-            <button id="exportButton" class="export-btn" style="display: none;">Export</button>
+            <button id="exportButton" class="export-btn" >Export</button>
           </h2>
           <p style="font-size: small;">Total Online Screen: <%= totalOnlineCount %></p>
         </div>
@@ -23,7 +23,7 @@
                 <!-- <th></th>  -->
                 <th>Sr No.</th>
                 <th>Screen Id</th>
-                <th style="display: none;">Pairing Code</th>
+
                 <th>Screen Name</th>
                 <th>Playlist Name</th>
                 <th>Status</th>
@@ -40,7 +40,7 @@
                     <tr data-pairingcode="<%= screen.screenid %>">
                       <td><%= index + 1 %></td>
                       <td><%= screen.screenid %></td>
-                      <td style="display: none;"><%= screen.pairingcode %></td>
+      
                       <td><%= screen.screenname %></td>
                       <td><%= screen.playlistname %></td>
                       <td>
@@ -79,5 +79,21 @@
 
         <div id="noResultsMessage" style="display: none; text-align: center;">No screens found.</div>
     </div>
+<script>
+    document.getElementById("exportButton").addEventListener("click", function () {
+        // Get the table data
+        var table = document.querySelector("table");
+        var worksheet = XLSX.utils.table_to_sheet(table);
+
+        // Create a new workbook
+        var workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "OfflineScreens");
+
+        // Export the Excel file
+        XLSX.writeFile(workbook, "Offline_Screens.xlsx");
+    });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
 </body>
 </html>
