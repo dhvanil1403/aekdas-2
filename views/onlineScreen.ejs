@@ -23,7 +23,7 @@
                 <!-- <th></th>  -->
                 <th>Sr No.</th>
                 <th>Screen Id</th>
-                <th>Pairing Code</th>
+                <th style="display: none;">Pairing Code</th>
                 <th>Screen Name</th>
                 <th>Playlist Name</th>
                 <th>Status</th>
@@ -40,7 +40,7 @@
                     <tr data-pairingcode="<%= screen.screenid %>">
                       <td><%= index + 1 %></td>
                       <td><%= screen.screenid %></td>
-                      <td><%= screen.pairingcode %></td>
+                      <td style="display: none;"><%= screen.pairingcode %></td>
                       <td><%= screen.screenname %></td>
                       <td><%= screen.playlistname %></td>
                       <td>
