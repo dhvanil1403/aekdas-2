@@ -80,5 +80,20 @@
         <div id="noResultsMessage" style="display: none; text-align: center;">No screens found.</div>
        
             </div>
+<script>
+    document.getElementById("exportButton").addEventListener("click", function () {
+        // Get the table data
+        var table = document.querySelector("table");
+        var worksheet = XLSX.utils.table_to_sheet(table);
+
+        // Create a new workbook
+        var workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "OfflineScreens");
+
+        // Export the Excel file
+        XLSX.writeFile(workbook, "Offline_Screens.xlsx");
+    });
+</script>
+
 </body>
 </html>
