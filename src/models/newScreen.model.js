@@ -290,6 +290,70 @@ const deviceConfig = async (client_name) => {
 };
 
 
+const AllOnlineScreens = async () => {
+  try {
+    // Query to get all online clients
+    const clientStatuses = await db.query("SELECT * FROM client_statuses WHERE status='online'");
+    // console.log("clientStatuses",clientStatuses.rows);
+    
+    // Query to get all screens
+    const screens = await db.query("SELECT * FROM Screens");
+
+    // Filter screens where screen.screenid matches client_statuses.client_name
+    const onlineScreens = screens.rows.map(screen => {
+      const status = clientStatuses.rows.find(client => client.client_name == screen.screenid);
+      return {
+        ...screen,
+        status: status ? status.status : 'offline',
+        lastResponse: status ? status.updated_at : null
+      };
+    }).filter(screen => screen.status === 'online');
+// console.log("onlineScreens",onlineScreens);
+
+    // Return the filtered screens and total online count
+    return {
+      onlineScreens,
+      totalOnlineCount: onlineScreens.length
+    };
+  } catch (err) {
+    console.error("Error fetching client statuses:", err);
+    throw err;
+  }
+};
+
+
+const AllOfflineScreens = async () => {
+  try {
+    // Query to get all online clients
+    const clientStatuses = await db.query("SELECT * FROM client_statuses WHERE status='offline'");
+    // console.log("clientStatuses",clientStatuses.rows);
+    
+    // Query to get all screens
+    const screens = await db.query("SELECT * FROM Screens");
+
+// Filter screens where screen.screenid matches client_statuses.client_name
+const offlineScreens = screens.rows.map(screen => {
+  const status = clientStatuses.rows.find(client => client.client_name == screen.screenid);
+  return {
+    ...screen,
+    status: status ? status.status : 'online',
+    lastResponse: status ? status.updated_at : null
+  };
+}).filter(screen => screen.status === 'offline');
+// console.log("onlineScreens",onlineScreens);
+
+    // Return the filtered screens and total online count
+    return {
+      offlineScreens,
+      totalOfflineCount: offlineScreens.length
+    };
+  } catch (err) {
+    console.error("Error fetching client statuses:", err);
+    throw err;
+  }
+};
+
+
 module.exports = {
   restoreScreenInDB,
   newScreen,
@@ -305,5 +369,8 @@ module.exports = {
   getGroupScreen,
   deletePlaylist,
   deleteScreenById,
- screenByName,getStatus,getOnlineCountByClientTable,getOfflineCountByClientTable,getClientStatuses,getScreenById,deviceConfig
+ screenByName,getStatus,getOnlineCountByClientTable,getOfflineCountByClientTable,getClientStatuses,getScreenById,deviceConfig,
+ AllOnlineScreens,
+ AllOfflineScreens
 };
+
